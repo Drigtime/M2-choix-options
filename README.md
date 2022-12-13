@@ -5,6 +5,7 @@ wsl -d ubuntu
 cd ~
 git clone https://github.com/Drigtime/M2-choix-options.git
 cd M2-choix-options
+sudo chmod 777 project/var/ -R
 ```
 
 #### Initialiser le project
