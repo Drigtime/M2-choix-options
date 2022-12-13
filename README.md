@@ -1,40 +1,44 @@
-##### (Optionnel) Avoir accès au container Docker depuis PhpStorm directement
-https://www.jetbrains.com/help/phpstorm/configuring-remote-interpreters.html select 'Docker compose'
-
-##### (Optionnel) Pour les utilisateurs de Windows
-Docker peut être lent sur Windows, il est recommandé de créer un fichier `.wslconfig` à la racine de votre dossier `C:\Users\userName` et de mettre ceci à l'intérieur :
+##### [IMPORTANT] Pour les utilisateurs de Windows
+Pour eviter d'avoir un projet qui tourne à 2 à l'heure, il est important de cloner le projet directement dans votre wsl (ubuntu, debian) a l'endroit que vous voulez
 ```
-[wsl2] 
-memory=4GB      #Limits VM memory in WSL 2 to 4GB 
-processors=2    #Makes the WSL 2 VM use two virtual processors
+wsl -d ubuntu
+cd ~
+git clone https://github.com/Drigtime/M2-choix-options.git
+cd M2-choix-options
 ```
-Pour plus d'information sur la configuration, voici un lien vers la doc https://docs.microsoft.com/en-us/windows/wsl/wsl-config
 
-PS: Même avec ces modifications, Docker reste lent sur Windows, pour aller plus loin je vous recommande de suivre ce guide [slow-docker-on-windows-wsl2-fast-and-easy-fix-to-improve-performance](https://www.createit.com/blog/slow-docker-on-windows-wsl2-fast-and-easy-fix-to-improve-performance/)
-
-##### Initialiser le project
-___
+#### Initialiser le project
 ```
 docker-compose up -d --build
 docker-compose exec php composer install
 docker-compose exec php yarn install
 docker-compose exec php yarn build
 ```
+En une commande :
+```
+docker-compose up -d --build && docker-compose exec php composer install && docker-compose exec php yarn install && docker-compose exec php yarn build
+```
 
-##### Lancer le project
-___
-`docker-compose up -d`
+#### Lancer le project
+```
+docker-compose up -d
+```
 
-##### Arréter le projet
-___
-`docker-compose down`
+#### Arréter le projet
+```
+docker-compose down
+```
 
-##### Se connecter au terminal du serveur php
-___
-`docker-compose exec php bash`
+#### Se connecter au terminal du serveur php
+```
+docker-compose exec php bash
+```
 
 ### Liens utiles
 * Server web http://localhost:8101
 * phpmyadmin http://localhost:8102
 * Debugger avec Phpstorm (Xdebug) https://www.jetbrains.com/help/phpstorm/debugging-with-phpstorm-ultimate-guide.html#quick-start
+
+Avoir accès au container Docker depuis PhpStorm directement
+https://www.jetbrains.com/help/phpstorm/configuring-remote-interpreters.html select 'Docker compose'
 
