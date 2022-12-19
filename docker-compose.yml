@@ -1,7 +1,7 @@
 version: '3.9'
 
 networks:
-  symfony_project_2022_net:
+  choix_option_net:
 
 services:
   php:
@@ -24,7 +24,7 @@ services:
       db_server:
         condition: service_healthy
     networks:
-      - symfony_project_2022_net
+      - choix_option_net
 
   db_server:
     image: mariadb:10.9.4
@@ -45,7 +45,7 @@ services:
       interval: 5s
       retries: 5
     networks:
-      - symfony_project_2022_net
+      - choix_option_net
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
@@ -60,7 +60,7 @@ services:
     volumes:
       - db_admin_data:/var/www/html
     networks:
-      - symfony_project_2022_net
+      - choix_option_net
 
 volumes:
   db_data:
