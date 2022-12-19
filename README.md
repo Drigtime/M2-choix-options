@@ -1,12 +1,18 @@
-##### [IMPORTANT] Pour les utilisateurs de Windows
-Pour eviter d'avoir un projet qui tourne à 2 à l'heure, il est important de cloner le projet directement dans votre wsl (ubuntu, debian) a l'endroit que vous voulez
-```
-wsl -d ubuntu
-cd ~
-git clone https://github.com/Drigtime/M2-choix-options.git
-cd M2-choix-options
-sudo chmod 777 project/var/ -R
-```
+>### [IMPORTANT] Pour les utilisateurs de Windows
+>Pour eviter d'avoir un projet qui tourne à 2 à l'heure, il est important de cloner le projet directement dans votre wsl (ubuntu, debian) a l'endroit que vous voulez
+>Lancer son WSL depuis Powershell :
+> ```powershell
+>wsl -d ubuntu
+>```
+>Dans le WSL
+>```bash
+>cd ~
+>git clone https://github.com/Drigtime/M2-choix-options.git
+>cd M2-choix-options
+>sudo chmod 777 project/var/ -R
+>```
+>Dans l'explorer windows il est possible d'accéder au dossier de son projet via ce chemin `\\wsl.localhost\Ubuntu\home\drigtime\M2-choix-options`
+
 
 #### Initialiser le project
 ```
