@@ -15,9 +15,9 @@ docker-compose exec php composer install
 docker-compose exec php yarn install
 docker-compose exec php yarn build
 ```
-En une commande :
+En une commande (powershell) :
 ```
-docker-compose up -d --build && docker-compose exec php composer install && docker-compose exec php yarn install && docker-compose exec php yarn build
+docker-compose up -d --build; docker-compose exec php composer install; docker-compose exec php yarn install; docker-compose exec php yarn build
 ```
 
 #### Lancer le project
