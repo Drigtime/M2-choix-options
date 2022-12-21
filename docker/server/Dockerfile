@@ -17,5 +17,3 @@ COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 RUN curl -sS https://get.symfony.com/cli/installer | bash
 RUN mv /root/.symfony5/bin/symfony /usr/local/bin/symfony
-
-RUN pecl install xdebug && docker-php-ext-enable xdebug

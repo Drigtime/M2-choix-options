@@ -44,7 +44,6 @@ docker-compose exec php bash
 ### Liens utiles
 * Server web http://localhost:8101
 * phpmyadmin http://localhost:8102
-* Debugger avec Phpstorm (Xdebug) https://www.jetbrains.com/help/phpstorm/debugging-with-phpstorm-ultimate-guide.html#quick-start
 
 Avoir accès au container Docker depuis PhpStorm directement
 https://www.jetbrains.com/help/phpstorm/configuring-remote-interpreters.html select 'Docker compose'
