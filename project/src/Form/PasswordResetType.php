@@ -15,7 +15,7 @@ class PasswordResetType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('plainPassword', RepeatedType::class, [
+            ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'invalid_message' => 'Les mots de passe doivent correspondre',
                 'first_options' => [

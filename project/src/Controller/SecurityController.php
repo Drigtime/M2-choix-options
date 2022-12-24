@@ -69,7 +69,7 @@ class SecurityController extends AbstractController
             $user->setPassword(
                 $userPasswordHasher->hashPassword(
                     $user,
-                    $form->get('plainPassword')->getData()
+                    $form->get('password')->getData()
                 )
             );
 
@@ -156,7 +156,7 @@ class SecurityController extends AbstractController
 
             if ($form->isSubmitted() && $form->isValid()) {
                 $user->setResetToken(null);
-                $user->setPassword($userPasswordHasher->hashPassword($user, $form->get('plainPassword')->getData()));
+                $user->setPassword($userPasswordHasher->hashPassword($user, $form->get('password')->getData()));
                 $entityManager->persist($user);
                 $entityManager->flush();
 
