@@ -14,6 +14,7 @@ services:
     working_dir: /var/www/html
     environment:
       - 'DATABASE_URL=mysql://${MYSQL_USER}:${MYSQL_PASS}@db_server:3306/${MYSQL_DB}?serverVersion=mariadb-10.9.4'
+      - 'MAILER_DSN=smtp://mailhog:1025'
     volumes:
       - ./project:/var/www/html
       - ./docker/server/apache/sites-enabled:/etc/apache2/sites-enabled
@@ -58,6 +59,19 @@ services:
         condition: service_healthy
     volumes:
       - db_admin_data:/var/www/html
+    networks:
+      - choix_option_net
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: '${APP_NAME}_mailhog'
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    environment:
+      - MH_STORAGE=memory
+    volumes:
+      - ./docker/mailhog:/data
     networks:
       - choix_option_net
 

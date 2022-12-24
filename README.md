@@ -44,6 +44,7 @@ docker-compose exec php bash
 ### Liens utiles
 * Server web http://localhost:8101
 * phpmyadmin http://localhost:8102
+* mailhog    http://localhost:8025
 
 Avoir accès au container Docker depuis PhpStorm directement
 https://www.jetbrains.com/help/phpstorm/configuring-remote-interpreters.html select 'Docker compose'
