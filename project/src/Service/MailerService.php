@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\ResetPasswordToken;
 use App\Entity\User;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\Exception\TransportException;
@@ -18,7 +19,7 @@ class MailerService
     /**
      * @throws TransportException
      */
-    public function sendResetPasswordEmail(User $user): void
+    public function sendResetPasswordEmail(User $user, ResetPasswordToken $resetPasswordToken): void
     {
         $email = (new TemplatedEmail())
             ->from(new Address('choixoption@upjv.com', 'Choix Option UPJV'))
@@ -26,7 +27,8 @@ class MailerService
             ->subject('Reinitialization de votre mot de passe')
             ->htmlTemplate('email/password_reset_request.twig')
             ->context([
-                'user' => $user
+                'user' => $user,
+                'resetPasswordToken' => $resetPasswordToken,
             ]);
 
         try {

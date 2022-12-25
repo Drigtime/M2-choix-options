@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\ResetPasswordToken;
 use App\Entity\User;
 use App\Form\PasswordResetRequestType;
 use App\Form\PasswordResetType;
 use App\Form\RegistrationFormType;
+use App\Repository\PasswordTokenRepository;
 use App\Repository\UserRepository;
 use App\Security\EmailVerifier;
 use App\Service\MailerService;
@@ -124,12 +126,17 @@ class SecurityController extends AbstractController
             $user = $userRepository->findOneBy(['email' => $form->get('email')->getData()]);
 
             if ($user) {
-                $user->setResetToken($tokenGenerator->generateToken());
-                $entityManager->persist($user);
+                $newResetPasswordTokens = new ResetPasswordToken();
+                $newResetPasswordTokens->setUser($user);
+                $newResetPasswordTokens->setToken($tokenGenerator->generateToken());
+                $newResetPasswordTokens->setCreatedAt(new \DateTime());
+                $newResetPasswordTokens->setExpiredAt(new \DateTime('+15 minutes'));
+
+                $entityManager->persist($newResetPasswordTokens);
                 $entityManager->flush();
 
-                $mailerService->sendResetPasswordEmail($user);
-
+                $mailerService->sendResetPasswordEmail($user, $newResetPasswordTokens);
+                
                 $this->addFlash('success', 'Un email vous a été envoyé pour réinitialiser votre mot de passe.');
 
                 return $this->redirectToRoute('app_login');
@@ -146,32 +153,57 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/reset_password/{token}', name: 'app_reset_password')]
-    public function resetPassword(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserRepository $userRepository, EntityManagerInterface $entityManager, string $token): Response
+    public function resetPassword(Request $request, UserPasswordHasherInterface $userPasswordHasher, PasswordTokenRepository $passwordTokensRepository, EntityManagerInterface $entityManager, string $token): Response
     {
-        $user = $userRepository->findOneBy(['resetToken' => $token]);
+        $resetPasswordToken = $passwordTokensRepository->findOneBy(['token' => $token]);
 
-        if ($user) {
-            $form = $this->createForm(PasswordResetType::class);
-            $form->handleRequest($request);
-
-            if ($form->isSubmitted() && $form->isValid()) {
-                $user->setResetToken(null);
-                $user->setPassword($userPasswordHasher->hashPassword($user, $form->get('password')->getData()));
-                $entityManager->persist($user);
-                $entityManager->flush();
-
-                $this->addFlash('success', 'Votre mot de passe a bien été modifié');
-
-                return $this->redirectToRoute('app_login');
-            }
-
-            return $this->render('security/reset_password.twig', [
-                'form' => $form->createView(),
-            ]);
-        } else {
-            $this->addFlash('danger', 'Ce token n\'est pas valide');
+        if (!$resetPasswordToken) {
+            $this->addFlash('danger', 'Ce token n\'existe pas');
 
             return $this->redirectToRoute('app_password_reset_request');
         }
+
+        if ($resetPasswordToken->isUsed()) {
+            $this->addFlash('danger', 'Ce token a déjà été utilisé');
+
+            return $this->redirectToRoute('app_password_reset_request');
+        }
+
+        // get token lifetime and created at to check if token is expired
+        $tokenLifetime = $resetPasswordToken->getExpiredAt()->getTimestamp() - $resetPasswordToken->getCreatedAt()->getTimestamp();
+
+        if ($tokenLifetime > 900) {
+            $this->addFlash('danger', 'Ce token a expiré');
+
+            return $this->redirectToRoute('app_password_reset_request');
+        }
+
+
+        $form = $this->createForm(PasswordResetType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $resetPasswordToken->getUser();
+
+            $resetPasswordToken->setUsed(true);
+            $user->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $user,
+                    $form->get('password')->getData()
+                )
+            );
+
+            $entityManager->persist($resetPasswordToken);
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Votre mot de passe a été modifié');
+
+            return $this->redirectToRoute('app_login');
+        }
+
+        return $this->render('security/reset_password.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 }

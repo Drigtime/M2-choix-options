@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -32,8 +34,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean')]
     private bool $isVerified = false;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $resetToken = null;
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: ResetPasswordToken::class)]
+    private Collection $resetPasswordTokens;
+
+    public function __construct()
+    {
+        $this->resetPasswordTokens = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -117,15 +124,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function setResetToken($generateToken): self
+    /**
+     * @return Collection<int, ResetPasswordToken>
+     */
+    public function getresetPasswordTokens(): Collection
     {
-        $this->resetToken = $generateToken;
+        return $this->resetPasswordTokens;
+    }
+
+    public function addResetPasswordTokens(ResetPasswordToken $userResetPasswordToken): self
+    {
+        if (!$this->resetPasswordTokens->contains($userResetPasswordToken)) {
+            $this->resetPasswordTokens->add($userResetPasswordToken);
+            $userResetPasswordToken->setUser($this);
+        }
 
         return $this;
     }
 
-    public function getResetToken(): ?string
+    public function removeResetPasswordTokens(ResetPasswordToken $userResetPasswordToken): self
     {
-        return $this->resetToken;
+        if ($this->resetPasswordTokens->removeElement($userResetPasswordToken)) {
+            // set the owning side to null (unless already changed)
+            if ($userResetPasswordToken->getUser() === $this) {
+                $userResetPasswordToken->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }
