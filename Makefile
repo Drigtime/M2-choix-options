@@ -22,19 +22,19 @@ cache:
 	docker-compose exec php bin/console cache:clear
 
 migration: start
-    docker-compose exec php bin/console make:migration
+	docker-compose exec php bin/console make:migration
 
 migrate: start
 	docker-compose exec php bin/console d:m:m --no-interaction
 
 controller: start
-    docker-compose exec php bin/console make:controller
+	docker-compose exec php bin/console make:controller
 
 entity: start
-    docker-compose exec php bin/console make:entity
+	docker-compose exec php bin/console make:entity
 
 crud: start
-    docker-compose exec php bin/console make:crud
+	docker-compose exec php bin/console make:crud
 
 composer: start
 	docker-compose exec php composer $(filter-out $@,$(MAKECMDGOALS))
