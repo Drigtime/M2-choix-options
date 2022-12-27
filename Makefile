@@ -1,4 +1,4 @@
-.PHONY: start stop update init cache composer yarn console
+.PHONY: start stop update init php cache migration migrate controller entity crud composer yarn console
 
 start:
 	docker-compose up -d
@@ -15,14 +15,26 @@ init:
 	docker-compose exec php yarn install
 	docker-compose exec php yarn build
 
-cache:
-	rm -r project/var/cache
-
 php: start
 	docker-compose exec php bash
 
+cache:
+	docker-compose exec php bin/console cache:clear
+
+migration: start
+    docker-compose exec php bin/console make:migration
+
 migrate: start
 	docker-compose exec php bin/console d:m:m --no-interaction
+
+controller: start
+    docker-compose exec php bin/console make:controller
+
+entity: start
+    docker-compose exec php bin/console make:entity
+
+crud: start
+    docker-compose exec php bin/console make:crud
 
 composer: start
 	docker-compose exec php composer $(filter-out $@,$(MAKECMDGOALS))
