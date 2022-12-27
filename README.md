@@ -4,6 +4,10 @@
 > ```powershell
 >wsl -d ubuntu
 >```
+>Pour avoir la commande make :
+> ```powershell
+>sudo apt-get install build-essential
+>```
 >Dans le WSL
 >```bash
 >cd ~
