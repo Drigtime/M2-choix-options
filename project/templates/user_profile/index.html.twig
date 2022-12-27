@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>Profile</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Modification de mon email</h5>
+                            </div>
+                            <div class="card-body">
+                                {{ form_start(formEmail) }}
+                                {{ form_row(formEmail.email) }}
+                                <button type="submit" class="btn btn-primary">Modifier</button>
+                                {{ form_end(formEmail) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Modification de mon mot de passe</h5>
+                            </div>
+                            <div class="card-body">
+                                {{ form_start(formPassword) }}
+                                {{ form_row(formPassword.currentPassword) }}
+                                {{ form_row(formPassword.password.first) }}
+                                {{ form_row(formPassword.password.second) }}
+                                <button type="submit" class="btn btn-primary">Modifier</button>
+                                {{ form_end(formPassword) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
