@@ -6,6 +6,7 @@ use App\Repository\SpecialisationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\Types\Boolean;
 
 #[ORM\Entity(repositoryClass: SpecialisationRepository::class)]
 class Specialisation
@@ -18,8 +19,8 @@ class Specialisation
     #[ORM\Column(length: 45)]
     private ?string $label = null;
 
-    #[ORM\Column]
-    private ?bool $active = null;
+    #[ORM\Column(type: 'boolean', options: ['default' => true])]
+    private ?bool $active = true;
 
     #[ORM\OneToMany(mappedBy: 'specialisation', targetEntity: Parcours::class)]
     private Collection $parcours;
@@ -27,6 +28,11 @@ class Specialisation
     public function __construct()
     {
         $this->parcours = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return $this->label;
     }
 
     public function getId(): ?int

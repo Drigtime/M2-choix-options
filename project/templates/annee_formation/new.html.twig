@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New AnneeFormation{% endblock %}
+
+{% block body %}
+    <h1>Create new AnneeFormation</h1>
+
+    {{ include('annee_formation/_form.html.twig') }}
+
+    <a href="{{ path('app_annee_formation_index') }}">back to list</a>
+{% endblock %}

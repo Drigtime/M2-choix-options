@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}AnneeFormation index{% endblock %}
+
+{% block body %}
+    <h1>AnneeFormation index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Label</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for annee_formation in annee_formations %}
+            <tr>
+                <td>{{ annee_formation.id }}</td>
+                <td>{{ annee_formation.label }}</td>
+                <td>
+                    <a href="{{ path('app_annee_formation_show', {'id': annee_formation.id}) }}">show</a>
+                    <a href="{{ path('app_annee_formation_edit', {'id': annee_formation.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_annee_formation_new') }}">Create new</a>
+{% endblock %}

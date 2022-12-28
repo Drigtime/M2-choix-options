@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}AnneeFormation{% endblock %}
+
+{% block body %}
+    <h1>AnneeFormation</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ annee_formation.id }}</td>
+            </tr>
+            <tr>
+                <th>Label</th>
+                <td>{{ annee_formation.label }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_annee_formation_index') }}">back to list</a>
+
+    <a href="{{ path('app_annee_formation_edit', {'id': annee_formation.id}) }}">edit</a>
+
+    {{ include('annee_formation/_delete_form.html.twig') }}
+{% endblock %}

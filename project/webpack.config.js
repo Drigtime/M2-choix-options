@@ -21,6 +21,8 @@ Encore
      * and one CSS file (e.g. app.scss) if your JavaScript imports CSS.
      */
     .addEntry('app', './assets/app.js')
+    .addEntry('parcours_form', './assets/parcours/form.js')
+    .addEntry('bloc_ue_form', './assets/bloc_ue/form.js')
 
     .addStyleEntry('login', './assets/styles/login.css')
 

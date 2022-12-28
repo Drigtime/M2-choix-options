@@ -1,0 +1,35 @@
+{% import _self as formMacros %}
+
+{% macro printUE(UE) %}
+    <div class="d-flex pb-2 mb-2 border-bottom" data-ue>
+        <div class="flex-grow-1 me-2">
+            {{ form_widget(UE) }}
+        </div>
+        <button type="button" class="btn btn-danger" data-action="delete-ue">
+            <i class="fas fa-trash"></i>
+        </button>
+    </div>
+{% endmacro %}
+
+{{ form_start(form) }}
+    {{ form_row(form.label) }}
+
+<div class="card">
+    <div class="card-header">
+        UEs
+    </div>
+    <div class="card-body">
+        <div id="ue-list"
+             data-prototype="{{ formMacros.printUE(form.ues.vars.prototype)|e('html_attr') }}"
+             data-index="{{ form.ues|length }}">
+            {% for UE in form.ues %}
+                {{ formMacros.printUE(UE) }}
+            {% endfor %}
+        </div>
+        <button id="add-ue" type="button" class="btn btn-primary">Ajouter un UE</button>
+    </div>
+</div>
+
+
+<button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}

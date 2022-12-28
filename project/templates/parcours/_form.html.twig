@@ -1,0 +1,37 @@
+{% import _self as formMacros %}
+
+{% macro printBlocUE(blocUE) %}
+    <div class="d-flex pb-2 mb-2 border-bottom" data-bloc-ue>
+        <div class="flex-grow-1 me-2">
+            {{ form_widget(blocUE) }}
+        </div>
+        <button type="button" class="btn btn-danger" data-action="delete-bloc-ue">
+            <i class="fas fa-trash"></i>
+        </button>
+    </div>
+{% endmacro %}
+
+{{ form_start(form) }}
+    {{ form_row(form.anneeFormation) }}
+    {{ form_row(form.rythme) }}
+    {{ form_row(form.specialisation) }}
+
+<div class="card">
+    <div class="card-header">
+        Blocs UE
+    </div>
+    <div class="card-body">
+        <div id="bloc-ue-list"
+             data-prototype="{{ formMacros.printBlocUE(form.blocUEs.vars.prototype)|e('html_attr') }}"
+             data-index="{{ form.blocUEs|length }}">
+            {% for blocUE in form.blocUEs %}
+                {{ formMacros.printBlocUE(blocUE) }}
+            {% endfor %}
+        </div>
+        <button id="add-bloc-ue" type="button" class="btn btn-primary">Ajouter un bloc UE</button>
+    </div>
+</div>
+
+
+<button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}

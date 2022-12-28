@@ -18,8 +18,8 @@ class UE
     #[ORM\Column(length: 45)]
     private ?string $label = null;
 
-    #[ORM\Column]
-    private ?bool $active = null;
+    #[ORM\Column(type: 'boolean', options: ['default' => true])]
+    private ?bool $active = true;
 
     #[ORM\ManyToOne(inversedBy: 'UEs')]
     private ?BlocUE $blocUE = null;

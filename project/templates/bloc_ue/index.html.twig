@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BlocUE index{% endblock %}
+
+{% block body %}
+    <h1>BlocUE index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Label</th>
+                <th>UEs</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for bloc_ue in bloc_ues %}
+            <tr>
+                <td>{{ bloc_ue.id }}</td>
+                <td>{{ bloc_ue.label }}</td>
+                <td>
+                    {% for ue in bloc_ue.UEs %}
+                        <span class="badge bg-primary">
+                            <a href="{{ path('app_ue_show', {'id': ue.id}) }}" class="text-white text-decoration-none">{{ ue.label }}</a>
+                        </span>
+                    {% endfor %}
+                </td>
+                <td>
+                    <a href="{{ path('app_bloc_ue_show', {'id': bloc_ue.id}) }}">show</a>
+                    <a href="{{ path('app_bloc_ue_edit', {'id': bloc_ue.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_bloc_ue_new') }}">Create new</a>
+{% endblock %}

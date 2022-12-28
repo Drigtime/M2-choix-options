@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Parcours{% endblock %}
+
+{% block body %}
+    <h1>Create new Parcours</h1>
+
+    {{ include('parcours/_form.html.twig') }}
+
+    <a href="{{ path('app_parcours_index') }}">back to list</a>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('parcours_form') }}
+{% endblock %}
