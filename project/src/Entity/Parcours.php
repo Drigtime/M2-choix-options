@@ -44,6 +44,11 @@ class Parcours
         $this->etudiants = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        return $this->getAnneeFormation()->getLabel() . ' ' . $this->getRythme()->getLabel() . ' ' . $this->getSpecialisation()->getLabel();
+    }
+
     public function getId(): ?int
     {
         return $this->id;

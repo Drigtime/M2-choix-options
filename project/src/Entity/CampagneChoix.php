@@ -25,7 +25,7 @@ class CampagneChoix
     #[ORM\ManyToOne(inversedBy: 'campagneChoixes')]
     private ?Parcours $parcours = null;
 
-    #[ORM\OneToMany(mappedBy: 'campagneChoix', targetEntity: BlocOption::class)]
+    #[ORM\OneToMany(mappedBy: 'campagneChoix', targetEntity: BlocOption::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $blocOptions;
 
     #[ORM\OneToMany(mappedBy: 'campagneChoix', targetEntity: Choix::class)]

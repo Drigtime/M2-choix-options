@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New CampagneChoix{% endblock %}
+
+{% block body %}
+    <h1>Create new CampagneChoix</h1>
+
+    {{ include('campagne_choix/_form.html.twig') }}
+
+    <a href="{{ path('app_campagne_choix_index') }}">back to list</a>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('campagne_choix_form') }}
+{% endblock %}

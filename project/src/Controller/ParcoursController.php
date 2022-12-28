@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\CampagneChoix;
 use App\Entity\Parcours;
+use App\Form\CampagneChoixType;
 use App\Form\ParcoursType;
+use App\Repository\CampagneChoixRepository;
 use App\Repository\ParcoursRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -63,6 +66,27 @@ class ParcoursController extends AbstractController
         return $this->renderForm('parcours/edit.html.twig', [
             'parcour' => $parcour,
             'form' => $form,
+        ]);
+    }
+
+    // Route pour créer une campagne de choix pour ce parcours
+    #[Route('/{id}/campagne/add', name: 'app_parcours_campagne_add', methods: ['GET', 'POST'])]
+    public function newCampagne(Request $request, Parcours $parcour, CampagneChoixRepository $campagneChoixRepository): Response
+    {
+        $campagne = new CampagneChoix();
+        $campagne->setParcours($parcour);
+        $form = $this->createForm(CampagneChoixType::class, $campagne);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $campagneChoixRepository->save($campagne, true);
+
+            return $this->redirectToRoute('app_parcours_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('campagne_choix/new.html.twig', [
+            'campagne' => $campagne,
+            'form' => $form->createView(),
         ]);
     }
 

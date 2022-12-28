@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit CampagneChoix{% endblock %}
+
+{% block body %}
+    <h1>Edit CampagneChoix</h1>
+
+    {{ include('campagne_choix/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_campagne_choix_index') }}">back to list</a>
+
+    {{ include('campagne_choix/_delete_form.html.twig') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('campagne_choix_form') }}
+{% endblock %}

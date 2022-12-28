@@ -8,10 +8,13 @@
 // any CSS you import will output into a single css file (app.scss in this case)
 import './styles/app.scss';
 
+import $ from 'jquery';
 import 'bootstrap';
 
-window.addEventListener('DOMContentLoaded', event => {
+// set global jQuery variable
+global.$ = global.jQuery = $;
 
+$(document).ready(function () {
     // Toggle the side navigation
     const sidebarToggle = document.body.querySelector('#sidebarToggle');
     if (sidebarToggle) {
@@ -25,5 +28,4 @@ window.addEventListener('DOMContentLoaded', event => {
             localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
         });
     }
-
 });
