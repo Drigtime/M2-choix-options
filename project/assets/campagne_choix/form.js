@@ -8,6 +8,25 @@
 
 import Routing from "fos-router";
 
+function selectBlocOptionOnChange() {
+    const $selectUE = $(this).parent().parent().find('select[id$="_UE"]');
+    $selectUE.empty();
+    if (this.value === '') {
+        return;
+    }
+
+    $selectUE.attr('disabled', true);
+    $
+        .get(Routing.generate('api_bloc_ue_ues', {blocUE: this.value}), function (data) {
+            $selectUE.empty();
+            data.forEach(function (ue) {
+                $selectUE.append(`<option value="${ue.id}">${ue.label}</option>`);
+            });
+
+            $selectUE.attr('disabled', false);
+        });
+}
+
 $(document).ready(function () {
     // On récupère le select #campagne_choix_parcours
     const $selectParcours = $('#campagne_choix_parcours');
@@ -32,7 +51,7 @@ $(document).ready(function () {
         $
             .get(url, function (data) {
                 // set data on select
-                $selectParcours.data('blocUes', JSON.stringify(data));
+                $selectParcours.data('blocues', data);
 
                 // on affiche les blocs UEs dans le select #campagne_choix_bloc_option
                 $('#campagne_choix_bloc_option').removeClass('d-none');
@@ -54,7 +73,8 @@ $(document).ready(function () {
         const $newWidget = $(newWidget);
         // fill campagne_choix_blocOptions_0_blocUE with bloc UEs
         const $selectBlocOption = $newWidget.find(`#campagne_choix_blocOptions_${index}_blocUE`);
-        const blocUes = JSON.parse($selectParcours.data('blocUes'));
+        $selectBlocOption.empty();
+        const blocUes = $selectParcours.data('blocues');
         blocUes.forEach(function (blocUE) {
             $selectBlocOption.append(`<option value="${blocUE.id}">${blocUE.label}</option>`);
         });
@@ -67,21 +87,17 @@ $(document).ready(function () {
         });
 
         // add event listener on select bloc UE
-        $selectBlocOption
-            .on('change', function () {
-                const $selectUE = $newWidget.find(`#campagne_choix_blocOptions_${index}_UE`);
-                $selectUE.empty();
-                if (this.value === '') {
-                    return;
-                }
-
-                $
-                    .get(Routing.generate('api_bloc_ue_ues', {blocUE: this.value}), function (data) {
-                        data.forEach(function (ue) {
-                            $selectUE.append(`<option value="${ue.id}">${ue.label}</option>`);
-                        });
-                    });
-            })
-            .trigger('change');
+        $selectBlocOption.on('change', selectBlocOptionOnChange).trigger('change');
     })
+
+    // Pour le formulaire d'édition d'une campagne de choix, il faut obtenir tout les campagne_choix_blocOptions_0_blocUE et charger les UEs associés dans campagne_choix_blocOptions_0_UE
+    const $selectBlocOption = $('#bloc-option-list select[id$="_blocUE"]');
+    $selectBlocOption.on('change', selectBlocOptionOnChange);
+    const $deleteBlocOptionBtn = $('#bloc-option-list [data-action="delete-bloc-option"]');
+    $deleteBlocOptionBtn.on('click', function () {
+        // find closest data-bloc-option
+        const $blocOption = $(this).closest('[data-bloc-option]');
+        $blocOption.remove();
+    });
+
 });

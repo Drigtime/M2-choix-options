@@ -3,44 +3,60 @@
 {% block title %}CampagneChoix{% endblock %}
 
 {% block body %}
-    <h1>CampagneChoix</h1>
-
-    <table class="table">
-        <tbody>
-        <tr>
-            <th>Id</th>
-            <td>{{ campagne_choix.id }}</td>
-        </tr>
-        <tr>
-            <th>DateDebut</th>
-            <td>{{ campagne_choix.dateDebut ? campagne_choix.dateDebut|date('Y-m-d H:i:s') : '' }}</td>
-        </tr>
-        <tr>
-            <th>DateFin</th>
-            <td>{{ campagne_choix.dateFin ? campagne_choix.dateFin|date('Y-m-d H:i:s') : '' }}</td>
-        </tr>
-        </tbody>
-    </table>
-
-    <h4>Bloc options</h4>
-    {% for blocOption in campagne_choix.blocOptions %}
-        <div class="card">
-            <div class="card-header">
-                <span class="badge bg-primary">{{ blocOption.nbUEChoix }}</span>
-                {{ blocOption.blocUE.label }}
+    <div class="col-xxl-6 col-xl-8 col-lg-8 col-md-8 col-sm-10 col-12 mx-auto">
+        <div class="d-flex">
+            <div class="flex-grow-1">
+                <h4>Campagne de choix</h4>
             </div>
-            <div class="card-body">
-                <h5>UE optionnelle</h5>
-                {% for ue in blocOption.ue %}
-                    <span class="badge bg-primary">{{ ue.label }}</span>
-                {% endfor %}
+            <div class="flex-shrink-0">
+                <div class="d-flex gap-2">
+                    {{ include('campagne_choix/_delete_form.html.twig') }}
+
+                    <a href="{{ path('app_campagne_choix_edit', {'id': campagne_choix.id}) }}"
+                       class="btn btn-sm btn-primary">
+                        <i class="fas fa-edit"></i>
+                        Modifier
+                    </a>
+
+                    <a href="{{ path('app_campagne_choix_index') }}" class="btn btn-sm btn-primary">
+                        <i class="fas fa-arrow-left"></i>
+                        Retour à la liste
+                    </a>
+                </div>
             </div>
         </div>
-    {% endfor %}
 
-    <a href="{{ path('app_campagne_choix_index') }}">back to list</a>
+        <table class="table">
+            <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ campagne_choix.id }}</td>
+            </tr>
+            <tr>
+                <th>DateDebut</th>
+                <td>{{ campagne_choix.dateDebut ? campagne_choix.dateDebut|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>DateFin</th>
+                <td>{{ campagne_choix.dateFin ? campagne_choix.dateFin|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            </tbody>
+        </table>
 
-    <a href="{{ path('app_campagne_choix_edit', {'id': campagne_choix.id}) }}">edit</a>
-
-    {{ include('campagne_choix/_delete_form.html.twig') }}
+        <h4>Bloc options</h4>
+        {% for blocOption in campagne_choix.blocOptions %}
+            <div class="card">
+                <div class="card-header">
+                    <span class="badge bg-primary">{{ blocOption.nbUEChoix }}</span>
+                    {{ blocOption.blocUE.label }}
+                </div>
+                <div class="card-body">
+                    <h5>UE optionnelle</h5>
+                    {% for ue in blocOption.ue %}
+                        <span class="badge bg-primary">{{ ue.label }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}
