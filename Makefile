@@ -14,6 +14,9 @@ stop: ## Stop the project
 
 update: ## Update the project
 	docker-compose up -d --build
+	docker-compose exec php composer install $(filter-out $@,$(MAKECMDGOALS))
+	docker-compose exec php yarn install $(filter-out $@,$(MAKECMDGOALS))
+
 
 init: ## Init the project
 	docker-compose up -d --build
@@ -41,6 +44,7 @@ migration: start ## Create a migration
 	docker-compose exec php bin/console make:migration
 
 migrate: start ## Migrate the database
+	docker-compose exec php composer install $(filter-out $@,$(MAKECMDGOALS))
 	docker-compose exec php bin/console d:m:m --no-interaction
 
 controller: start ## Create a controller
