@@ -1,7 +1,7 @@
 include .env
 
 .DEFAULT_GOAL := help
-.PHONY: start stop update init php cache migration migrate controller entity crud composer yarn console watch help dumpdb
+.PHONY: start stop update init php cache migration migrate controller entity crud composer yarn console watch help dumpdb importdb
 
 help: ## Outputs this help screen
 	@grep -E '(^[a-zA-Z0-9_-]+:.*?## .*$$)|(^## )' Makefile | awk 'BEGIN {FS = ":.*?## "}{printf "\033[32m%-30s\033[0m %s\n", $$1, $$2}' | sed -e 's/\[32m##/[33m/'
@@ -30,6 +30,9 @@ php: start ## Enter in the php container
 
 dumpdb:
 	docker-compose exec db_server mysqldump -u $(MYSQL_USER) --password=$(MYSQL_PASS) $(MYSQL_DB) > backup.sql
+
+importdb:
+	docker-compose exec db_server mysql -u $(MYSQL_USER) --password=$(MYSQL_PASS) $(MYSQL_DB) < backup.sql
 
 cache: start ## Clear the cache
 	docker-compose exec php bin/console c:c
