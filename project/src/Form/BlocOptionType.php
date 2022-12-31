@@ -20,16 +20,18 @@ class BlocOptionType extends AbstractType
                 'label' => 'Bloc UE',
                 'attr' => [
                     'data-ues' => json_encode([])
-                ]
+                ],
+                'placeholder' => false
             ])
             ->add('UE', null, [
                 'label' => 'UE',
+                'expanded' => true,
             ])
             ->add('nbUEChoix', null, [
                 'label' => 'Nombre d\'UE à choisir',
                 'attr' => [
-                    'min' => 1
-                ]
+                    'min' => 1,
+                ],
             ]);
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
@@ -40,10 +42,12 @@ class BlocOptionType extends AbstractType
                 if ($blocUE) {
                     $form->add('UE', null, [
                         'label' => 'UE',
+                        'expanded' => true,
                         'query_builder' => function (UERepository $er) use ($blocUE) {
                             return $er->createQueryBuilder('u')
-                                ->where('u.blocUE = :blocUE')
-                                ->setParameter('blocUE', $blocUE)
+                                ->join('u.blocUEs', 'b')
+                                ->where('b.id = :blocUE')
+                                ->setParameter('blocUE', $blocUE->getId())
                                 ->orderBy('u.label', 'ASC');
                         }
                     ]);
@@ -59,9 +63,11 @@ class BlocOptionType extends AbstractType
                 if ($blocUEId) {
                     $form->add('UE', null, [
                         'label' => 'UE',
+                        'expanded' => true,
                         'query_builder' => function (UERepository $er) use ($blocUEId) {
                             return $er->createQueryBuilder('u')
-                                ->where('u.blocUE = :blocUE')
+                                ->join('u.blocUEs', 'b')
+                                ->where('b.id = :blocUE')
                                 ->setParameter('blocUE', $blocUEId)
                                 ->orderBy('u.label', 'ASC');
                         }

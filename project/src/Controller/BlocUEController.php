@@ -34,7 +34,7 @@ class BlocUEController extends AbstractController
             return $this->redirectToRoute('app_bloc_ue_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('bloc_ue/new.html.twig', [
+        return $this->render('bloc_ue/new.html.twig', [
             'bloc_ue' => $blocUE,
             'form' => $form,
         ]);

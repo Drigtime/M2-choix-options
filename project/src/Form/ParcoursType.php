@@ -27,20 +27,20 @@ class ParcoursType extends AbstractType
                 'label' => 'Spécialisation',
                 'placeholder' => false
             ])
-            ->add('blocUEs', CollectionType::class, [
-                'entry_type' => EntityType::class,
-                'entry_options' => [
-                    'class' => BlocUE::class,
-                    'choice_label' => 'label',
-                    'placeholder' => false,
-                ],
-                'allow_add' => true,
-                'allow_delete' => true,
-                'prototype' => true,
-                'prototype_name' => '__blocUE__',
-                'by_reference' => false,
-                'label' => false
-            ])
+//            ->add('blocUEs', CollectionType::class, [
+//                'entry_type' => EntityType::class,
+//                'entry_options' => [
+//                    'class' => BlocUE::class,
+//                    'choice_label' => 'label',
+//                    'placeholder' => false,
+//                ],
+//                'allow_add' => true,
+//                'allow_delete' => true,
+//                'prototype' => true,
+//                'prototype_name' => '__blocUE__',
+//                'by_reference' => false,
+//                'label' => false
+//            ])
 //            ->add('blocUEs', CollectionType::class, [
 //                'entry_type' => ParcoursBlocUEType::class,
 //                'entry_options' => [

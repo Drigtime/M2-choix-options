@@ -2,10 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\BlocUE;
 use App\Entity\CampagneChoix;
 use App\Entity\Parcours;
+use App\Form\BlocUEType;
 use App\Form\CampagneChoixType;
 use App\Form\ParcoursType;
+use App\Repository\BlocOptionRepository;
+use App\Repository\BlocUERepository;
 use App\Repository\CampagneChoixRepository;
 use App\Repository\ParcoursRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,7 +41,7 @@ class ParcoursController extends AbstractController
             return $this->redirectToRoute('app_parcours_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('parcours/new.html.twig', [
+        return $this->render('parcours/new.html.twig', [
             'parcour' => $parcour,
             'form' => $form,
         ]);
@@ -69,6 +73,71 @@ class ParcoursController extends AbstractController
         ]);
     }
 
+    // add bloc ue, with ajax
+    #[Route('/{id}/bloc_ue/add', name: 'app_parcours_add_bloc_ue', methods: ['GET', 'POST'])]
+    public function addBlocUe(Request $request, Parcours $parcours, BlocUERepository $blocUERepository): Response
+    {
+        $blocUE = new BlocUE();
+        $blocUE->setParcours($parcours);
+        $form = $this->createForm(BlocUEType::class, $blocUE);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $blocUERepository->save($blocUE, true);
+
+            return $this->render('parcours/bloc_ue/_list.html.twig', [
+                'parcours' => $parcours,
+                'bloc_ues' => $parcours->getBlocUEs(),
+            ]);
+        }
+
+        return $this->render('parcours/bloc_ue/_form.html.twig', [
+            'bloc_ue' => $blocUE,
+            'form' => $form,
+        ]);
+    }
+
+    // edit bloc ue, with ajax
+    #[Route('/{id}/bloc_ue/edit/{blocUE}', name: 'app_parcours_edit_bloc_ue', methods: ['GET', 'POST'])]
+    public function editBlocUe(Request $request, Parcours $parcours, BlocUERepository $blocUERepository, BlocUE $blocUE): Response
+    {
+        $form = $this->createForm(BlocUEType::class, $blocUE);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $blocUERepository->save($blocUE, true);
+
+            return $this->render('parcours/bloc_ue/_list.html.twig', [
+                'parcours' => $parcours,
+                'bloc_ues' => $parcours->getBlocUEs(),
+            ]);
+        }
+
+        return $this->render('parcours/bloc_ue/_form.html.twig', [
+            'bloc_ue' => $blocUE,
+            'form' => $form,
+        ]);
+    }
+
+    // delete bloc ue, with ajax
+    #[Route('/{id}/bloc_ue/delete/{blocUE}', name: 'app_parcours_delete_bloc_ue', methods: ['GET', 'POST'])]
+    public function deleteBlocUe(Request $request, Parcours $parcours, BlocUERepository $blocUERepository, BlocUE $blocUE): Response
+    {
+        if ($this->isCsrfTokenValid('delete' . $blocUE->getId(), $request->request->get('_token'))) {
+            $blocUERepository->remove($blocUE, true);
+
+            return $this->render('parcours/bloc_ue/_list.html.twig', [
+                'parcours' => $blocUE->getParcours(),
+                'bloc_ues' => $blocUE->getParcours()->getBlocUEs(),
+            ]);
+        }
+
+        return $this->render('parcours/bloc_ue/_delete_form.html.twig', [
+            'parcours' => $parcours,
+            'bloc_ue' => $blocUE,
+        ]);
+    }
+
     // Route pour créer une campagne de choix pour ce parcours
     #[Route('/{id}/campagne/add', name: 'app_parcours_campagne_add', methods: ['GET', 'POST'])]
     public function newCampagne(Request $request, Parcours $parcour, CampagneChoixRepository $campagneChoixRepository): Response
@@ -93,7 +162,7 @@ class ParcoursController extends AbstractController
     #[Route('/{id}', name: 'app_parcours_delete', methods: ['POST'])]
     public function delete(Request $request, Parcours $parcour, ParcoursRepository $parcoursRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$parcour->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $parcour->getId(), $request->request->get('_token'))) {
             $parcoursRepository->remove($parcour, true);
         }
 

@@ -1,0 +1,17 @@
+<form action="{{ path('app_parcours_delete_bloc_ue', {'id': parcours.id, 'blocUE': bloc_ue.id}) }}"
+      method="post">
+    <p>
+        Etes-vous sûr de vouloir supprimer le bloc d'UE {{ bloc_ue.blocUECategory.label }} ?
+    </p>
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ bloc_ue.id) }}">
+    <div class="d-flex gap-2 justify-content-end">
+        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">
+            <i class="fas fa-times"></i>
+            Annuler
+        </button>
+        <button type="submit" class="btn btn-sm btn-danger">
+            <i class="fas fa-trash-alt"></i>
+            Supprimer
+        </button>
+    </div>
+</form>

@@ -3,11 +3,19 @@
 {% block title %}New Parcours{% endblock %}
 
 {% block body %}
-    <h1>Create new Parcours</h1>
-
+    <div class="d-flex">
+        <div class="flex-grow-1">
+            <h4>Création d'un parcours</h4>
+        </div>
+        <div class="flex-shrink-0">
+            <a href="{{ path('app_parcours_index') }}" class="btn btn-sm btn-primary">
+                <i class="fas fa-arrow-left"></i>
+                Retour à la liste
+            </a>
+        </div>
+    </div>
     {{ include('parcours/_form.html.twig') }}
 
-    <a href="{{ path('app_parcours_index') }}">back to list</a>
 {% endblock %}
 
 {% block javascripts %}

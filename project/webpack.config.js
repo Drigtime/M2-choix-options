@@ -23,8 +23,10 @@ Encore
      */
     .addEntry('app', './assets/app.js')
     .addEntry('parcours_form', './assets/parcours/form.js')
+    .addEntry('parcours_show', './assets/parcours/show.js')
     .addEntry('bloc_ue_form', './assets/bloc_ue/form.js')
     .addEntry('campagne_choix_form', './assets/campagne_choix/form.js')
+    .addEntry('campagne_choix_show', './assets/campagne_choix/show.js')
 
     .addStyleEntry('login', './assets/styles/login.css')
 

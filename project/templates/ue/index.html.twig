@@ -10,7 +10,7 @@
         <tr>
             <th>Id</th>
             <th>Label</th>
-            <th>Bloc UE</th>
+            <th>Bloc UE Categorie</th>
             <th>Active</th>
             <th>actions</th>
         </tr>
@@ -21,10 +21,11 @@
                 <td>{{ ue.id }}</td>
                 <td>{{ ue.label }}</td>
                 <td>
-                    {% if ue.blocUE %}
+                    {% if ue.blocUECategory %}
                         <span class="badge bg-primary">
-                            <a href="{{ path('app_bloc_ue_show', {'id': ue.blocUE.id}) }}"
-                               class="text-white text-decoration-none">{{ ue.blocUE.label }}</a>
+{#                            <a href="{{ path('app_bloc_ue_show', {'id': ue.blocUECategory.id}) }}"#}
+{#                               class="text-white text-decoration-none">{{ ue.blocUECategory.label }}</a>#}
+                            {{ ue.blocUECategory.label }}
                         </span>
                     {% endif %}
                 </td>

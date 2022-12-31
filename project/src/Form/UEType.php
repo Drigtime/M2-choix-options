@@ -13,10 +13,8 @@ class UEType extends AbstractType
     {
         $builder
             ->add('label')
-            ->add('blocUE', null, [
-                'label' => 'Bloc UE',
-                'choice_label' => 'label',
-                'placeholder' => false,
+            ->add('blocUECategory', null, [
+                'label' => 'Bloc UE Categorie',
             ])
             ->add('active')
 //            ->add('blocOptions')

@@ -1,0 +1,17 @@
+<form action="{{ path('app_campagnechoix_delete_bloc_option', {'id': campagne.id, 'blocOption': bloc_option.id}) }}"
+      method="post">
+    <p>
+        Etes-vous sûr de vouloir supprimer le bloc d'option {{ bloc_option.blocUE.blocUECategory.label }} ?
+    </p>
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ bloc_option.id) }}">
+    <div class="d-flex gap-2 justify-content-end">
+        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">
+            <i class="fas fa-times"></i>
+            Annuler
+        </button>
+        <button type="submit" class="btn btn-sm btn-danger">
+            <i class="fas fa-trash-alt"></i>
+            Supprimer
+        </button>
+    </div>
+</form>

@@ -16,10 +16,10 @@
                 <td>{{ ue.label }}</td>
             </tr>
             <tr>
-                <th>Bloc UE</th>
+                <th>Bloc UE Categorie</th>
                 <td>
-                    {% if ue.blocUE %}
-                        <a href="{{ path('app_bloc_ue_show', {'id': ue.blocUE.id}) }}">{{ ue.blocUE.label }}</a>
+                    {% if ue.blocUECategory %}
+                        <a href="{{ path('app_bloc_ue_category_show', {'id': ue.blocUECategory.id}) }}">{{ ue.blocUECategory.label }}</a>
                     {% endif %}
                 </td>
             </tr>

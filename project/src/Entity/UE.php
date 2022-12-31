@@ -21,8 +21,8 @@ class UE
     #[ORM\Column(type: 'boolean', options: ['default' => true])]
     private ?bool $active = true;
 
-    #[ORM\ManyToOne(inversedBy: 'UEs')]
-    private ?BlocUE $blocUE = null;
+    #[ORM\ManyToMany(targetEntity: BlocUE::class, mappedBy: 'UEs')]
+    private Collection $blocUEs;
 
     #[ORM\ManyToMany(targetEntity: BlocOption::class, mappedBy: 'UE')]
     private Collection $blocOptions;
@@ -30,8 +30,13 @@ class UE
     #[ORM\OneToMany(mappedBy: 'UE', targetEntity: Choix::class)]
     private Collection $choixes;
 
+    #[ORM\ManyToOne(inversedBy: 'uEs')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?BlocUECategory $blocUECategory = null;
+
     public function __construct()
     {
+        $this->blocUEs = new ArrayCollection();
         $this->blocOptions = new ArrayCollection();
         $this->choixes = new ArrayCollection();
     }
@@ -70,14 +75,29 @@ class UE
         return $this;
     }
 
-    public function getBlocUE(): ?BlocUE
+    /**
+     * @return Collection|BlocUE[]
+     */
+    public function getBlocUEs(): Collection
     {
-        return $this->blocUE;
+        return $this->blocUEs;
     }
 
-    public function setBlocUE(?BlocUE $blocUE): self
+    public function addBlocUE(BlocUE $blocUE): self
     {
-        $this->blocUE = $blocUE;
+        if (!$this->blocUEs->contains($blocUE)) {
+            $this->blocUEs[] = $blocUE;
+            $blocUE->addUE($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBlocUE(BlocUE $blocUE): self
+    {
+        if ($this->blocUEs->removeElement($blocUE)) {
+            $blocUE->removeUE($this);
+        }
 
         return $this;
     }
@@ -135,6 +155,18 @@ class UE
                 $choix->setUE(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getBlocUECategory(): ?BlocUECategory
+    {
+        return $this->blocUECategory;
+    }
+
+    public function setBlocUECategory(?BlocUECategory $blocUECategory): self
+    {
+        $this->blocUECategory = $blocUECategory;
 
         return $this;
     }

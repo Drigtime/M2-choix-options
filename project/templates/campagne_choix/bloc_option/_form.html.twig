@@ -1,0 +1,18 @@
+{{ form_start(form) }}
+
+{{ form_row(form.blocUE) }}
+{#{{ dump(form.UE.vars) }}#}
+{{ form_row(form.UE) }}
+{{ form_row(form.nbUEChoix) }}
+
+<div class="d-flex gap-2 justify-content-end">
+    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">
+        <i class="fas fa-times"></i>
+        Annuler
+    </button>
+    <button type="submit" class="btn btn-sm btn-primary">
+        <i class="fa fa-save"></i>
+        Enregistrer
+    </button>
+</div>
+{{ form_end(form) }}

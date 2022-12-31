@@ -3,7 +3,17 @@
 {% block title %}Parcours index{% endblock %}
 
 {% block body %}
-    <h1>Parcours index</h1>
+    <div class="d-flex">
+        <div class="flex-grow-1">
+            <h4>Liste des parcours</h4>
+        </div>
+        <div class="flex-shrink-0">
+            <a href="{{ path('app_parcours_new') }}" class="btn btn-sm btn-primary">
+                <i class="fas fa-plus"></i>
+                Ajouter un parcours
+            </a>
+        </div>
+    </div>
 
     <table class="table">
         <thead>
@@ -25,12 +35,18 @@
                 <td>{{ parcour.specialisation }}</td>
                 <td>
                     {% for bloc in parcour.blocUEs %}
-                        <span class="badge bg-primary">{{ bloc.label }}</span>
+                        <span class="badge bg-primary">{{ bloc.blocUECategory.label }}</span>
                     {% endfor %}
                 </td>
                 <td>
-                    <a href="{{ path('app_parcours_show', {'id': parcour.id}) }}">show</a>
-                    <a href="{{ path('app_parcours_edit', {'id': parcour.id}) }}">edit</a>
+                    <div class="btn-group">
+                        <a href="{{ path('app_parcours_show', {'id': parcour.id}) }}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="{{ path('app_parcours_edit', {'id': parcour.id}) }}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    </div>
                 </td>
             </tr>
         {% else %}
@@ -40,6 +56,4 @@
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_parcours_new') }}">Create new</a>
 {% endblock %}

@@ -3,40 +3,76 @@
 {% block title %}Parcours{% endblock %}
 
 {% block body %}
-    <h1>Parcours</h1>
+    <div class="d-flex">
+        <div class="flex-grow-1">
+            <h4>Parcours</h4>
+        </div>
+        <div class="flex-shrink-0">
+            <div class="d-flex gap-2">
+                {{ include('parcours/_delete_form.html.twig') }}
+
+                <a href="{{ path('app_parcours_edit', {'id': parcour.id}) }}"
+                   class="btn btn-sm btn-primary">
+                    <i class="fas fa-edit"></i>
+                    Modifier
+                </a>
+
+                <a href="{{ path('app_parcours_index') }}" class="btn btn-sm btn-primary">
+                    <i class="fas fa-arrow-left"></i>
+                    Retour à la liste
+                </a>
+            </div>
+        </div>
+    </div>
 
     <table class="table">
         <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ parcour.id }}</td>
-            </tr>
-            <tr>
-                <th>Année de formation</th>
-                <td>{{ parcour.anneeFormation }}</td>
-            </tr>
-            <tr>
-                <th>Rythme</th>
-                <td>{{ parcour.rythme }}</td>
-            </tr>
-            <tr>
-                <th>Specialisation</th>
-                <td>{{ parcour.specialisation }}</td>
-            </tr>
-            <tr>
-                <th>Bloc UEs</th>
-                <td>
-                    {% for blocUE in parcour.blocUEs %}
-                        <a href="{{ path('app_bloc_ue_show', {'id': blocUE.id}) }}">{{ blocUE.label }}</a>
-                    {% endfor %}
-                </td>
-            </tr>
+        <tr>
+            <th>Id</th>
+            <td>{{ parcour.id }}</td>
+        </tr>
+        <tr>
+            <th>Année de formation</th>
+            <td>{{ parcour.anneeFormation }}</td>
+        </tr>
+        <tr>
+            <th>Rythme</th>
+            <td>{{ parcour.rythme }}</td>
+        </tr>
+        <tr>
+            <th>Specialisation</th>
+            <td>{{ parcour.specialisation }}</td>
+        </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('app_parcours_index') }}">back to list</a>
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex">
+                <div class="flex-grow-1">
+                    Liste des blocs d'UE
+                </div>
+                <div class="flex-shrink-0">
+                    <div class="d-flex gap-2">
+                        <a id="add-bloc-ue"
+                           data-action="load-form" data-modal-title="Ajouter un bloc d'UE"
+                           data-url="{{ path('app_parcours_add_bloc_ue', {'id': parcour.id}) }}"
+                           data-ajax-target="#list-bloc-ue"
+                           class="btn btn-sm btn-primary">
+                            <i class="fas fa-plus"></i>
+                            Ajouter un bloc d'UE
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="list-bloc-ue" class="card-body">
+            {{ include('parcours/bloc_ue/_list.html.twig', {'bloc_ues': parcour.blocUes, 'parcours': parcour}) }}
+        </div>
+    </div>
+{% endblock %}
 
-    <a href="{{ path('app_parcours_edit', {'id': parcour.id}) }}">edit</a>
-
-    {{ include('parcours/_delete_form.html.twig') }}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('parcours_show') }}
 {% endblock %}

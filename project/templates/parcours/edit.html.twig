@@ -3,13 +3,24 @@
 {% block title %}Edit Parcours{% endblock %}
 
 {% block body %}
-    <h1>Edit Parcours</h1>
+    <div class="d-flex">
+        <div class="flex-grow-1">
+            <h4>Parcours</h4>
+        </div>
+        <div class="flex-shrink-0">
+            <div class="d-flex gap-2">
+                {{ include('parcours/_delete_form.html.twig') }}
 
-    {{ include('parcours/_form.html.twig', {'button_label': 'Update'}) }}
+                <a href="{{ path('app_parcours_index') }}" class="btn btn-sm btn-primary">
+                    <i class="fas fa-arrow-left"></i>
+                    Retour à la liste
+                </a>
+            </div>
+        </div>
+    </div>
 
-    <a href="{{ path('app_parcours_index') }}">back to list</a>
+    {{ include('parcours/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
 
-    {{ include('parcours/_delete_form.html.twig') }}
 {% endblock %}
 
 {% block javascripts %}

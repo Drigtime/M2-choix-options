@@ -9,14 +9,13 @@ use App\Form\PasswordResetType;
 use App\Form\RegistrationFormType;
 use App\Repository\PasswordTokenRepository;
 use App\Repository\UserRepository;
-use App\Security\EmailVerifier;
 use App\Service\MailerService;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use LogicException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
@@ -26,11 +25,9 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class SecurityController extends AbstractController
 {
-    private EmailVerifier $emailVerifier;
 
-    public function __construct(EmailVerifier $emailVerifier)
+    public function __construct(private readonly MailerService $mailerService)
     {
-        $this->emailVerifier = $emailVerifier;
     }
 
     #[Route('/login', name: 'app_login')]
@@ -52,7 +49,7 @@ class SecurityController extends AbstractController
     #[Route('/logout', name: 'app_logout', methods: ['GET'])]
     public function logout()
     {
-        throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
+        throw new LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 
     #[Route('/register', name: 'app_register')]
@@ -79,13 +76,7 @@ class SecurityController extends AbstractController
             $entityManager->flush();
 
             // generate a signed url and email it to the user
-            $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
-                (new TemplatedEmail())
-                    ->from(new Address('choixoption@upjv.com', 'Choix Option UPJV'))
-                    ->to($user->getEmail())
-                    ->subject('Please Confirm your Email')
-                    ->htmlTemplate('security/confirmation_email.twig')
-            );
+            $this->mailerService->sendEmailConfirmation('app_verify_email', $user);
             // do anything else you need here, like send an email
 
             return $this->redirectToRoute('app_login');
@@ -103,7 +94,7 @@ class SecurityController extends AbstractController
 
         // validate email confirmation link, sets User::isVerified=true and persists
         try {
-            $this->emailVerifier->handleEmailConfirmation($request, $this->getUser());
+            $this->mailerService->handleEmailConfirmation($request, $this->getUser());
         } catch (VerifyEmailExceptionInterface $exception) {
             $this->addFlash('verify_email_error', $translator->trans($exception->getReason(), [], 'VerifyEmailBundle'));
 
@@ -117,7 +108,7 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/password_reset_request', name: 'app_password_reset_request')]
-    public function requestPasswordReset(Request $request, UserRepository $userRepository, MailerService $mailerService, EntityManagerInterface $entityManager, TokenGeneratorInterface $tokenGenerator): Response
+    public function requestPasswordReset(Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager, TokenGeneratorInterface $tokenGenerator): Response
     {
         $form = $this->createForm(PasswordResetRequestType::class);
         $form->handleRequest($request);
@@ -129,14 +120,14 @@ class SecurityController extends AbstractController
                 $newResetPasswordTokens = new ResetPasswordToken();
                 $newResetPasswordTokens->setUser($user);
                 $newResetPasswordTokens->setToken($tokenGenerator->generateToken());
-                $newResetPasswordTokens->setCreatedAt(new \DateTime());
-                $newResetPasswordTokens->setExpiredAt(new \DateTime('+15 minutes'));
+                $newResetPasswordTokens->setCreatedAt(new DateTime());
+                $newResetPasswordTokens->setExpiredAt(new DateTime('+15 minutes'));
 
                 $entityManager->persist($newResetPasswordTokens);
                 $entityManager->flush();
 
-                $mailerService->sendResetPasswordEmail($user, $newResetPasswordTokens);
-                
+                $this->mailerService->sendResetPasswordEmail($user, $newResetPasswordTokens);
+
                 $this->addFlash('success', 'Un email vous a été envoyé pour réinitialiser votre mot de passe.');
 
                 return $this->redirectToRoute('app_login');

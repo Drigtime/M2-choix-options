@@ -27,7 +27,7 @@ class Parcours
     #[ORM\OneToMany(mappedBy: 'parcours', targetEntity: Groupe::class)]
     private Collection $groupes;
 
-    #[ORM\ManyToMany(targetEntity: BlocUE::class, inversedBy: 'parcours')]
+    #[ORM\OneToMany(mappedBy: 'parcours', targetEntity: BlocUE::class)]
     private Collection $blocUEs;
 
     #[ORM\OneToMany(mappedBy: 'parcours', targetEntity: CampagneChoix::class)]

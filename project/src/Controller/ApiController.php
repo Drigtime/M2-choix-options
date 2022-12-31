@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\BlocUE;
+use App\Entity\BlocUECategory;
 use App\Entity\Parcours;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,7 +19,7 @@ class ApiController extends AbstractController
         foreach ($parcours->getBlocUEs() as $blocUE) {
             $json[] = [
                 'id' => $blocUE->getId(),
-                'label' => $blocUE->getLabel(),
+                'label' => $blocUE->getBlocUECategory(),
             ];
         }
 
@@ -31,6 +32,21 @@ class ApiController extends AbstractController
         $json = [];
 
         foreach ($blocUE->getUEs() as $ue) {
+            $json[] = [
+                'id' => $ue->getId(),
+                'label' => $ue->getLabel(),
+            ];
+        }
+
+        return $this->json($json);
+    }
+
+    #[Route('/api/bloc_ue_category/{blocUECategory}/ues', name: 'api_bloc_ue_category_ues', options: ['expose' => true])]
+    public function blocUECategoryUEs(BlocUECategory $blocUECategory): Response
+    {
+        $json = [];
+
+        foreach ($blocUECategory->getUEs() as $ue) {
             $json[] = [
                 'id' => $ue->getId(),
                 'label' => $ue->getLabel(),

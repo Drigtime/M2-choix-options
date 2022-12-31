@@ -68,14 +68,6 @@
                         </a>
                         {% if is_granted("ROLE_ADMIN") %}
                             <div class="sb-sidenav-menu-heading">Lorem</div>
-                            <a class="nav-link" href="{{ path('app_bloc_ue_index') }}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                                Bloc UE
-                            </a>
-                            <a class="nav-link" href="{{ path('app_ue_index') }}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                                UE
-                            </a>
                             <a class="nav-link" href="{{ path('app_parcours_index') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Parcours
@@ -85,6 +77,14 @@
                                 Campagne de choix
                             </a>
                             <div class="sb-sidenav-menu-heading">Ipsum</div>
+                            <a class="nav-link" href="{{ path('app_bloc_ue_index') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                Bloc UE
+                            </a>
+                            <a class="nav-link" href="{{ path('app_ue_index') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                UE
+                            </a>
                             <a class="nav-link" href="{{ path('app_annee_formation_index') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Annee formation

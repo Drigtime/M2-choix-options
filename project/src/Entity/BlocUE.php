@@ -15,13 +15,14 @@ class BlocUE
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 45)]
-    private ?string $label = null;
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?BlocUECategory $blocUECategory;
 
-    #[ORM\ManyToMany(targetEntity: Parcours::class, mappedBy: 'blocUEs')]
-    private Collection $parcours;
+    #[ORM\ManyToOne(targetEntity: Parcours::class, inversedBy: 'blocUEs')]
+    private Parcours $parcours;
 
-    #[ORM\OneToMany(mappedBy: 'blocUE', targetEntity: UE::class)]
+    #[ORM\ManyToMany(targetEntity: UE::class, inversedBy: 'blocUEs')]
     private Collection $UEs;
 
     #[ORM\OneToMany(mappedBy: 'blocUE', targetEntity: BlocOption::class)]
@@ -29,14 +30,13 @@ class BlocUE
 
     public function __construct()
     {
-        $this->parcours = new ArrayCollection();
         $this->UEs = new ArrayCollection();
         $this->blocOptions = new ArrayCollection();
     }
 
     public function __toString(): string
     {
-        return $this->label;
+        return $this->blocUECategory->getLabel();
     }
 
     public function getId(): ?int
@@ -44,41 +44,26 @@ class BlocUE
         return $this->id;
     }
 
-    public function getLabel(): ?string
+    public function getBlocUECategory(): ?BlocUECategory
     {
-        return $this->label;
+        return $this->blocUECategory;
     }
 
-    public function setLabel(string $label): self
+    public function setBlocUECategory(BlocUECategory $blocUECategory): self
     {
-        $this->label = $label;
+        $this->blocUECategory = $blocUECategory;
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, Parcours>
-     */
-    public function getParcours(): Collection
+    public function getParcours(): Parcours
     {
         return $this->parcours;
     }
 
-    public function addParcour(Parcours $parcour): self
+    public function setParcours(Parcours $parcours): self
     {
-        if (!$this->parcours->contains($parcour)) {
-            $this->parcours->add($parcour);
-            $parcour->addBlocUE($this);
-        }
-
-        return $this;
-    }
-
-    public function removeParcour(Parcours $parcour): self
-    {
-        if ($this->parcours->removeElement($parcour)) {
-            $parcour->removeBlocUE($this);
-        }
+        $this->parcours = $parcours;
 
         return $this;
     }
@@ -95,7 +80,7 @@ class BlocUE
     {
         if (!$this->UEs->contains($UE)) {
             $this->UEs->add($UE);
-            $UE->setBlocUE($this);
+            $UE->setBlocUEs($this);
         }
 
         return $this;
@@ -105,8 +90,8 @@ class BlocUE
     {
         if ($this->UEs->removeElement($UE)) {
             // set the owning side to null (unless already changed)
-            if ($UE->getBlocUE() === $this) {
-                $UE->setBlocUE(null);
+            if ($UE->getBlocUEs() === $this) {
+                $UE->setBlocUEs(null);
             }
         }
 

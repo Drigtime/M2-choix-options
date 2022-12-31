@@ -1,0 +1,52 @@
+{% if bloc_ues %}
+    <table class="table">
+        {% for bloc_ue in bloc_ues %}
+            <tr>
+                <th>{{ bloc_ue.blocUECategory.label }}</th>
+                <td>
+                    {% for ue in bloc_ue.ues %}
+                        <span class="badge bg-primary">{{ ue.label }}</span>
+                    {% endfor %}
+                </td>
+                <td>
+                    <div class="btn-group">
+                        <a id="add-bloc-ue"
+                           data-action="load-form" data-modal-title="Modifier le bloc UE"
+                           data-custom="editBlocUECategory"
+                           data-url="{{ path('app_parcours_edit_bloc_ue', {'id': parcours.id, 'blocUE': bloc_ue.id}) }}"
+                           data-ajax-target="#list-bloc-ue"
+                           class="btn btn-sm btn-primary">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                        <a id="delete-bloc-ue"
+                           data-action="load-form" data-modal-title="Suppression du bloc d'UE"
+                           data-url="{{ path('app_parcours_delete_bloc_ue', {'id': parcours.id, 'blocUE': bloc_ue.id}) }}"
+                           data-ajax-target="#list-bloc-ue"
+                           class="btn btn-sm btn-danger">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>Aucun bloc UE n'a été trouvé.</p>
+{% endif %}
+{#    <tr> #}
+{#        <td>{{ bloc_ue.id }}</td> #}
+{#        <td>{{ bloc_ue.blocUECategory.label }}</td> #}
+{#        <td> #}
+{#            {% for ue in bloc_ue.UEs %} #}
+{#                <span class="badge bg-primary"> #}
+{#                            <a href="{{ path('app_ue_show', {'id': ue.id}) }}" #}
+{#                               class="text-white text-decoration-none">{{ ue.label }}</a> #}
+{#                        </span> #}
+{#            {% endfor %} #}
+{#        </td> #}
+{#        <td> #}
+{#            <a href="{{ path('app_bloc_ue_show', {'id': bloc_ue.id}) }}">show</a> #}
+{#            <a href="{{ path('app_bloc_ue_edit', {'id': bloc_ue.id}) }}">edit</a> #}
+{#        </td> #}
+{#    </tr> #}
+
