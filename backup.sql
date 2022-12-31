@@ -57,7 +57,7 @@ CREATE TABLE `bloc_option` (
   KEY `IDX_4B83AB8B6648E46A` (`bloc_ue_id`),
   CONSTRAINT `FK_4B83AB8B6648E46A` FOREIGN KEY (`bloc_ue_id`) REFERENCES `bloc_ue` (`id`),
   CONSTRAINT `FK_4B83AB8B81F88642` FOREIGN KEY (`campagne_choix_id`) REFERENCES `campagne_choix` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -67,7 +67,8 @@ CREATE TABLE `bloc_option` (
 LOCK TABLES `bloc_option` WRITE;
 /*!40000 ALTER TABLE `bloc_option` DISABLE KEYS */;
 INSERT INTO `bloc_option` VALUES
-(4,1,2,1);
+(6,1,5,1),
+(7,1,6,1);
 /*!40000 ALTER TABLE `bloc_option` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -96,8 +97,9 @@ CREATE TABLE `bloc_option_ue` (
 LOCK TABLES `bloc_option_ue` WRITE;
 /*!40000 ALTER TABLE `bloc_option_ue` DISABLE KEYS */;
 INSERT INTO `bloc_option_ue` VALUES
-(4,8),
-(4,10);
+(6,4),
+(6,5),
+(7,4);
 /*!40000 ALTER TABLE `bloc_option_ue` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -117,7 +119,7 @@ CREATE TABLE `bloc_ue` (
   KEY `IDX_C4F2840B6E38C0DB` (`parcours_id`),
   CONSTRAINT `FK_C4F2840B6E38C0DB` FOREIGN KEY (`parcours_id`) REFERENCES `parcours` (`id`),
   CONSTRAINT `FK_C4F2840B9865110C` FOREIGN KEY (`bloc_uecategory_id`) REFERENCES `bloc_ue_category` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -127,8 +129,8 @@ CREATE TABLE `bloc_ue` (
 LOCK TABLES `bloc_ue` WRITE;
 /*!40000 ALTER TABLE `bloc_ue` DISABLE KEYS */;
 INSERT INTO `bloc_ue` VALUES
-(2,1,1),
-(5,2,1);
+(5,2,1),
+(6,2,1);
 /*!40000 ALTER TABLE `bloc_ue` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -186,15 +188,12 @@ CREATE TABLE `bloc_ue_ue` (
 LOCK TABLES `bloc_ue_ue` WRITE;
 /*!40000 ALTER TABLE `bloc_ue_ue` DISABLE KEYS */;
 INSERT INTO `bloc_ue_ue` VALUES
-(2,8),
-(2,9),
-(2,10),
-(2,11),
-(2,12),
 (5,4),
 (5,5),
 (5,6),
-(5,7);
+(5,7),
+(6,4),
+(6,5);
 /*!40000 ALTER TABLE `bloc_ue_ue` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -313,7 +312,7 @@ CREATE TABLE `etudiant` (
   KEY `IDX_717E22E37A45358C` (`groupe_id`),
   CONSTRAINT `FK_717E22E36E38C0DB` FOREIGN KEY (`parcours_id`) REFERENCES `parcours` (`id`),
   CONSTRAINT `FK_717E22E37A45358C` FOREIGN KEY (`groupe_id`) REFERENCES `groupe` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -322,6 +321,8 @@ CREATE TABLE `etudiant` (
 
 LOCK TABLES `etudiant` WRITE;
 /*!40000 ALTER TABLE `etudiant` DISABLE KEYS */;
+INSERT INTO `etudiant` VALUES
+(2,1,NULL,'Varlet','William','');
 /*!40000 ALTER TABLE `etudiant` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -401,7 +402,7 @@ CREATE TABLE `parcours` (
   CONSTRAINT `FK_99B1DEE33A687361` FOREIGN KEY (`annee_formation_id`) REFERENCES `annee_formation` (`id`),
   CONSTRAINT `FK_99B1DEE35627D44C` FOREIGN KEY (`specialisation_id`) REFERENCES `specialisation` (`id`),
   CONSTRAINT `FK_99B1DEE38399A4A6` FOREIGN KEY (`rythme_id`) REFERENCES `rythme` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -411,7 +412,8 @@ CREATE TABLE `parcours` (
 LOCK TABLES `parcours` WRITE;
 /*!40000 ALTER TABLE `parcours` DISABLE KEYS */;
 INSERT INTO `parcours` VALUES
-(1,1,1,1);
+(1,1,2,1),
+(2,1,1,1);
 /*!40000 ALTER TABLE `parcours` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -572,4 +574,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-12-31  1:47:04
+-- Dump completed on 2022-12-31 16:27:30

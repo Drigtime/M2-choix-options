@@ -43,6 +43,17 @@
             <th>Specialisation</th>
             <td>{{ parcour.specialisation }}</td>
         </tr>
+        <tr>
+            <th>Etudiants</th>
+            <td>
+                {% for etudiant in parcour.etudiants %}
+                    <span class="badge bg-secondary">{{ etudiant }}</span>
+                {% else %}
+                    <div class="alert alert-warning" role="alert">
+                        Aucun étudiant
+                    </div>
+                {% endfor %}
+            </td>
         </tbody>
     </table>
 

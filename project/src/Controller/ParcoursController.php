@@ -11,6 +11,7 @@ use App\Form\ParcoursType;
 use App\Repository\BlocOptionRepository;
 use App\Repository\BlocUERepository;
 use App\Repository\CampagneChoixRepository;
+use App\Repository\EtudiantRepository;
 use App\Repository\ParcoursRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -56,19 +57,19 @@ class ParcoursController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_parcours_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Parcours $parcour, ParcoursRepository $parcoursRepository): Response
+    public function edit(Request $request, Parcours $parcours, ParcoursRepository $parcoursRepository, EtudiantRepository $etudiantRepository): Response
     {
-        $form = $this->createForm(ParcoursType::class, $parcour);
+        $form = $this->createForm(ParcoursType::class, $parcours);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $parcoursRepository->save($parcour, true);
+            $parcoursRepository->save($parcours, true);
 
             return $this->redirectToRoute('app_parcours_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('parcours/edit.html.twig', [
-            'parcour' => $parcour,
+            'parcour' => $parcours,
             'form' => $form,
         ]);
     }
