@@ -34,7 +34,7 @@ class BlocUECategoryController extends AbstractController
             return $this->redirectToRoute('app_bloc_ue_category_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('bloc_ue_category/new.html.twig', [
+        return $this->render('bloc_ue_category/new.html.twig', [
             'bloc_u_e_category' => $blocUECategory,
             'form' => $form,
         ]);
@@ -60,7 +60,7 @@ class BlocUECategoryController extends AbstractController
             return $this->redirectToRoute('app_bloc_ue_category_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('bloc_ue_category/edit.html.twig', [
+        return $this->render('bloc_ue_category/edit.html.twig', [
             'bloc_u_e_category' => $blocUECategory,
             'form' => $form,
         ]);

@@ -67,7 +67,7 @@ class ParcoursController extends AbstractController
             return $this->redirectToRoute('app_parcours_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('parcours/edit.html.twig', [
+        return $this->render('parcours/edit.html.twig', [
             'parcour' => $parcour,
             'form' => $form,
         ]);

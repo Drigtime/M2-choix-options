@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\BlocUE;
+use App\Entity\Etudiant;
 use App\Entity\Parcours;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -26,6 +27,12 @@ class ParcoursType extends AbstractType
             ->add('specialisation', null, [
                 'label' => 'Spécialisation',
                 'placeholder' => false
+            ])
+            ->add('etudiants', EntityType::class, [
+                'class' => Etudiant::class,
+                'label' => 'Etudiants',
+                'multiple' => true,
+                'expanded' => true,
             ])
 //            ->add('blocUEs', CollectionType::class, [
 //                'entry_type' => EntityType::class,

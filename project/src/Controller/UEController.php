@@ -34,7 +34,7 @@ class UEController extends AbstractController
             return $this->redirectToRoute('app_ue_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('ue/new.html.twig', [
+        return $this->render('ue/new.html.twig', [
             'ue' => $uE,
             'form' => $form,
         ]);
@@ -60,7 +60,7 @@ class UEController extends AbstractController
             return $this->redirectToRoute('app_ue_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('ue/edit.html.twig', [
+        return $this->render('ue/edit.html.twig', [
             'ue' => $uE,
             'form' => $form,
         ]);

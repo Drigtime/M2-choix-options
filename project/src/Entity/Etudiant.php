@@ -24,10 +24,10 @@ class Etudiant
     #[ORM\Column(length: 100)]
     private ?string $mail = null;
 
-    #[ORM\ManyToOne(inversedBy: 'etudiants')]
+    #[ORM\ManyToOne(targetEntity: Parcours::class, inversedBy: 'etudiants')]
     private ?Parcours $parcours = null;
 
-    #[ORM\ManyToOne(inversedBy: 'etudiants')]
+    #[ORM\ManyToOne(targetEntity: Groupe::class, inversedBy: 'etudiants')]
     private ?Groupe $groupe = null;
 
     #[ORM\OneToMany(mappedBy: 'etudiant', targetEntity: Choix::class)]
@@ -36,6 +36,11 @@ class Etudiant
     public function __construct()
     {
         $this->choixes = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return $this->getNom() . ' ' . $this->getPrenom();
     }
 
     public function getId(): ?int

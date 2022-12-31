@@ -34,7 +34,7 @@ class RythmeController extends AbstractController
             return $this->redirectToRoute('app_rythme_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('rythme/new.html.twig', [
+        return $this->render('rythme/new.html.twig', [
             'rythme' => $rythme,
             'form' => $form,
         ]);
@@ -60,7 +60,7 @@ class RythmeController extends AbstractController
             return $this->redirectToRoute('app_rythme_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('rythme/edit.html.twig', [
+        return $this->render('rythme/edit.html.twig', [
             'rythme' => $rythme,
             'form' => $form,
         ]);

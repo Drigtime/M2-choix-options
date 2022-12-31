@@ -34,7 +34,7 @@ class AnneeFormationController extends AbstractController
             return $this->redirectToRoute('app_annee_formation_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('annee_formation/new.html.twig', [
+        return $this->render('annee_formation/new.html.twig', [
             'annee_formation' => $anneeFormation,
             'form' => $form,
         ]);
@@ -60,7 +60,7 @@ class AnneeFormationController extends AbstractController
             return $this->redirectToRoute('app_annee_formation_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('annee_formation/edit.html.twig', [
+        return $this->render('annee_formation/edit.html.twig', [
             'annee_formation' => $anneeFormation,
             'form' => $form,
         ]);

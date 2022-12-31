@@ -34,7 +34,7 @@ class SpecialisationController extends AbstractController
             return $this->redirectToRoute('app_specialisation_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('specialisation/new.html.twig', [
+        return $this->render('specialisation/new.html.twig', [
             'specialisation' => $specialisation,
             'form' => $form,
         ]);
@@ -60,7 +60,7 @@ class SpecialisationController extends AbstractController
             return $this->redirectToRoute('app_specialisation_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('specialisation/edit.html.twig', [
+        return $this->render('specialisation/edit.html.twig', [
             'specialisation' => $specialisation,
             'form' => $form,
         ]);
