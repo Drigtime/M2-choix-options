@@ -12,14 +12,20 @@ $(document).on('change', '#bloc_option_blocUE', function () {
     const url = Routing.generate('api_bloc_ue_ues', {blocUE: selectedBlocUEId});
     $
         .get(url, function (data) {
-            const $selectUE = $('#bloc_option_UE');
-            $selectUE.empty();
-            data.forEach(function (ue) {
-                $selectUE.append(`<div class="form-check">
+            const $blocOptionUes = $('#bloc_option_UE');
+            $blocOptionUes.empty();
+            if (data.length > 0) {
+                data.forEach(function (ue) {
+                    $blocOptionUes.append(`<div class="form-check">
                     <input type="checkbox" id="bloc_option_UE_${ue.id}" name="bloc_option[UE][]" class="form-check-input" value="${ue.id}">
                     <label class="form-check-label" for="bloc_option_UE_${ue.id}">${ue.label}</label>
                 </div>`);
-            });
+                });
+            } else {
+                $blocOptionUes.append(`<div class="alert alert-warning" role="alert">
+                    Aucune UE n'est disponible pour ce bloc.
+                </div>`);
+            }
         });
 });
 
