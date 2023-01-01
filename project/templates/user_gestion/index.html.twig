@@ -1,20 +1,60 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello UserGestionController!{% endblock %}
+{% block title %}Hello UserGestionController!
+{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+	<h1>Etudiants</h1>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+	<div class="container-fluid">
+		<div class="row justify-content-center">
+			<div class="col-6 pt-0 d-grid gap-2" style="border-radius:5px">
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/var/www/html/src/Controller/UserGestionController.php'|file_link(0) }}">src/Controller/UserGestionController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/var/www/html/templates/user_gestion/index.html.twig'|file_link(0) }}">templates/user_gestion/index.html.twig</a></code></li>
-    </ul>
-</div>
+				<button type="button" class="btn-import btn btn-lg btn-block pt-0 px-0" style="border-radius:5px">
+
+					<div class="col-12 px-0 py-0" style="height:70px;border-top-left-radius:5px;border-top-right-radius:5px;background-color:grey">
+						<h4 class="text-white pt-3">Importer des étudiants</h4>
+					</div>
+					<div class="col-12" style="height:250px">
+						<i class="fas fa-file-import fa-9x pt-3" style="color:grey"></i>
+					</div>
+					<div class="col-12">
+						<p style="color:grey">Le fichier doit être en format CSV</p>
+					</div>
+				</button>
+			</div>
+			<div class="col-6 pt-0 d-grid gap-2" style="border-radius:5px">
+
+				<button type="button" class="btn-import btn btn-lg btn-block pt-0 px-0" style="border-radius:5px">
+
+					<div class="col-12 px-0 py-0" style="height:70px;border-top-left-radius:5px;border-top-right-radius:5px;background-color:grey">
+						<h4 class="text-white pt-3">Exporter des étudiants</h4>
+					</div>
+					<div class="col-12" style="height:250px">
+						<i class="fas fa-file-export fa-9x pt-3" style="color:grey"></i>
+					</div>
+					<div class="col-12">
+						<p style="color:grey">Le fichier sera en format CSV</p>
+					</div>
+				</button>
+			</div>
+		</div>
+
+        <h3>Liste des étudiants</h3>
+
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">Nom</th>
+					<th scope="col">Prenom</th>
+					<th scope="col">Année</th>
+					<th scope="col">Spécialité</th>
+				</tr>
+			</thead>
+			<tbody>
+				
+			</tbody>
+		</table>
+
+	</div>
 {% endblock %}
