@@ -3,14 +3,24 @@
 {% block title %}UE index{% endblock %}
 
 {% block body %}
-    <h1>UE index</h1>
+    <div class="d-flex">
+        <div class="flex-grow-1">
+            <h4>Liste des UE</h4>
+        </div>
+        <div class="flex-shrink-0">
+            <a href="{{ path('app_ue_new') }}" class="btn btn-sm btn-primary">
+                <i class="fas fa-plus"></i>
+                Ajouter une UE
+            </a>
+        </div>
+    </div>
 
     <table class="table">
         <thead>
         <tr>
             <th>Id</th>
-            <th>Label</th>
-            <th>Bloc UE Categorie</th>
+            <th>Nom</th>
+            <th>Categorie de bloc UE</th>
             <th>Active</th>
             <th>actions</th>
         </tr>
@@ -31,17 +41,23 @@
                 </td>
                 <td>{{ ue.active ? 'Yes' : 'No' }}</td>
                 <td>
-                    <a href="{{ path('app_ue_show', {'id': ue.id}) }}">show</a>
-                    <a href="{{ path('app_ue_edit', {'id': ue.id}) }}">edit</a>
+                    <div class="btn-group">
+                        <a href="{{ path('app_ue_show', {'id': ue.id}) }}"
+                           class="btn btn-sm btn-primary">
+                            <i class="fa fa-eye"></i>
+                        </a>
+                        <a href="{{ path('app_ue_edit', {'id': ue.id}) }}"
+                           class="btn btn-sm btn-primary">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                    </div>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">no records found</td>
+                <td colspan="5">Aucune UE</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_ue_new') }}">Create new</a>
 {% endblock %}

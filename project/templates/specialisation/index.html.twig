@@ -3,13 +3,23 @@
 {% block title %}Specialisation index{% endblock %}
 
 {% block body %}
-    <h1>Specialisation index</h1>
+    <div class="d-flex">
+        <div class="flex-grow-1">
+            <h4>Liste des specialisations</h4>
+        </div>
+        <div class="flex-shrink-0">
+            <a href="{{ path('app_specialisation_new') }}" class="btn btn-sm btn-primary">
+                <i class="fas fa-plus"></i>
+                Ajouter une specialisation
+            </a>
+        </div>
+    </div>
 
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Label</th>
+                <th>Nom</th>
                 <th>Active</th>
                 <th>actions</th>
             </tr>
@@ -19,10 +29,18 @@
             <tr>
                 <td>{{ specialisation.id }}</td>
                 <td>{{ specialisation.label }}</td>
-                <td>{{ specialisation.active ? 'Yes' : 'No' }}</td>
+                <td>{{ specialisation.active ? 'Oui' : 'Non' }}</td>
                 <td>
-                    <a href="{{ path('app_specialisation_show', {'id': specialisation.id}) }}">show</a>
-                    <a href="{{ path('app_specialisation_edit', {'id': specialisation.id}) }}">edit</a>
+                    <div class="btn-group">
+                        <a href="{{ path('app_specialisation_show', {'id': specialisation.id}) }}"
+                           class="btn btn-sm btn-primary">
+                            <i class="fa fa-eye"></i>
+                        </a>
+                        <a href="{{ path('app_specialisation_edit', {'id': specialisation.id}) }}"
+                           class="btn btn-sm btn-primary">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                    </div>
                 </td>
             </tr>
         {% else %}
@@ -33,5 +51,4 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_specialisation_new') }}">Create new</a>
 {% endblock %}

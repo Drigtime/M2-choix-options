@@ -3,13 +3,24 @@
 {% block title %}Rythme index{% endblock %}
 
 {% block body %}
-    <h1>Rythme index</h1>
+    <div class="d-flex">
+        <div class="flex-grow-1">
+            <h4>Liste des rythmes</h4>
+        </div>
+        <div class="flex-shrink-0">
+            <a href="{{ path('app_rythme_new') }}" class="btn btn-sm btn-primary">
+                <i class="fas fa-plus"></i>
+                Ajouter un rythme
+            </a>
+        </div>
+    </div>
+
 
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Label</th>
+                <th>Nom</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -19,8 +30,16 @@
                 <td>{{ rythme.id }}</td>
                 <td>{{ rythme.label }}</td>
                 <td>
-                    <a href="{{ path('app_rythme_show', {'id': rythme.id}) }}">show</a>
-                    <a href="{{ path('app_rythme_edit', {'id': rythme.id}) }}">edit</a>
+                    <div class="btn-group">
+                        <a href="{{ path('app_rythme_show', {'id': rythme.id}) }}"
+                           class="btn btn-sm btn-primary">
+                            <i class="fa fa-eye"></i>
+                        </a>
+                        <a href="{{ path('app_rythme_edit', {'id': rythme.id}) }}"
+                           class="btn btn-sm btn-primary">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                    </div>
                 </td>
             </tr>
         {% else %}
@@ -31,5 +50,4 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_rythme_new') }}">Create new</a>
 {% endblock %}

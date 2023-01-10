@@ -2,7 +2,11 @@
 <html lang="fr" class="h-100" data-lt-installed="true">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Welcome!{% endblock %}</title>
+    <title>
+        {% block title %}
+            {{ 'title.base'|trans }}
+        {% endblock %}
+    </title>
     <link rel="icon"
           href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
     {% block stylesheets %}
@@ -61,13 +65,12 @@
             <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                 <div class="sb-sidenav-menu">
                     <div class="nav">
-                        <div class="sb-sidenav-menu-heading">Core</div>
                         <a class="nav-link" href="{{ path('app_default') }}">
                             <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                             Accueil
                         </a>
                         {% if is_granted("ROLE_ADMIN") %}
-                            <div class="sb-sidenav-menu-heading">Lorem</div>
+                            <div class="sb-sidenav-menu-heading">Configuration</div>
                             <a class="nav-link" href="{{ path('app_parcours_index') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Parcours
@@ -76,10 +79,13 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Campagne de choix
                             </a>
-                            <div class="sb-sidenav-menu-heading">Ipsum</div>
                             <a class="nav-link" href="{{ path('app_bloc_ue_index') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Bloc UE
+                            </a>
+                            <a class="nav-link" href="{{ path('app_bloc_ue_category_index') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                Bloc UE Categorie
                             </a>
                             <a class="nav-link" href="{{ path('app_ue_index') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
