@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\BlocOption;
+use App\Repository\BlocUERepository;
 use App\Repository\UERepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -37,6 +38,7 @@ class BlocOptionType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $form = $event->getForm();
             $blocOption = $event->getData();
+            $campagneChoix = $blocOption->getCampagneChoix();
             if ($blocOption) {
                 $blocUE = $blocOption->getBlocUE();
                 if ($blocUE) {
@@ -52,6 +54,30 @@ class BlocOptionType extends AbstractType
                         }
                     ]);
                 }
+            }
+            if ($campagneChoix) {
+                // based on $campagneChoix->getParcours bloc ue
+                $form->add('blocUE', null, [
+                    'label' => 'Bloc UE',
+                    'query_builder' => function (BlocUERepository $er) use ($campagneChoix) {
+                        return $er->createQueryBuilder('b')
+                            ->join('b.parcours', 'p')
+                            ->where('p.id = :parcours')
+                            ->setParameter('parcours', $campagneChoix->getParcours()->getId())
+                            ->orderBy('b.blocUECategory', 'ASC');
+                    },
+                    'placeholder' => false,
+                    'choice_attr' => function ($choice, $key, $value) {
+                        return [
+                            'data-ues' => json_encode($choice->getUEs()->map(function ($ue) {
+                                return [
+                                    'id' => $ue->getId(),
+                                    'label' => $ue->getLabel(),
+                                ];
+                            })->toArray())
+                        ];
+                    }
+                ]);
             }
         });
 

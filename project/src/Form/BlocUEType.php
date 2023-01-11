@@ -19,7 +19,17 @@ class BlocUEType extends AbstractType
     {
         $builder
             ->add('blocUECategory', null, [
-                'label' => 'Bloc',
+                'label' => 'Catégorie de bloc UE',
+                'choice_attr' => function ($choice, $key, $value) {
+                    return [
+                        'data-ues' => json_encode($choice->getUEs()->map(function ($ue) {
+                            return [
+                                'id' => $ue->getId(),
+                                'label' => $ue->getLabel(),
+                            ];
+                        })->toArray())
+                    ];
+                }
             ])
             ->add('ues', EntityType::class, [
                 'class' => UE::class,
@@ -27,32 +37,29 @@ class BlocUEType extends AbstractType
                 'multiple' => true,
                 'expanded' => true,
                 'label' => 'UEs',
-            ])
-//            ->add('parcours')
+            ])//            ->add('parcours')
         ;
 
         // event
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $form = $event->getForm();
             $blocUE = $event->getData();
-            if ($blocUE) {
-                $blocUECategory = $blocUE->getBlocUECategory();
-                if ($blocUECategory) {
-                    $form->add('ues', EntityType::class, [
-                        'class' => UE::class,
-                        'choice_label' => 'label',
-                        'multiple' => true,
-                        'expanded' => true,
-                        'label' => 'UEs',
-                        'query_builder' => function (UERepository $er) use ($blocUECategory) {
-                            return $er->createQueryBuilder('u')
-                                ->join('u.blocUECategory', 'b')
-                                ->where('b.id = :blocUECategory')
-                                ->setParameter('blocUECategory', $blocUECategory->getId())
-                                ->orderBy('u.label', 'ASC');
-                        }
-                    ]);
-                }
+            $blocUECategory = $blocUE->getBlocUECategory();
+            if ($blocUECategory) {
+                $form->add('ues', EntityType::class, [
+                    'class' => UE::class,
+                    'choice_label' => 'label',
+                    'multiple' => true,
+                    'expanded' => true,
+                    'label' => 'UEs',
+                    'query_builder' => function (UERepository $er) use ($blocUECategory) {
+                        return $er->createQueryBuilder('u')
+                            ->join('u.blocUECategory', 'b')
+                            ->where('b.id = :blocUECategory')
+                            ->setParameter('blocUECategory', $blocUECategory->getId())
+                            ->orderBy('u.label', 'ASC');
+                    }
+                ]);
             }
         });
 

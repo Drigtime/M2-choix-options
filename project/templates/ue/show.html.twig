@@ -16,7 +16,7 @@
                 <td>{{ ue.label }}</td>
             </tr>
             <tr>
-                <th>Bloc UE Categorie</th>
+                <th>Categorie de bloc UE</th>
                 <td>
                     {% if ue.blocUECategory %}
                         <a href="{{ path('app_bloc_ue_category_show', {'id': ue.blocUECategory.id}) }}">{{ ue.blocUECategory.label }}</a>

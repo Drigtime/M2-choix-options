@@ -3,45 +3,53 @@
 {% block title %}CampagneChoix{% endblock %}
 
 {% block body %}
-{#    <div class="col-xxl-6 col-xl-8 col-lg-8 col-md-8 col-sm-10 col-12 mx-auto">#}
-        <div class="d-flex">
-            <div class="flex-grow-1">
-                <h4>Campagne de choix</h4>
-            </div>
-            <div class="flex-shrink-0">
-                <div class="d-flex gap-2">
-                    {{ include('campagne_choix/_delete_form.html.twig') }}
+    {#    <div class="col-xxl-6 col-xl-8 col-lg-8 col-md-8 col-sm-10 col-12 mx-auto"> #}
+    <div class="d-flex">
+        <div class="flex-grow-1">
+            <h4>Campagne de choix</h4>
+        </div>
+        <div class="flex-shrink-0">
+            <div class="d-flex gap-2">
+                {{ include('campagne_choix/_delete_form.html.twig') }}
 
-                    <a href="{{ path('app_campagne_choix_edit', {'id': campagne_choix.id}) }}"
-                       class="btn btn-sm btn-primary">
-                        <i class="fas fa-edit"></i>
-                        Modifier
-                    </a>
+                <a href="{{ path('app_campagne_choix_edit', {'id': campagne_choix.id}) }}"
+                   class="btn btn-sm btn-primary">
+                    <i class="fas fa-edit"></i>
+                    Modifier
+                </a>
 
-                    <a href="{{ path('app_campagne_choix_index') }}" class="btn btn-sm btn-primary">
-                        <i class="fas fa-arrow-left"></i>
-                        Retour à la liste
-                    </a>
-                </div>
+                <a href="{{ path('app_campagne_choix_index') }}" class="btn btn-sm btn-primary">
+                    <i class="fas fa-arrow-left"></i>
+                    Retour à la liste
+                </a>
             </div>
         </div>
+    </div>
 
-        <table class="table">
-            <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ campagne_choix.id }}</td>
-            </tr>
-            <tr>
-                <th>DateDebut</th>
-                <td>{{ campagne_choix.dateDebut ? campagne_choix.dateDebut|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>DateFin</th>
-                <td>{{ campagne_choix.dateFin ? campagne_choix.dateFin|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            </tbody>
-        </table>
+    <table class="table">
+        <tbody>
+        <tr>
+            <th>Id</th>
+            <td>{{ campagne_choix.id }}</td>
+        </tr>
+        <tr>
+            <th>Parcours</th>
+            <td>
+                {% if campagne_choix.parcours %}
+                    <a href="{{ path('app_parcours_show', {'id': campagne_choix.parcours.id}) }}">{{ campagne_choix.parcours }}</a>
+                {% endif %}
+            </td>
+        </tr>
+        </tr>
+        <tr>
+            <th>Date de debut</th>
+            <td>{{ campagne_choix.dateDebut ? campagne_choix.dateDebut|date('Y-m-d H:i:s') : '' }}</td>
+        </tr>
+        <tr>
+            <th>Date de fin</th>
+            <td>{{ campagne_choix.dateFin ? campagne_choix.dateFin|date('Y-m-d H:i:s') : '' }}</td>
+        </tbody>
+    </table>
 
 
     <div class="card">
@@ -69,7 +77,7 @@
         </div>
     </div>
 
-    {#    </div>#}
+    {#    </div> #}
 {% endblock %}
 
 {% block javascripts %}

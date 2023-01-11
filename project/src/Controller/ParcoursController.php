@@ -8,7 +8,6 @@ use App\Entity\Parcours;
 use App\Form\BlocUEType;
 use App\Form\CampagneChoixType;
 use App\Form\ParcoursType;
-use App\Repository\BlocOptionRepository;
 use App\Repository\BlocUERepository;
 use App\Repository\CampagneChoixRepository;
 use App\Repository\EtudiantRepository;
