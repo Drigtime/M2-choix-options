@@ -1,7 +1,7 @@
 {% import _self as formMacros %}
 
  {% macro printBlocUE(blocUE) %}
-     <div class="col-12 col-md-6" data-bloc-ue data-index="__name__">
+     <div class="col-12 col-md-6" data-bloc-ue data-index="{{ blocUE.vars.name }}">
          <div class="card">
              <div class="card-header">
                  <div class="d-flex">

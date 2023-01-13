@@ -64,6 +64,7 @@ class ParcoursController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $parcoursRepository->save($parcours, true);
 
+
             return $this->redirectToRoute('app_parcours_index', [], Response::HTTP_SEE_OTHER);
         }
 

@@ -19,7 +19,8 @@ class BlocUE
     #[ORM\JoinColumn(nullable: false)]
     private ?BlocUECategory $blocUECategory = null;
 
-    #[ORM\ManyToOne(targetEntity: Parcours::class, inversedBy: 'blocUEs')]
+    #[ORM\ManyToOne(targetEntity: Parcours::class,inversedBy: 'blocUEs')]
+    #[ORM\JoinColumn(name: 'parcours_id', referencedColumnName: 'id', nullable: false)]
     private Parcours $parcours;
 
     #[ORM\ManyToMany(targetEntity: UE::class, inversedBy: 'blocUEs')]
