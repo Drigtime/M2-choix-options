@@ -30,15 +30,19 @@ class UE
     #[ORM\OneToMany(mappedBy: 'UE', targetEntity: Choix::class)]
     private Collection $choixes;
 
-    #[ORM\ManyToOne(inversedBy: 'uEs')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?BlocUECategory $blocUECategory = null;
+    #[ORM\ManyToMany(targetEntity: BlocUECategory::class, inversedBy: 'uEs')]
+    private Collection $blocUECategories;
+
+    #[ORM\OneToMany(mappedBy: 'ue', targetEntity: Groupe::class)]
+    private Collection $groupes;
 
     public function __construct()
     {
         $this->blocUEs = new ArrayCollection();
         $this->blocOptions = new ArrayCollection();
         $this->choixes = new ArrayCollection();
+        $this->blocUECategories = new ArrayCollection();
+        $this->groupes = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -159,15 +163,58 @@ class UE
         return $this;
     }
 
-    public function getBlocUECategory(): ?BlocUECategory
+    /**
+     * @return Collection<int, BlocUECategory>
+     */
+    public function getBlocUECategories(): Collection
     {
-        return $this->blocUECategory;
+        return $this->blocUECategories;
     }
 
-    public function setBlocUECategory(?BlocUECategory $blocUECategory): self
+    public function addBlocUECategory(BlocUECategory $blocUECategory): self
     {
-        $this->blocUECategory = $blocUECategory;
+        if (!$this->blocUECategories->contains($blocUECategory)) {
+            $this->blocUECategories->add($blocUECategory);
+        }
 
         return $this;
     }
+
+    public function removeBlocUECategory(BlocUECategory $blocUECategory): self
+    {
+        $this->blocUECategories->removeElement($blocUECategory);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Groupe>
+     */
+    public function getGroupes(): Collection
+    {
+        return $this->groupes;
+    }
+
+    public function addGroupe(Groupe $groupe): self
+    {
+        if (!$this->groupes->contains($groupe)) {
+            $this->groupes->add($groupe);
+            $groupe->setUe($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroupe(Groupe $groupe): self
+    {
+        if ($this->groupes->removeElement($groupe)) {
+            // set the owning side to null (unless already changed)
+            if ($groupe->getUe() === $this) {
+                $groupe->setUe(null);
+            }
+        }
+
+        return $this;
+    }
+
 }

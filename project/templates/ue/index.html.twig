@@ -21,7 +21,7 @@
             <th>Id</th>
             <th>Nom</th>
             <th>Categorie de bloc UE</th>
-            <th>Active</th>
+            <th>Actif</th>
             <th>actions</th>
         </tr>
         </thead>
@@ -31,15 +31,15 @@
                 <td>{{ ue.id }}</td>
                 <td>{{ ue.label }}</td>
                 <td>
-                    {% if ue.blocUECategory %}
+                    {% for categorie in ue.blocUECategories %}
                         <span class="badge bg-primary">
-{#                            <a href="{{ path('app_bloc_ue_show', {'id': ue.blocUECategory.id}) }}"#}
-{#                               class="text-white text-decoration-none">{{ ue.blocUECategory.label }}</a>#}
-                            {{ ue.blocUECategory.label }}
+{#                            <a href="{{ path('app_bloc_ue_show', {'id': ue.blocUECategory.id}) }}" #}
+                            {#                               class="text-white text-decoration-none">{{ ue.blocUECategory.label }}</a> #}
+                            {{ categorie.label }}
                         </span>
-                    {% endif %}
+                    {% endfor %}
                 </td>
-                <td>{{ ue.active ? 'Yes' : 'No' }}</td>
+                <td>{{ ue.active ? 'Oui' : 'Non' }}</td>
                 <td>
                     <div class="btn-group">
                         <a href="{{ path('app_ue_show', {'id': ue.id}) }}"

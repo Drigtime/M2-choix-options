@@ -1,35 +1,76 @@
 {% if bloc_ues %}
-    <table class="table">
+    <div class="row">
         {% for bloc_ue in bloc_ues %}
-            <tr>
-                <th>{{ bloc_ue.blocUECategory.label }}</th>
-                <td>
-                    {% for ue in bloc_ue.ues %}
-                        <span class="badge bg-primary">{{ ue.label }}</span>
-                    {% endfor %}
-                </td>
-                <td>
-                    <div class="btn-group">
-                        <a id="add-bloc-ue"
-                           data-action="load-form" data-modal-title="Modifier le bloc UE"
-                           data-custom="editBlocUECategory"
-                           data-url="{{ path('app_parcours_edit_bloc_ue', {'id': parcours.id, 'blocUE': bloc_ue.id}) }}"
-                           data-ajax-target="#list-bloc-ue"
-                           class="btn btn-sm btn-primary">
-                            <i class="fa fa-edit"></i>
-                        </a>
-                        <a id="delete-bloc-ue"
-                           data-action="load-form" data-modal-title="Suppression du bloc d'UE"
-                           data-url="{{ path('app_parcours_delete_bloc_ue', {'id': parcours.id, 'blocUE': bloc_ue.id}) }}"
-                           data-ajax-target="#list-bloc-ue"
-                           class="btn btn-sm btn-danger">
-                            <i class="fa fa-trash"></i>
-                        </a>
+            <div class="col-12 col-sm-6 col-md-4 col-xl-3 g-2">
+                <div class="card">
+                    <div class="card-header px-2">
+                        <div class="d-flex">
+                            <div class="flex-grow-1">
+                                {{ bloc_ue.blocUECategory.label }}
+                            </div>
+                            <div class="flex-shrink-0">
+                                <div class="btn-group">
+                                    <a id="add-bloc-ue"
+                                       data-action="load-form" data-modal-title="Modifier le bloc UE"
+                                       data-custom="editBlocUECategory"
+                                       data-url="{{ path('app_parcours_edit_bloc_ue', {'id': parcours.id, 'blocUE': bloc_ue.id}) }}"
+                                       data-ajax-target="#list-bloc-ue"
+                                       class="btn btn-sm btn-primary">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <a id="delete-bloc-ue"
+                                       data-action="load-form"
+                                       data-modal-title="Suppression du bloc d'UE"
+                                       data-url="{{ path('app_parcours_delete_bloc_ue', {'id': parcours.id, 'blocUE': bloc_ue.id}) }}"
+                                       data-ajax-target="#list-bloc-ue"
+                                       class="btn btn-sm btn-danger">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </td>
-            </tr>
+                    <div class="card-body">
+                        {% for ue in bloc_ue.ues %}
+                            <div>
+                                <a href="{{ path('app_ue_show', { 'id': ue.id }) }}">{{ ue.label }}</a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
         {% endfor %}
-    </table>
+    </div>
+
+    {#        {% for bloc_ue in bloc_ues %} #}
+    {#            <tr> #}
+    {#                <th>{{ bloc_ue.blocUECategory.label }}</th> #}
+    {#                <td> #}
+    {#                    {% for ue in bloc_ue.ues %} #}
+    {#                        <span class="badge bg-primary">{{ ue.label }}</span> #}
+    {#                    {% endfor %} #}
+    {#                </td> #}
+    {#                <td> #}
+    {#                    <div class="btn-group"> #}
+    {#                        <a id="add-bloc-ue" #}
+    {#                           data-action="load-form" data-modal-title="Modifier le bloc UE" #}
+    {#                           data-custom="editBlocUECategory" #}
+    {#                           data-url="{{ path('app_parcours_edit_bloc_ue', {'id': parcours.id, 'blocUE': bloc_ue.id}) }}" #}
+    {#                           data-ajax-target="#list-bloc-ue" #}
+    {#                           class="btn btn-sm btn-primary"> #}
+    {#                            <i class="fa fa-edit"></i> #}
+    {#                        </a> #}
+    {#                        <a id="delete-bloc-ue" #}
+    {#                           data-action="load-form" data-modal-title="Suppression du bloc d'UE" #}
+    {#                           data-url="{{ path('app_parcours_delete_bloc_ue', {'id': parcours.id, 'blocUE': bloc_ue.id}) }}" #}
+    {#                           data-ajax-target="#list-bloc-ue" #}
+    {#                           class="btn btn-sm btn-danger"> #}
+    {#                            <i class="fa fa-trash"></i> #}
+    {#                        </a> #}
+    {#                    </div> #}
+    {#                </td> #}
+    {#            </tr> #}
+    {#        {% endfor %} #}
 {% else %}
     <p>Aucun bloc UE n'a été trouvé.</p>
 {% endif %}

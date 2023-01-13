@@ -20,8 +20,7 @@
             <tr>
                 <th>Id</th>
                 <th>Année de formation</th>
-                <th>Rythme</th>
-                <th>Specialisation</th>
+                <th>Nom du parcours</th>
                 <th>Bloc UEs</th>
                 <th>actions</th>
             </tr>
@@ -31,8 +30,7 @@
             <tr>
                 <td>{{ parcour.id }}</td>
                 <td>{{ parcour.anneeFormation }}</td>
-                <td>{{ parcour.rythme }}</td>
-                <td>{{ parcour.specialisation }}</td>
+                <td>{{ parcour.label }}</td>
                 <td>
                     {% for bloc in parcour.blocUEs %}
                         <span class="badge bg-primary">{{ bloc.blocUECategory.label }}</span>

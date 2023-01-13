@@ -79,8 +79,8 @@ class BlocUE
     public function addUE(UE $UE): self
     {
         if (!$this->UEs->contains($UE)) {
-            $this->UEs->add($UE);
-            $UE->setBlocUEs($this);
+            $this->UEs[] = $UE;
+            $UE->addBlocUE($this);
         }
 
         return $this;
@@ -89,10 +89,7 @@ class BlocUE
     public function removeUE(UE $UE): self
     {
         if ($this->UEs->removeElement($UE)) {
-            // set the owning side to null (unless already changed)
-            if ($UE->getBlocUEs() === $this) {
-                $UE->setBlocUEs(null);
-            }
+            $UE->removeBlocUE($this);
         }
 
         return $this;

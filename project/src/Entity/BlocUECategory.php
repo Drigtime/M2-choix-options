@@ -19,7 +19,7 @@ class BlocUECategory
     #[ORM\Column(length: 100)]
     private ?string $label = null;
 
-    #[ORM\OneToMany(mappedBy: 'blocUECategory', targetEntity: UE::class)]
+    #[ORM\ManyToMany(targetEntity: UE::class, mappedBy: 'blocUECategories')]
     private Collection $uEs;
 
     public function __construct()
@@ -61,7 +61,7 @@ class BlocUECategory
     {
         if (!$this->uEs->contains($uE)) {
             $this->uEs->add($uE);
-            $uE->setBlocUECategory($this);
+            $uE->addBlocUECategory($this);
         }
 
         return $this;
@@ -70,12 +70,10 @@ class BlocUECategory
     public function removeUE(UE $uE): self
     {
         if ($this->uEs->removeElement($uE)) {
-            // set the owning side to null (unless already changed)
-            if ($uE->getBlocUECategory() === $this) {
-                $uE->setBlocUECategory(null);
-            }
+            $uE->removeBlocUECategory($this);
         }
 
         return $this;
     }
+
 }

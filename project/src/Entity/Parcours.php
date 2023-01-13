@@ -18,16 +18,13 @@ class Parcours
     #[ORM\ManyToOne(inversedBy: 'parcours')]
     private ?AnneeFormation $anneeFormation = null;
 
-    #[ORM\ManyToOne(inversedBy: 'parcours')]
-    private ?Rythme $rythme = null;
-
-    #[ORM\ManyToOne(inversedBy: 'parcours')]
-    private ?Specialisation $specialisation = null;
+    #[ORM\Column]
+    private ?string $label;
 
     #[ORM\OneToMany(mappedBy: 'parcours', targetEntity: Groupe::class)]
     private Collection $groupes;
 
-    #[ORM\OneToMany(mappedBy: 'parcours', targetEntity: BlocUE::class)]
+    #[ORM\OneToMany(mappedBy: 'parcours', targetEntity: BlocUE::class, cascade: ['persist', 'remove'])]
     private Collection $blocUEs;
 
     #[ORM\OneToMany(mappedBy: 'parcours', targetEntity: CampagneChoix::class)]
@@ -46,7 +43,7 @@ class Parcours
 
     public function __toString(): string
     {
-        return $this->getAnneeFormation()->getLabel() . ' ' . $this->getRythme()->getLabel() . ' ' . $this->getSpecialisation()->getLabel();
+        return $this->getAnneeFormation()->getLabel();
     }
 
     public function getId(): ?int
@@ -66,28 +63,20 @@ class Parcours
         return $this;
     }
 
-    public function getRythme(): ?Rythme
+    /**
+     * @return string|null
+     */
+    public function getLabel(): ?string
     {
-        return $this->rythme;
+        return $this->label;
     }
 
-    public function setRythme(?Rythme $rythme): self
+    /**
+     * @param string|null $label
+     */
+    public function setLabel(?string $label): void
     {
-        $this->rythme = $rythme;
-
-        return $this;
-    }
-
-    public function getSpecialisation(): ?Specialisation
-    {
-        return $this->specialisation;
-    }
-
-    public function setSpecialisation(?Specialisation $specialisation): self
-    {
-        $this->specialisation = $specialisation;
-
-        return $this;
+        $this->label = $label;
     }
 
     /**
@@ -132,6 +121,7 @@ class Parcours
     {
         if (!$this->blocUEs->contains($blocUE)) {
             $this->blocUEs->add($blocUE);
+            $blocUE->setParcours($this);
         }
 
         return $this;

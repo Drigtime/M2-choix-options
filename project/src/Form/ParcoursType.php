@@ -17,24 +17,29 @@ class ParcoursType extends AbstractType
     {
         $builder
             ->add('anneeFormation', null, [
-                'label' => 'Année de formation',
+                'label' => 'form.parcours.anneeFormation',
                 'placeholder' => false
             ])
-            ->add('rythme', null, [
-                'label' => 'Rythme',
-                'placeholder' => false
+            ->add('label', null, [
+                'label' => 'form.parcours.label',
             ])
-            ->add('specialisation', null, [
-                'label' => 'Spécialisation',
-                'placeholder' => false
-            ])
-            ->add('etudiants', EntityType::class, [
-                'class' => Etudiant::class,
-                'label' => 'Etudiants',
-                'multiple' => true,
-                'expanded' => true,
+            ->add('blocUEs', CollectionType::class, [
+                'entry_type' => BlocUEType::class,
+                'label' => false,
+                'entry_options' => [
+                    'label' => false,
+                ],
+                'allow_add' => true,
+                'allow_delete' => true,
                 'by_reference' => false,
             ])
+//            ->add('etudiants', EntityType::class, [
+//                'class' => Etudiant::class,
+//                'label' => 'Etudiants',
+//                'multiple' => true,
+//                'expanded' => true,
+//                'by_reference' => false,
+//            ])
         ;
     }
 

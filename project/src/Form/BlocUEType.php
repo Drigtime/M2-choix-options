@@ -19,7 +19,7 @@ class BlocUEType extends AbstractType
     {
         $builder
             ->add('blocUECategory', null, [
-                'label' => 'Catégorie de bloc UE',
+                'label' => 'form.blocUE.blocUECategory',
                 'choice_attr' => function ($choice, $key, $value) {
                     return [
                         'data-ues' => json_encode($choice->getUEs()->map(function ($ue) {
@@ -32,11 +32,11 @@ class BlocUEType extends AbstractType
                 }
             ])
             ->add('ues', EntityType::class, [
+                'label' => 'form.blocUE.ues',
                 'class' => UE::class,
                 'choice_label' => 'label',
                 'multiple' => true,
                 'expanded' => true,
-                'label' => 'UEs',
             ])//            ->add('parcours')
         ;
 
@@ -44,22 +44,24 @@ class BlocUEType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $form = $event->getForm();
             $blocUE = $event->getData();
-            $blocUECategory = $blocUE->getBlocUECategory();
-            if ($blocUECategory) {
-                $form->add('ues', EntityType::class, [
-                    'class' => UE::class,
-                    'choice_label' => 'label',
-                    'multiple' => true,
-                    'expanded' => true,
-                    'label' => 'UEs',
-                    'query_builder' => function (UERepository $er) use ($blocUECategory) {
-                        return $er->createQueryBuilder('u')
-                            ->join('u.blocUECategory', 'b')
-                            ->where('b.id = :blocUECategory')
-                            ->setParameter('blocUECategory', $blocUECategory->getId())
-                            ->orderBy('u.label', 'ASC');
-                    }
-                ]);
+            if ($blocUE) {
+                $blocUECategory = $blocUE->getBlocUECategory();
+                if ($blocUECategory) {
+                    $form->add('ues', EntityType::class, [
+                        'class' => UE::class,
+                        'choice_label' => 'label',
+                        'multiple' => true,
+                        'expanded' => true,
+                        'label' => 'UEs',
+                        'query_builder' => function (UERepository $er) use ($blocUECategory) {
+                            return $er->createQueryBuilder('u')
+                                // ues has many blocUECategory so it is blocUECategories
+                                ->join('u.blocUECategories', 'b')
+                                ->where('b.id = :blocUECategory')
+                                ->setParameter('blocUECategory', $blocUECategory->getId());
+                        }
+                    ]);
+                }
             }
         });
 
@@ -77,7 +79,7 @@ class BlocUEType extends AbstractType
                         'label' => 'UEs',
                         'query_builder' => function (UERepository $er) use ($blocUECategory) {
                             return $er->createQueryBuilder('u')
-                                ->join('u.blocUECategory', 'b')
+                                ->join('u.blocUECategories', 'b')
                                 ->where('b.id = :blocUECategory')
                                 ->setParameter('blocUECategory', $blocUECategory)
                                 ->orderBy('u.label', 'ASC');

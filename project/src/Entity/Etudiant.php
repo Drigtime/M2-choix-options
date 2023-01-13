@@ -27,15 +27,16 @@ class Etudiant
     #[ORM\ManyToOne(targetEntity: Parcours::class, inversedBy: 'etudiants')]
     private ?Parcours $parcours = null;
 
-    #[ORM\ManyToOne(targetEntity: Groupe::class, inversedBy: 'etudiants')]
-    private ?Groupe $groupe = null;
-
     #[ORM\OneToMany(mappedBy: 'etudiant', targetEntity: Choix::class)]
     private Collection $choixes;
+
+    #[ORM\ManyToMany(targetEntity: Groupe::class, mappedBy: 'etudiants')]
+    private Collection $groupes;
 
     public function __construct()
     {
         $this->choixes = new ArrayCollection();
+        $this->groupes = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -96,18 +97,6 @@ class Etudiant
         return $this;
     }
 
-    public function getGroupe(): ?Groupe
-    {
-        return $this->groupe;
-    }
-
-    public function setGroupe(?Groupe $groupe): self
-    {
-        $this->groupe = $groupe;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Choix>
      */
@@ -133,6 +122,33 @@ class Etudiant
             if ($choix->getEtudiant() === $this) {
                 $choix->setEtudiant(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Groupe>
+     */
+    public function getGroupes(): Collection
+    {
+        return $this->groupes;
+    }
+
+    public function addGroupe(Groupe $groupe): self
+    {
+        if (!$this->groupes->contains($groupe)) {
+            $this->groupes->add($groupe);
+            $groupe->addEtudiant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroupe(Groupe $groupe): self
+    {
+        if ($this->groupes->removeElement($groupe)) {
+            $groupe->removeEtudiant($this);
         }
 
         return $this;

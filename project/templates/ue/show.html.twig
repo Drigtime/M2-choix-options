@@ -3,36 +3,48 @@
 {% block title %}UE{% endblock %}
 
 {% block body %}
-    <h1>UE</h1>
+    <div class="d-flex">
+        <div class="flex-grow-1">
+            <h4>UE</h4>
+        </div>
+        <div class="flex-shrink-0">
+            <div class="d-flex gap-2">
+                {{ include('ue/_delete_form.html.twig') }}
+                <a href="{{ path('app_ue_edit', {'id': ue.id}) }}" class="btn btn-sm btn-primary">
+                    <i class="fas fa-edit"></i>
+                    Modifier
+                </a>
+                <a href="{{ path('app_ue_index') }}" class="btn btn-sm btn-primary">
+                    <i class="fas fa-arrow-left"></i>
+                    Retour à la liste de UE
+                </a>
+            </div>
+        </div>
+    </div>
 
     <table class="table">
         <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ ue.id }}</td>
-            </tr>
-            <tr>
-                <th>Label</th>
-                <td>{{ ue.label }}</td>
-            </tr>
-            <tr>
-                <th>Categorie de bloc UE</th>
-                <td>
-                    {% if ue.blocUECategory %}
-                        <a href="{{ path('app_bloc_ue_category_show', {'id': ue.blocUECategory.id}) }}">{{ ue.blocUECategory.label }}</a>
-                    {% endif %}
-                </td>
-            </tr>
-            <tr>
-                <th>Active</th>
-                <td>{{ ue.active ? 'Yes' : 'No' }}</td>
-            </tr>
+        <tr>
+            <th>Id</th>
+            <td>{{ ue.id }}</td>
+        </tr>
+        <tr>
+            <th>Nom</th>
+            <td>{{ ue.label }}</td>
+        </tr>
+        <tr>
+            <th>Categorie de bloc UE</th>
+            <td>
+                {% for categorie in ue.blocUECategories %}
+                    <a href="{{ path('app_bloc_ue_category_show', {'id': categorie.id}) }}">{{ categorie.label }}</a>
+                {% endfor %}
+            </td>
+        </tr>
+        <tr>
+            <th>Actif</th>
+            <td>{{ ue.active ? 'Oui' : 'Non' }}</td>
+        </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('app_ue_index') }}">back to list</a>
-
-    <a href="{{ path('app_ue_edit', {'id': ue.id}) }}">edit</a>
-
-    {{ include('ue/_delete_form.html.twig') }}
 {% endblock %}

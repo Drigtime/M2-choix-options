@@ -21,7 +21,10 @@ class Groupe
     #[ORM\ManyToOne(inversedBy: 'groupes')]
     private ?Parcours $parcours = null;
 
-    #[ORM\OneToMany(mappedBy: 'groupe', targetEntity: Etudiant::class)]
+    #[ORM\ManyToOne(inversedBy: 'groupes')]
+    private ?UE $ue = null;
+
+    #[ORM\ManyToMany(targetEntity: Etudiant::class, inversedBy: 'groupes')]
     private Collection $etudiants;
 
     public function __construct()
@@ -58,6 +61,18 @@ class Groupe
         return $this;
     }
 
+    public function getUe(): ?UE
+    {
+        return $this->ue;
+    }
+
+    public function setUe(?UE $ue): self
+    {
+        $this->ue = $ue;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, Etudiant>
      */
@@ -70,7 +85,6 @@ class Groupe
     {
         if (!$this->etudiants->contains($etudiant)) {
             $this->etudiants->add($etudiant);
-            $etudiant->setGroupe($this);
         }
 
         return $this;
@@ -78,12 +92,7 @@ class Groupe
 
     public function removeEtudiant(Etudiant $etudiant): self
     {
-        if ($this->etudiants->removeElement($etudiant)) {
-            // set the owning side to null (unless already changed)
-            if ($etudiant->getGroupe() === $this) {
-                $etudiant->setGroupe(null);
-            }
-        }
+        $this->etudiants->removeElement($etudiant);
 
         return $this;
     }

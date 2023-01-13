@@ -1,40 +1,78 @@
-{# {% import _self as formMacros %} #}
+{% import _self as formMacros %}
 
-{# {% macro printBlocUE(blocUE) %} #}
-{#    <div class="d-flex pb-2 mb-2 border-bottom" data-bloc-ue> #}
-{#        <div class="flex-grow-1 me-2"> #}
-{#            {{ form_widget(blocUE) }} #}
-{#        </div> #}
-{#        <button type="button" class="btn btn-danger" data-action="delete-bloc-ue"> #}
-{#            <i class="fas fa-trash"></i> #}
-{#        </button> #}
-{#    </div> #}
-{# {% endmacro %} #}
+ {% macro printBlocUE(blocUE) %}
+     <div class="col-12 col-md-6" data-bloc-ue data-index="__name__">
+         <div class="card">
+             <div class="card-header">
+                 <div class="d-flex">
+                     <div class="flex-grow-1">
+                         Bloc UE
+                         n°{{ blocUE.vars.name == "__name__" ? "__name__" : blocUE.vars.name|number_format + 1 }}
+                     </div>
+                     <div class="flex-shrink-0">
+                         <button type="button" class="btn btn-sm btn-danger" data-action="delete-bloc-ue">
+                             <i class="fas fa-trash"></i>
+                         </button>
+                     </div>
+                 </div>
+             </div>
+             <div class="card-body p-2">
+                 {{ form_row(blocUE.blocUECategory, { 'attr': { 'data-ues-container': blocUE.ues.vars.id } }) }}
+                 {{ form_row(blocUE.ues) }}
+             </div>
+         </div>
+     </div>
+ {% endmacro %}
+
+ {% macro printNoBlocUE() %}
+     <div id="no-bloc-ue" class="col-12">
+         <div class="alert alert-info m-0 p-2">
+             Aucun bloc d'UE n'a encore été ajouté.
+         </div>
+     </div>
+ {% endmacro %}
 
 {{ form_start(form) }}
-    {{ form_row(form.anneeFormation) }}
-    {{ form_row(form.rythme) }}
-    {{ form_row(form.specialisation) }}
-    {{ form_row(form.etudiants) }}
+<div class="row">
+    <div class="col">
+        {{ form_row(form.anneeFormation) }}
+    </div>
+    <div class="col">
+        {{ form_row(form.label) }}
+    </div>
+</div>
 
-{# <div class="card"> #}
-{#    <div class="card-header"> #}
-{#        Blocs UE #}
-{#    </div> #}
-{#    <div class="card-body"> #}
-{#        <div id="bloc-ue-list" #}
-{#             data-prototype="{{ formMacros.printBlocUE(form.blocUEs.vars.prototype)|e('html_attr') }}" #}
-{#             data-index="{{ form.blocUEs|length }}"> #}
-{#            {% for blocUE in form.blocUEs %} #}
-{#                {{ formMacros.printBlocUE(blocUE) }} #}
-{#            {% endfor %} #}
-{#        </div> #}
-{#        <button id="add-bloc-ue" type="button" class="btn btn-primary">Ajouter un bloc UE</button> #}
-{#    </div> #}
-{# </div> #}
+<div class="card mb-3">
+    <div class="card-header p-2">
+        <div class="d-flex">
+            <div class="flex-grow-1">
+                Liste des blocs d'UE
+            </div>
+            <div class="flex-shrink-0">
+                <a id="add-bloc-ue" class="btn btn-sm btn-primary">
+                    <i class="fas fa-plus"></i>
+                    Ajouter un bloc d'UE
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div id="list-bloc-ue" class="row g-4"
+             data-prototype="{{ formMacros.printBlocUE(form.blocUEs.vars.prototype)|e('html_attr') }}"
+             data-no-bloc-ue="{{ formMacros.printNoBlocUE()|e('html_attr') }}"
+        >
+            {% if form.blocUEs.vars.value is not empty %}
+                {% for blocUE in form.blocUEs|reverse %}
+                    {{ formMacros.printBlocUE(blocUE) }}
+                {% endfor %}
+            {% else %}
+                {{ formMacros.printNoBlocUE() }}
+            {% endif %}
+        </div>
+    </div>
+</div>
 
-
-<div class="text-end">
+<div class="text-end mb-3">
     <button class="btn btn-sm btn-primary">
         <i class="fas fa-save"></i>
         {{ button_label|default('Enregistrer') }}

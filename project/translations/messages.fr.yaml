@@ -1,3 +1,11 @@
 title: # titre des onglet de page
     base: "Choix d'option MIAGE"
     homepage: 'Accueil'
+form:
+    parcours:
+        anneeFormation: 'Année de formation'
+        label: 'Nom du parcours'
+        blocUEs: 'Blocs UE'
+    blocUE:
+        blocUECategory: 'Catégorie de bloc UE'
+        ues: 'UEs du bloc'

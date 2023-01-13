@@ -7,6 +7,10 @@ main > .container {
   padding: 60px 15px 0;
 }
 
+#layoutSidenav_content {
+  height: calc(100vh - 56px);
+  overflow-y: auto;
+}
 
 //body {
 //    background-color: lightgray;
