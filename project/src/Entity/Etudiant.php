@@ -33,10 +33,14 @@ class Etudiant
     #[ORM\ManyToMany(targetEntity: Groupe::class, mappedBy: 'etudiants')]
     private Collection $groupes;
 
+    #[ORM\OneToMany(mappedBy: 'etudiant', targetEntity: EtudiantUE::class)]
+    private Collection $etudiantUEs;
+
     public function __construct()
     {
         $this->choixes = new ArrayCollection();
         $this->groupes = new ArrayCollection();
+        $this->etudiantUEs = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -149,6 +153,36 @@ class Etudiant
     {
         if ($this->groupes->removeElement($groupe)) {
             $groupe->removeEtudiant($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, EtudiantUE>
+     */
+    public function getEtudiantUEs(): Collection
+    {
+        return $this->etudiantUEs;
+    }
+
+    public function addEtudiantUE(EtudiantUE $etudiantUE): self
+    {
+        if (!$this->etudiantUEs->contains($etudiantUE)) {
+            $this->etudiantUEs->add($etudiantUE);
+            $etudiantUE->setEtudiant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEtudiantUE(EtudiantUE $etudiantUE): self
+    {
+        if ($this->etudiantUEs->removeElement($etudiantUE)) {
+            // set the owning side to null (unless already changed)
+            if ($etudiantUE->getEtudiant() === $this) {
+                $etudiantUE->setEtudiant(null);
+            }
         }
 
         return $this;

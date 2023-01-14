@@ -36,6 +36,9 @@ class UE
     #[ORM\OneToMany(mappedBy: 'ue', targetEntity: Groupe::class)]
     private Collection $groupes;
 
+    #[ORM\OneToMany(mappedBy: 'UE', targetEntity: EtudiantUE::class)]
+    private Collection $etudiantUEs;
+
     public function __construct()
     {
         $this->blocUEs = new ArrayCollection();
@@ -43,6 +46,7 @@ class UE
         $this->choixes = new ArrayCollection();
         $this->blocUECategories = new ArrayCollection();
         $this->groupes = new ArrayCollection();
+        $this->etudiantUEs = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -211,6 +215,36 @@ class UE
             // set the owning side to null (unless already changed)
             if ($groupe->getUe() === $this) {
                 $groupe->setUe(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, EtudiantUE>
+     */
+    public function getEtudiantUEs(): Collection
+    {
+        return $this->etudiantUEs;
+    }
+
+    public function addEtudiantUE(EtudiantUE $etudiantUE): self
+    {
+        if (!$this->etudiantUEs->contains($etudiantUE)) {
+            $this->etudiantUEs->add($etudiantUE);
+            $etudiantUE->setUE($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEtudiantUE(EtudiantUE $etudiantUE): self
+    {
+        if ($this->etudiantUEs->removeElement($etudiantUE)) {
+            // set the owning side to null (unless already changed)
+            if ($etudiantUE->getUE() === $this) {
+                $etudiantUE->setUE(null);
             }
         }
 
