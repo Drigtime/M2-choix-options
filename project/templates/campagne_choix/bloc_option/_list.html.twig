@@ -1,52 +1,28 @@
 {% if bloc_options %}
-    <table class="table">
-        {% for bloc_option in bloc_options %}
-            <tr>
-                <th>{{ bloc_option.blocUE.blocUECategory.label }}</th>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            {% for bloc_option in bloc_options %}
+                <th scope="col">{{ bloc_option.blocUE.blocUECategory.label }} - {{ bloc_option.nbUEChoix }} Choix</th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            {% for bloc_option in bloc_options %}
                 <td>
-                    {% for ue in bloc_option.ue %}
-                        <span class="badge bg-primary">{{ ue.label }}</span>
+                    {% for ue in bloc_option.ues %}
+                        <div>
+                            <a href="{{ path('app_ue_show', {'id': ue.id}) }}">{{ ue.label }}</a>
+                        </div>
                     {% endfor %}
                 </td>
-                <td>
-                    <div class="btn-group">
-                        <a id="add-bloc-option"
-                           data-action="load-form" data-modal-title="Modifier le bloc UE"
-                           data-custom="editBlocOption"
-                           data-url="{{ path('app_campagnechoix_edit_bloc_option', {'id': campagne.id, 'blocOption': bloc_option.id}) }}"
-                           data-ajax-target="#list-bloc-option"
-                           class="btn btn-sm btn-primary">
-                            <i class="fa fa-edit"></i>
-                        </a>
-                        <a id="delete-bloc-option"
-                           data-action="load-form" data-modal-title="Suppression du bloc d'UE"
-                           data-url="{{ path('app_campagnechoix_delete_bloc_option', {'id': campagne.id, 'blocOption': bloc_option.id}) }}"
-                           data-ajax-target="#list-bloc-option"
-                           class="btn btn-sm btn-danger">
-                            <i class="fa fa-trash"></i>
-                        </a>
-                    </div>
-                </td>
-            </tr>
-        {% endfor %}
+            {% endfor %}
+        </tr>
+        </tbody>
     </table>
 {% else %}
-    <p>Aucun bloc UE n'a été trouvé.</p>
+    <div class="alert alert-info">
+        Aucun bloc d'UE n'a été créé pour ce parcours.
+    </div>
 {% endif %}
-{#    <tr> #}
-{#        <td>{{ bloc_ue.id }}</td> #}
-{#        <td>{{ bloc_ue.blocUECategory.label }}</td> #}
-{#        <td> #}
-{#            {% for ue in bloc_ue.UEs %} #}
-{#                <span class="badge bg-primary"> #}
-{#                            <a href="{{ path('app_ue_show', {'id': ue.id}) }}" #}
-{#                               class="text-white text-decoration-none">{{ ue.label }}</a> #}
-{#                        </span> #}
-{#            {% endfor %} #}
-{#        </td> #}
-{#        <td> #}
-{#            <a href="{{ path('app_bloc_ue_show', {'id': bloc_ue.id}) }}">show</a> #}
-{#            <a href="{{ path('app_bloc_ue_edit', {'id': bloc_ue.id}) }}">edit</a> #}
-{#        </td> #}
-{#    </tr> #}
-

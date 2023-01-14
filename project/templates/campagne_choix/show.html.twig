@@ -52,30 +52,8 @@
     </table>
 
 
-    <div class="card">
-        <div class="card-header">
-            <div class="d-flex">
-                <div class="flex-grow-1">
-                    Liste des blocs d'option
-                </div>
-                <div class="flex-shrink-0">
-                    <div class="d-flex gap-2">
-                        <a id="add-bloc-ue"
-                           data-action="load-form" data-modal-title="Ajouter un bloc d'option"
-                           data-url="{{ path('app_campagnechoix_add_bloc_option', {'id': campagne_choix.id}) }}"
-                           data-ajax-target="#list-bloc-option"
-                           class="btn btn-sm btn-primary">
-                            <i class="fas fa-plus"></i>
-                            Ajouter un bloc d'option
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="list-bloc-option" class="card-body">
-            {{ include('campagne_choix/bloc_option/_list.html.twig', {'bloc_options': campagne_choix.blocOptions, 'campagne': campagne_choix}) }}
-        </div>
-    </div>
+    <h5>Liste des blocs options</h5>
+    {{ include('campagne_choix/bloc_option/_list.html.twig', {'bloc_options': campagne_choix.blocOptions, 'campagne': campagne_choix}) }}
 
     {#    </div> #}
 {% endblock %}
