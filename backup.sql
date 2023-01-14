@@ -58,7 +58,7 @@ CREATE TABLE `bloc_option` (
   KEY `IDX_4B83AB8B6648E46A` (`bloc_ue_id`),
   CONSTRAINT `FK_4B83AB8B6648E46A` FOREIGN KEY (`bloc_ue_id`) REFERENCES `bloc_ue` (`id`),
   CONSTRAINT `FK_4B83AB8B81F88642` FOREIGN KEY (`campagne_choix_id`) REFERENCES `campagne_choix` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -73,7 +73,8 @@ INSERT INTO `bloc_option` VALUES
 (22,8,43,1),
 (24,9,43,1),
 (26,10,44,1),
-(27,10,43,1);
+(27,10,43,1),
+(28,7,43,1);
 /*!40000 ALTER TABLE `bloc_option` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -102,13 +103,16 @@ CREATE TABLE `bloc_option_ue` (
 LOCK TABLES `bloc_option_ue` WRITE;
 /*!40000 ALTER TABLE `bloc_option_ue` DISABLE KEYS */;
 INSERT INTO `bloc_option_ue` VALUES
+(18,4),
+(18,5),
 (21,8),
 (21,9),
 (22,4),
 (22,5),
-(26,8),
+(26,9),
 (26,10),
-(27,5);
+(27,5),
+(28,4);
 /*!40000 ALTER TABLE `bloc_option_ue` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -199,6 +203,7 @@ LOCK TABLES `bloc_ue_ue` WRITE;
 INSERT INTO `bloc_ue_ue` VALUES
 (43,4),
 (43,5),
+(43,6),
 (44,8),
 (44,9),
 (44,10);
@@ -307,7 +312,8 @@ INSERT INTO `doctrine_migration_versions` VALUES
 ('DoctrineMigrations\\Version20230113202026','2023-01-13 20:21:03',142),
 ('DoctrineMigrations\\Version20230113202341','2023-01-13 20:24:07',89),
 ('DoctrineMigrations\\Version20230113202623','2023-01-13 20:26:48',71),
-('DoctrineMigrations\\Version20230114010125','2023-01-14 01:04:28',57);
+('DoctrineMigrations\\Version20230114010125','2023-01-14 01:04:28',57),
+('DoctrineMigrations\\Version20230114153954','2023-01-14 15:40:25',148);
 /*!40000 ALTER TABLE `doctrine_migration_versions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -340,6 +346,35 @@ INSERT INTO `etudiant` VALUES
 (2,4,'Varlet','William',''),
 (3,4,'Leturgez','Felix','');
 /*!40000 ALTER TABLE `etudiant` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `etudiant_ue`
+--
+
+DROP TABLE IF EXISTS `etudiant_ue`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `etudiant_ue` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `etudiant_id` int(11) DEFAULT NULL,
+  `ue_id` int(11) DEFAULT NULL,
+  `acquis` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_4C9ADC68DDEAB1A3` (`etudiant_id`),
+  KEY `IDX_4C9ADC6862E883B1` (`ue_id`),
+  CONSTRAINT `FK_4C9ADC6862E883B1` FOREIGN KEY (`ue_id`) REFERENCES `ue` (`id`),
+  CONSTRAINT `FK_4C9ADC68DDEAB1A3` FOREIGN KEY (`etudiant_id`) REFERENCES `etudiant` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `etudiant_ue`
+--
+
+LOCK TABLES `etudiant_ue` WRITE;
+/*!40000 ALTER TABLE `etudiant_ue` DISABLE KEYS */;
+/*!40000 ALTER TABLE `etudiant_ue` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -601,4 +636,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-01-14  2:21:22
+-- Dump completed on 2023-01-14 15:48:27
