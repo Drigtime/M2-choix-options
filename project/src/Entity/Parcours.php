@@ -43,7 +43,7 @@ class Parcours
 
     public function __toString(): string
     {
-        return $this->getAnneeFormation()->getLabel();
+        return $this->getAnneeFormation()->getLabel() . ' - ' . $this->getLabel();
     }
 
     public function getId(): ?int

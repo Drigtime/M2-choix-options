@@ -1,103 +1,85 @@
-// Il y a plusiers étapes à suivre pour créer un formulaire
-// 1. Selectionne du parcours dans la liste déroulante (select) #campagne_choix_parcours
-//    Lorsque l'on sélectionne un parcours, on doit afficher les blocs UEs associés à ce parcours
-//    Pour cela, on va utiliser l'API de Symfony qui va nous permettre de récupérer les blocs UEs
-// 2. Selectionne des blocs UEs dans la liste déroulante (select) #campagne_choix_bloc_option
-//    Lorsque l'on sélectionne un bloc UE, on doit afficher les UEs associés à ce bloc UE
-//    Pour cela, on va utiliser l'API de Symfony qui va nous permettre de récupérer les UEs
+$('#campagne_choix_parcours').on('change', function () {
+    // get the selected option
+    const selectedOption = $(this).find('option:selected');
+    const blocUEs = selectedOption.data('blocs-ue');
 
-import Routing from "fos-router";
+    if (blocUEs.length > 0) {
+        // show the blocs
+        $('#bloc-option-container').show();
+        // empty the blocs select
+        const listBlocUE = $('#list-bloc-ue');
+        listBlocUE.empty();
 
-function selectBlocOptionOnChange() {
-    const $selectUE = $(this).parent().parent().find('select[id$="_UE"]');
-    $selectUE.empty();
-    if (this.value === '') {
-        return;
+        listBlocUE.html(`<div id="no-bloc-ue" class="col-12">
+                <div class="alert alert-info m-0 p-2">
+                    Aucun bloc option n'a encore été ajouté.
+                </div>
+            </div>`);
+    } else {
+        // hide the blocs
+        $('#bloc-option-container').hide();
+    }
+});
+
+$('#add-bloc-ue').on('click', function () {
+    let $container = $('#list-bloc-ue');
+    let newWidget = $container.data('prototype');
+
+    const $noBlocUE = $('#no-bloc-ue');
+    if ($noBlocUE.length > 0) {
+        $noBlocUE.remove();
     }
 
-    $selectUE.attr('disabled', true);
-    $
-        .get(Routing.generate('api_bloc_ue_ues', {blocUE: this.value}), function (data) {
-            $selectUE.empty();
-            data.forEach(function (ue) {
-                $selectUE.append(`<option value="${ue.id}">${ue.label}</option>`);
-            });
+    newWidget = newWidget.replaceAll(/__name__/g, $container.children().length + 1);
+    $container.prepend(newWidget);
+    // trigger change event on the select inside the new widget
+    const $newBlocUE = $container.children().first();
 
-            $selectUE.attr('disabled', false);
-        });
-}
-
-$(document).ready(function () {
-    // On récupère le select #campagne_choix_parcours
-    const $selectParcours = $('#campagne_choix_parcours');
-    $selectParcours.on('change', function () {
-        // if selected option has value
-        if (this.value === '') {
-            $('#campagne_choix_bloc_option').addClass('d-none');
-            $('#bloc-option-list').empty();
-            return;
-        }
-
-        // On grise le select #campagne_choix_bloc_option le temps de la requête AJAX
-        $selectParcours.attr('disabled', true);
-
-        // On récupère l'id du parcours sélectionné
-        let idParcours = $(this).val();
-
-        // On récupère l'url de l'API
-        let url = Routing.generate('api_parours_bloc_ue', {parcours: idParcours});
-
-        // On récupère les blocs UEs associés au parcours sélectionné
-        $
-            .get(url, function (data) {
-                // set data on select
-                $selectParcours.data('blocues', data);
-
-                // on affiche les blocs UEs dans le select #campagne_choix_bloc_option
-                $('#campagne_choix_bloc_option').removeClass('d-none');
-            })
-            .always(function () {
-                // On dégrise le select #campagne_choix_bloc_option
-                $selectParcours.attr('disabled', false);
-            })
-    })
-
-    const $addBlocOptionBtn = $('#add-bloc-option');
-    $addBlocOptionBtn.on('click', function () {
-        const $container = $('#bloc-option-list');
-        let newWidget = $container.data('prototype')
-        const prototypeName = $container.data('prototype-name');
-        const index = $container.children().length;
-        newWidget = newWidget.replace(new RegExp(prototypeName, 'g'), index);
-        // create new element from html string
-        const $newWidget = $(newWidget);
-        // fill campagne_choix_blocOptions_0_blocUE with bloc UEs
-        const $selectBlocOption = $newWidget.find(`#campagne_choix_blocOptions_${index}_blocUE`);
-        $selectBlocOption.empty();
-        const blocUes = $selectParcours.data('blocues');
-        blocUes.forEach(function (blocUE) {
-            $selectBlocOption.append(`<option value="${blocUE.id}">${blocUE.label}</option>`);
-        });
-        // add new element to container
-        $container.append($newWidget);
-
-        // add event listener on delete button
-        $newWidget.find('[data-action="delete-bloc-option"]').on('click', function () {
-            $newWidget.remove();
-        });
-
-        // add event listener on select bloc UE
-        $selectBlocOption.on('change', selectBlocOptionOnChange).trigger('change');
-    })
-
-    // Pour le formulaire d'édition d'une campagne de choix, il faut obtenir tout les campagne_choix_blocOptions_0_blocUE et charger les UEs associés dans campagne_choix_blocOptions_0_UE
-    const $selectBlocOption = $('#bloc-option-list select[id$="_blocUE"]');
-    $selectBlocOption.on('change', selectBlocOptionOnChange);
-    const $deleteBlocOptionBtn = $('#bloc-option-list [data-action="delete-bloc-option"]');
-    $deleteBlocOptionBtn.on('click', function () {
-        // find closest data-bloc-option
-        const $blocOption = $(this).closest('[data-bloc-option]');
-        $blocOption.remove();
+    const $selectBlocUE = $newBlocUE.find('select');
+    // change option based on the selected parcours
+    const selectedParcours = $('#campagne_choix_parcours').find('option:selected');
+    const blocUEs = selectedParcours.data('blocs-ue');
+    $selectBlocUE.empty();
+    blocUEs.forEach(blocUE => {
+        const option = $(`<option value="${blocUE.id}">${blocUE.label}</option>`);
+        option.data('ues', blocUE.ues);
+        $selectBlocUE.append(option);
     });
 
+    $selectBlocUE.trigger('change');
+});
+
+$('#list-bloc-ue').on('click', '[data-action="delete-bloc-ue"]', function () {
+    $(this).closest('[data-bloc-ue]').remove();
+    const $container = $('#list-bloc-ue');
+
+    if ($container.children().length === 0) {
+        const $noBlocUEPrototype = $container.data('no-bloc-ue');
+        $container.append($noBlocUEPrototype);
+    }
+});
+
+$(document).on('change', 'select[id$="_blocUE"]', function () {
+    // list of ue are in the attribute data-ues on the option selected
+    const selectedBlocUECategory = $(this).find('option:selected');
+    const ues = selectedBlocUECategory.data('ues');
+    const $uesContainerId = $(this).data('ues-container');
+    const $uesContainer = $("#" + $uesContainerId);
+
+    const index = $(this).closest('[data-bloc-ue]').data('index');
+
+    $uesContainer.empty();
+
+    if (ues.length > 0) {
+        ues.forEach(function (ue) {
+            $uesContainer.append(`<div class="form-check">
+                                <input type="checkbox" id="campagne_choix_blocOptions_${index}_UEs_${ue.id}" name="campagne_choix[blocOptions][${index}][UEs][]" class="form-check-input" value="${ue.id}">
+                                <label class="form-check-label" for="campagne_choix_blocOptions_${index}_UEs_${ue.id}">${ue.label}</label>
+                            </div>`);
+        });
+    } else {
+        $uesContainer.append(`<div class="alert alert-info" role="alert">
+                                Aucune UE n'est disponible pour cette catégorie
+                            </div>`);
+    }
 });

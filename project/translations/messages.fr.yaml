@@ -1,6 +1,19 @@
 title: # titre des onglet de page
     base: "Choix d'option MIAGE"
     homepage: 'Accueil'
+
+utils: # utilitaires
+    back_to_list: 'Retour à la liste'
+    back: 'Retour'
+    next: 'Suivant'
+    previous: 'Précédent'
+    submit: 'Soumettre'
+    cancel: 'Annuler'
+    save: 'Sauvegarder'
+    delete: 'Supprimer'
+    edit: 'Modifier'
+    add: 'Ajouter'
+
 form:
     parcours:
         anneeFormation: 'Année de formation'
@@ -9,3 +22,11 @@ form:
     blocUE:
         blocUECategory: 'Catégorie de bloc UE'
         ues: 'UEs du bloc'
+    blocOption:
+        blocUE: 'Bloc UE'
+        ues: 'UEs du bloc'
+        nbUEChoix: "Nombre d'UEs à choisir"
+    campagneChoix:
+        dateDebut: 'Date de début'
+        dateFin: 'Date de fin'
+        parcours: 'Parcours'

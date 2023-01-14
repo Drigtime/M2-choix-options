@@ -24,7 +24,7 @@ class UE
     #[ORM\ManyToMany(targetEntity: BlocUE::class, mappedBy: 'UEs')]
     private Collection $blocUEs;
 
-    #[ORM\ManyToMany(targetEntity: BlocOption::class, mappedBy: 'UE')]
+    #[ORM\ManyToMany(targetEntity: BlocOption::class, mappedBy: 'UEs')]
     private Collection $blocOptions;
 
     #[ORM\OneToMany(mappedBy: 'UE', targetEntity: Choix::class)]

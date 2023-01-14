@@ -25,11 +25,11 @@ class BlocOption
     private ?BlocUE $blocUE = null;
 
     #[ORM\ManyToMany(targetEntity: UE::class, inversedBy: 'blocOptions')]
-    private Collection $UE;
+    private Collection $UEs;
 
     public function __construct()
     {
-        $this->UE = new ArrayCollection();
+        $this->UEs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -76,15 +76,15 @@ class BlocOption
     /**
      * @return Collection<int, UE>
      */
-    public function getUE(): Collection
+    public function getUEs(): Collection
     {
-        return $this->UE;
+        return $this->UEs;
     }
 
     public function addUE(UE $UE): self
     {
-        if (!$this->UE->contains($UE)) {
-            $this->UE->add($UE);
+        if (!$this->UEs->contains($UE)) {
+            $this->UEs->add($UE);
         }
 
         return $this;
@@ -92,7 +92,7 @@ class BlocOption
 
     public function removeUE(UE $UE): self
     {
-        $this->UE->removeElement($UE);
+        $this->UEs->removeElement($UE);
 
         return $this;
     }
