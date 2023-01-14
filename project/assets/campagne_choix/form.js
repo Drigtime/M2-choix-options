@@ -92,7 +92,6 @@ $(document).on('change', '#list-bloc-ue select[id$="_blocUE"]', function () {
 
     const index = $(this).closest('[data-bloc-ue]').data('index');
 
-
     if (selectedBlocUECategory.data('listUEs') && selectedBlocUECategory.data('listUEs').children().length > 0) {
         $uesContainer.replaceWith(selectedBlocUECategory.data('listUEs'));
     } else if (ues.length > 0) {

@@ -69,6 +69,10 @@
                             <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                             Accueil
                         </a>
+                        <a class="nav-link" href="{{ path('app_passage_annee') }}">
+                            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                            Passage d'année
+                        </a>
                         {% if is_granted("ROLE_ADMIN") %}
                             <div class="sb-sidenav-menu-heading">Configuration</div>
                             <a class="nav-link" href="{{ path('app_parcours_index') }}">
@@ -79,10 +83,10 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Campagne de choix
                             </a>
-{#                            <a class="nav-link" href="{{ path('app_bloc_ue_index') }}">#}
-{#                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>#}
-{#                                Bloc UE#}
-{#                            </a>#}
+                            {#                            <a class="nav-link" href="{{ path('app_bloc_ue_index') }}"> #}
+                            {#                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div> #}
+                            {#                                Bloc UE #}
+                            {#                            </a> #}
                             <a class="nav-link" href="{{ path('app_bloc_ue_category_index') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Categorie de bloc UE

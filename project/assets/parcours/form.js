@@ -26,18 +26,31 @@ $('#list-bloc-ue').on('click', '[data-action="delete-bloc-ue"]', function () {
     }
 });
 
-$(document).on('change', 'select[id$="_blocUECategory"]', function () {
+$(document).on('change', '#list-bloc-ue select[id$="_blocUECategory"]', function () {
+    const $uesContainerId = $(this).data('ues-container');
+    const $uesContainer = $("#" + $uesContainerId);
+
     // list of ue are in the attribute data-ues on the option selected
     const selectedBlocUECategory = $(this).find('option:selected');
+
+    // store the value of the selected option in a data attribute to later know what was the previous value
+    const previousValue = $(this).data('previousValue');
+    // get option with value "previousValue"
+    const previousBlocUECategory = $(this).find(`option[value="${previousValue}"]`);
+
+    // store $('#bloc-option-container') as a variable on the element previousBlocUECategory to later load it back when the user select the previous option
+    previousBlocUECategory.data('listUEs', $uesContainer.clone());
+
+    $(this).data('previousValue', selectedBlocUECategory.val());
+
     const ues = selectedBlocUECategory.data('ues');
-    const $uesContainerId = $(this).data('ues-container');
-    const $uesContainer = $(`#${$uesContainerId}`);
 
     const index = $(this).closest('[data-bloc-ue]').data('index');
 
-    $uesContainer.empty();
-
-    if (ues.length > 0) {
+    if (selectedBlocUECategory.data('listUEs') && selectedBlocUECategory.data('listUEs').children().length > 0) {
+        $uesContainer.replaceWith(selectedBlocUECategory.data('listUEs'));
+    } else if (ues.length > 0) {
+        $uesContainer.empty();
         ues.forEach(function (ue) {
             $uesContainer.append(`<div class="form-check">
                                 <input type="checkbox" id="parcours_blocUEs_${index}_ues_${ue.id}" name="parcours[blocUEs][${index}][ues][]" class="form-check-input" value="${ue.id}">
@@ -45,6 +58,7 @@ $(document).on('change', 'select[id$="_blocUECategory"]', function () {
                             </div>`);
         });
     } else {
+        $uesContainer.empty();
         $uesContainer.append(`<div class="alert alert-info" role="alert">
                                 Aucune UE n'est disponible pour cette catégorie
                             </div>`);

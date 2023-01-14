@@ -17,7 +17,7 @@
                  </div>
              </div>
              <div class="card-body p-2">
-                 {{ form_row(blocUE.blocUECategory, { 'attr': { 'data-ues-container': blocUE.ues.vars.id } }) }}
+                 {{ form_row(blocUE.blocUECategory, { 'attr': { 'data-ues-container': blocUE.ues.vars.id, 'data-previous-value': blocUE.blocUECategory.vars.value } }) }}
                  {{ form_row(blocUE.ues) }}
              </div>
          </div>
