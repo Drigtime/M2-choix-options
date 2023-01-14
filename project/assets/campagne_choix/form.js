@@ -1,23 +1,35 @@
-$('#campagne_choix_parcours').on('change', function () {
+$('#campagne_choix_parcours').on('change', function (event) {
+    const $blocOptionContainer = $('#bloc-option-container');
+    const $listBlocUE = $('#list-bloc-ue');
+
     // get the selected option
     const selectedOption = $(this).find('option:selected');
+    // store the value of the selected option in a data attribute to later know what was the previous value
+    const previousValue = $(this).data('previousValue');
+    // get option with value "previousValue"
+    const previousOption = $(this).find(`option[value="${previousValue}"]`);
+
+    // store $('#bloc-option-container') as a variable on the element previousOption to later load it back when the user select the previous option
+    previousOption.data('listBlocUE', $listBlocUE.clone());
+
+    $(this).data('previousValue', selectedOption.val());
+
     const blocUEs = selectedOption.data('blocs-ue');
 
-    if (blocUEs.length > 0) {
-        // show the blocs
-        $('#bloc-option-container').show();
-        // empty the blocs select
-        const listBlocUE = $('#list-bloc-ue');
-        listBlocUE.empty();
-
-        listBlocUE.html(`<div id="no-bloc-ue" class="col-12">
+    if (selectedOption.data('listBlocUE') && selectedOption.data('listBlocUE').children().length > 0) {
+        $listBlocUE.replaceWith(selectedOption.data('listBlocUE'));
+        $blocOptionContainer.show();
+    } else if (blocUEs.length > 0) {
+        $listBlocUE.empty();
+        $listBlocUE.html(`<div id="no-bloc-ue" class="col-12">
                 <div class="alert alert-info m-0 p-2">
                     Aucun bloc option n'a encore été ajouté.
                 </div>
             </div>`);
+        $blocOptionContainer.show();
     } else {
-        // hide the blocs
-        $('#bloc-option-container').hide();
+        $blocOptionContainer.hide();
+        $listBlocUE.empty();
     }
 });
 
@@ -49,7 +61,7 @@ $('#add-bloc-ue').on('click', function () {
     $selectBlocUE.trigger('change');
 });
 
-$('#list-bloc-ue').on('click', '[data-action="delete-bloc-ue"]', function () {
+$(document).on('click', '#list-bloc-ue [data-action="delete-bloc-ue"]', function () {
     $(this).closest('[data-bloc-ue]').remove();
     const $container = $('#list-bloc-ue');
 
@@ -59,18 +71,32 @@ $('#list-bloc-ue').on('click', '[data-action="delete-bloc-ue"]', function () {
     }
 });
 
-$(document).on('change', 'select[id$="_blocUE"]', function () {
-    // list of ue are in the attribute data-ues on the option selected
-    const selectedBlocUECategory = $(this).find('option:selected');
-    const ues = selectedBlocUECategory.data('ues');
+$(document).on('change', '#list-bloc-ue select[id$="_blocUE"]', function () {
     const $uesContainerId = $(this).data('ues-container');
     const $uesContainer = $("#" + $uesContainerId);
 
+    // list of ue are in the attribute data-ues on the option selected
+    const selectedBlocUECategory = $(this).find('option:selected');
+
+    // store the value of the selected option in a data attribute to later know what was the previous value
+    const previousValue = $(this).data('previousValue');
+    // get option with value "previousValue"
+    const previousBlocUECategory = $(this).find(`option[value="${previousValue}"]`);
+
+    // store $('#bloc-option-container') as a variable on the element previousBlocUECategory to later load it back when the user select the previous option
+    previousBlocUECategory.data('listUEs', $uesContainer.clone());
+
+    $(this).data('previousValue', selectedBlocUECategory.val());
+
+    const ues = selectedBlocUECategory.data('ues');
+
     const index = $(this).closest('[data-bloc-ue]').data('index');
 
-    $uesContainer.empty();
 
-    if (ues.length > 0) {
+    if (selectedBlocUECategory.data('listUEs') && selectedBlocUECategory.data('listUEs').children().length > 0) {
+        $uesContainer.replaceWith(selectedBlocUECategory.data('listUEs'));
+    } else if (ues.length > 0) {
+        $uesContainer.empty();
         ues.forEach(function (ue) {
             $uesContainer.append(`<div class="form-check">
                                 <input type="checkbox" id="campagne_choix_blocOptions_${index}_UEs_${ue.id}" name="campagne_choix[blocOptions][${index}][UEs][]" class="form-check-input" value="${ue.id}">
@@ -78,6 +104,7 @@ $(document).on('change', 'select[id$="_blocUE"]', function () {
                             </div>`);
         });
     } else {
+        $uesContainer.empty();
         $uesContainer.append(`<div class="alert alert-info" role="alert">
                                 Aucune UE n'est disponible pour cette catégorie
                             </div>`);

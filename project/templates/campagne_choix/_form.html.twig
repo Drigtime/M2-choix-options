@@ -1,4 +1,4 @@
- {% import _self as formMacros %}
+{% import _self as formMacros %}
 
 {# {% macro printBlocOption(blocOption) %} #}
 {#    <div class="card mb-3" data-bloc-option="true"> #}
@@ -36,7 +36,7 @@
                  </div>
              </div>
              <div class="card-body p-2">
-                 {{ form_row(blocOption.blocUE, { 'attr': { 'data-ues-container': blocOption.UEs.vars.id } }) }}
+                 {{ form_row(blocOption.blocUE, { 'attr': { 'data-ues-container': blocOption.UEs.vars.id, 'data-previous-value': blocOption.blocUE.vars.value } }) }}
                  {{ form_row(blocOption.UEs) }}
                  {{ form_row(blocOption.nbUEChoix) }}
              </div>
@@ -61,7 +61,7 @@
         {{ form_row(form.dateFin) }}
     </div>
 </div>
-{{ form_row(form.parcours) }}
+{{ form_row(form.parcours, { 'attr': { 'data-previous-value': form.parcours.vars.value } }) }}
 
 <div id="bloc-option-container" class="card mb-3">
     <div class="card-header p-2">
