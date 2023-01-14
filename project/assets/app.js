@@ -11,12 +11,16 @@ import './styles/app.scss';
 import $ from 'jquery';
 import 'bootstrap';
 
-import {Modal} from 'bootstrap';
+import {Modal, Tooltip} from 'bootstrap';
 
 // set global jQuery variable
 global.$ = global.jQuery = $;
 
 $(document).ready(function () {
+    // Bootstrap 5 assets
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new Tooltip(tooltipTriggerEl))
+
     // Toggle the side navigation
     const sidebarToggle = document.body.querySelector('#sidebarToggle');
     if (sidebarToggle) {
@@ -65,7 +69,7 @@ $(document).ready(function () {
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         </button>
                     </div>
-                    <div class="modal-body
+                    <div class="modal-body">
                         <div class="spinner-border text-primary" role="status">
                             <span class="sr-only">Loading...</span>
                         </div>
