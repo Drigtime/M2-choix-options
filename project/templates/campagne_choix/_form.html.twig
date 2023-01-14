@@ -61,9 +61,9 @@
         {{ form_row(form.dateFin) }}
     </div>
 </div>
-{{ form_row(form.parcours, { 'attr': { 'data-previous-value': form.parcours.vars.value } }) }}
+{{ form_row(form.parcours, { 'attr': { 'data-previous-value': form.parcours.vars.value ? form.parcours.vars.value : (form.parcours.vars.choices|length > 0 ? (form.parcours.vars.choices|first).value : '') } }) }}
 
-<div id="bloc-option-container" class="card mb-3">
+<div id="bloc-option-container" class="card mb-3" style="display: none">
     <div class="card-header p-2">
         <div class="d-flex">
             <div class="flex-grow-1">
@@ -101,4 +101,3 @@
 </div>
 
 {{ form_end(form) }}
-</div>

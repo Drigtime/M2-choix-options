@@ -1,4 +1,4 @@
-$('#campagne_choix_parcours').on('change', function (event) {
+$('#campagne_choix_parcours').on('change', function () {
     const $blocOptionContainer = $('#bloc-option-container');
     const $listBlocUE = $('#list-bloc-ue');
 
@@ -10,13 +10,13 @@ $('#campagne_choix_parcours').on('change', function (event) {
     const previousOption = $(this).find(`option[value="${previousValue}"]`);
 
     // store $('#bloc-option-container') as a variable on the element previousOption to later load it back when the user select the previous option
-    previousOption.data('listBlocUE', $listBlocUE.clone());
+    previousOption.data('listBlocUE', $listBlocUE.clone(true));
 
     $(this).data('previousValue', selectedOption.val());
 
     const blocUEs = selectedOption.data('blocs-ue');
 
-    if (selectedOption.data('listBlocUE') && selectedOption.data('listBlocUE').children().length > 0) {
+    if (selectedOption.data('listBlocUE') && selectedOption.data('listBlocUE').find('.card').length > 0) {
         $listBlocUE.replaceWith(selectedOption.data('listBlocUE'));
         $blocOptionContainer.show();
     } else if (blocUEs.length > 0) {
@@ -31,7 +31,7 @@ $('#campagne_choix_parcours').on('change', function (event) {
         $blocOptionContainer.hide();
         $listBlocUE.empty();
     }
-});
+}).change();
 
 $('#add-bloc-ue').on('click', function () {
     let $container = $('#list-bloc-ue');
