@@ -35,7 +35,7 @@ dumpdb:
 	docker-compose exec db_server mysqldump -u $(MYSQL_USER) --password=$(MYSQL_PASS) $(MYSQL_DB) > backup.sql
 
 importdb:
-	docker-compose exec db_server mysql -u $(MYSQL_USER) --password=$(MYSQL_PASS) $(MYSQL_DB) < backup.sql
+	docker-compose exec -T db_server mysql -u $(MYSQL_USER) --password=$(MYSQL_PASS) $(MYSQL_DB) < backup.sql
 
 cache: start ## Clear the cache
 	docker-compose exec php bin/console c:c
