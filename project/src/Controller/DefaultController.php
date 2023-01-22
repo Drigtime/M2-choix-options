@@ -15,4 +15,10 @@ class DefaultController extends AbstractController
             'controller_name' => 'DefaultController',
         ]);
     }
+
+    #[Route('/maintenance', name: 'maintenance')]
+    public function maintenance(): Response
+    {
+        return $this->render('default/maintenance.html.twig');
+    }
 }
