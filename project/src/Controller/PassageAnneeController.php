@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Etudiant;
 use App\Form\MoveEtudiantType;
+use App\Form\PassageAnneeType;
 use App\Repository\AnneeFormationRepository;
 use App\Repository\EtudiantRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,6 +22,29 @@ class PassageAnneeController extends AbstractController
 
         return $this->render('passage_annee/index.html.twig', [
             'anneeFormation' => $anneeFormation,
+        ]);
+    }
+
+    #[Route('/passage_annee/new', name: 'app_passage_annee_new')]
+    public function new(Request $request, AnneeFormationRepository $anneeFormationRepository): Response
+    {
+        $form = $this->createForm(PassageAnneeType::class);
+        $form->setData([
+            'anneeFormations' => [
+                $anneeFormationRepository->findOneBy(['label' => 'M2']),
+                $anneeFormationRepository->findOneBy(['label' => 'M1']),
+            ]
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            dd($data);
+        }
+
+        return $this->render('passage_annee/new.html.twig', [
+            'form' => $form->createView(),
         ]);
     }
 

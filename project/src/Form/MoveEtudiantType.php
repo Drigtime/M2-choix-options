@@ -2,7 +2,6 @@
 
 namespace App\Form;
 
-use App\Entity\AnneeFormation;
 use App\Entity\Etudiant;
 use App\Entity\Parcours;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;

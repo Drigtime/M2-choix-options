@@ -1,0 +1,96 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+
+{% endblock %}
+
+{% block body %}
+    {# TODO
+        Etape 1 :
+            Pour les M2, faire la distinction entre les éléves qui on obtenu leur année et ceux pour qui ce n'est pas le cas.
+            Aprés avoir fait ca on dois traiter le cas de chaque éléves qui n'as pas reussi, un select avec l'option "redouble" ou "arrête". Si "redouble" est selectionner alors on affiche un formulaire avec les blocUE de l'éléves pour inscrire les blocUEs reussi et non reussi.
+        Etape 2 :
+            Même chose pour les M1, sauf que les M1 passe en M2 alors que les M2 sont eux supprimé de la db.
+    #}
+    <div id="app">
+        {{ form_start(form) }}
+        {#        {{ form_widget(form._token) }} #}
+        {% for anneeFormation in form.anneeFormations %}
+            {#            {{ dump(anneeFormation) }} #}
+            <div class="card mb-4">
+                <div class="card-header">
+                    {{ anneeFormation.vars.value.label }}
+                </div>
+                <div class="card-body">
+                    {% if anneeFormation.children %}
+                        {% set accordionId = loop.index %}
+                        <div class="accordion" id="accordionParcours{{ accordionId }}">
+                            {% for parcours in anneeFormation.parcours %}
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading_{{ accordionId }}_{{ loop.index }}">
+                                        <button class="accordion-button py-2" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#panelsStayOpen-collapse_{{ accordionId }}_{{ loop.index }}"
+                                                aria-expanded="true"
+                                                aria-controls="panelsStayOpen-collapse_{{ accordionId }}_{{ loop.index }}">
+                                            {{ parcours.vars.value.label }}
+                                        </button>
+                                    </h2>
+                                    <div id="panelsStayOpen-collapse_{{ accordionId }}_{{ loop.index }}"
+                                         class="accordion-collapse collapse show"
+                                         aria-labelledby="heading_{{ accordionId }}_{{ loop.index }}">
+                                        <div class="accordion-body">
+                                            <ul>
+                                                {% for etudiant in parcours.etudiants %}
+                                                    <li>
+                                                        <input type="checkbox"
+                                                               name="{{ parcours.vars.full_name }}[etudiant][{{ etudiant.vars.value.id }}]"
+                                                               id="{{ parcours.vars.full_name }}[etudiant][{{ etudiant.vars.value.id }}]"
+                                                               value="{{ etudiant.vars.value.id }}"
+                                                        >
+                                                        <label for="{{ parcours.vars.full_name }}[etudiant][{{ etudiant.vars.value.id }}]">
+                                                            {{ etudiant.vars.value.nom }} {{ etudiant.vars.value.prenom }}
+                                                        </label>
+                                                        <ul>
+                                                            {% for blocUE in parcours.vars.value.blocUEs %}
+                                                                <li>
+                                                                    <input type="checkbox"
+                                                                           name="{{ parcours.vars.full_name }}[blocUE][{{ blocUE.id }}]"
+                                                                           id="{{ parcours.vars.full_name }}[blocUE][{{ blocUE.id }}]"
+                                                                           value="{{ blocUE.id }}"
+                                                                    >
+                                                                    <label for="{{ parcours.vars.full_name }}[blocUE][{{ blocUE.id }}]">
+                                                                        {{ blocUE }}
+                                                                    </label>
+                                                                    <ul>
+                                                                        {% for ue in blocUE.ues %}
+                                                                            <li>
+                                                                                <input type="checkbox"
+                                                                                       name="{{ parcours.vars.full_name }}[blocUE][{{ blocUE.id }}][ue][{{ ue.id }}]"
+                                                                                       id="{{ parcours.vars.full_name }}[blocUE][{{ blocUE.id }}][ue][{{ ue.id }}]"
+                                                                                       value="{{ ue.id }}"
+                                                                                >
+                                                                                <label for="{{ parcours.vars.full_name }}[blocUE][{{ blocUE.id }}][ue][{{ ue.id }}]">
+                                                                                    {{ ue.label }}
+                                                                                </label>
+                                                                            </li>
+                                                                        {% endfor %}
+                                                                    </ul>
+                                                                </li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+

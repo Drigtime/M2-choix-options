@@ -5,7 +5,18 @@
 {% endblock %}
 
 {% block body %}
-    <h5>Liste des années de formation</h5>
+    <div class="d-flex">
+        <div class="flex-grow-1">
+            <h4>Gestion des éléves par parcours</h4>
+        </div>
+        <div class="flex-shrink-0">
+            <a href="{{ path('app_passage_annee_new') }}"
+                    class="btn btn-sm btn-primary">
+                <i class="fas fa-plus"></i>
+                Démarrer un passage d'année
+            </a>
+        </div>
+    </div>
     <div id="list-annee">
         {{ include('passage_annee/_list_annee.html.twig') }}
     </div>
