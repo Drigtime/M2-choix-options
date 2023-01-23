@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Campagnes index{% endblock %}
+
+{% block body %}
+<div class="d-flex">
+	<div class="flex-grow-1">
+		<h4>Liste des campagnes de choix d'options</h4>
+	</div>
+</div>
+
+<table class="table">
+	<thead>
+	<tr>
+		{# <th>Id</th> #}
+		<th>Date de début</th>
+		<th>Date de fin</th>
+		<th>Bloc d'UEs</th>
+		<th>actions</th>
+	</tr>
+	</thead>
+	<tbody>
+	{% for campagne in campagnes %}
+		<tr>
+			{# <td>{{ campagne.id }}</td> #}
+			<td>{{ campagne.dateDebut|date("m/d/Y") }}</td>
+			<td>{{ campagne.dateFin|date("m/d/Y") }}</td>
+			<td>
+				{% for blocOption in campagne.blocOptions %}
+					{% for ue in blocOption.UEs %}
+						{{ ue.label }}</br>
+					{% else %}
+					<p>Pas encore d'UE à choisir</p>
+					{% endfor %}
+					<p>Nbr d'UEs à choisir : {{ blocOption.nbUEChoix }}</p>
+				{% endfor %}
+			</td>
+			<td>
+				<div class="btn-group">
+					{# <a 
+					href="{{ path('app_etudiant_choix_options_show', {'id': campagne.id}) }}"
+						class="btn btn-sm btn-primary">
+						<i class="fa fa-eye"></i>
+					</a> #}
+					<a 
+					href="{{ path('app_etudiant_choix_options_edit', {'id': campagne.id}) }}"
+						class="btn btn-sm btn-primary">
+						<i class="fa fa-edit"></i>
+					</a>
+				</div>
+			</td>
+		</tr>
+	{% else %}
+		<tr>
+			<td colspan="5">Aucune campagne de choix</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+{% endblock %}

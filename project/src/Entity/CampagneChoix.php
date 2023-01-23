@@ -28,13 +28,17 @@ class CampagneChoix
     #[ORM\OneToMany(mappedBy: 'campagneChoix', targetEntity: BlocOption::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $blocOptions;
 
-    #[ORM\OneToMany(mappedBy: 'campagneChoix', targetEntity: Choix::class)]
-    private Collection $choixes;
+    // #[ORM\OneToMany(mappedBy: 'campagneChoix', targetEntity: Choix::class)]
+    // private Collection $choixes;
+
+    #[ORM\OneToMany(mappedBy: 'campagne', targetEntity: ResponseCampagne::class, orphanRemoval: true)]
+    private Collection $responseCampagnes;
 
     public function __construct()
     {
         $this->blocOptions = new ArrayCollection();
-        $this->choixes = new ArrayCollection();
+        // $this->choixes = new ArrayCollection();
+        $this->responseCampagnes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -108,30 +112,60 @@ class CampagneChoix
         return $this;
     }
 
+    // /**
+    //  * @return Collection<int, Choix>
+    //  */
+    // public function getChoixes(): Collection
+    // {
+    //     return $this->choixes;
+    // }
+
+    // public function addChoix(Choix $choix): self
+    // {
+    //     if (!$this->choixes->contains($choix)) {
+    //         $this->choixes->add($choix);
+    //         $choix->setCampagneChoix($this);
+    //     }
+
+    //     return $this;
+    // }
+
+    // public function removeChoix(Choix $choix): self
+    // {
+    //     if ($this->choixes->removeElement($choix)) {
+    //         // set the owning side to null (unless already changed)
+    //         if ($choix->getCampagneChoix() === $this) {
+    //             $choix->setCampagneChoix(null);
+    //         }
+    //     }
+
+    //     return $this;
+    // }
+
     /**
-     * @return Collection<int, Choix>
+     * @return Collection<int, ResponseCampagne>
      */
-    public function getChoixes(): Collection
+    public function getResponseCampagnes(): Collection
     {
-        return $this->choixes;
+        return $this->responseCampagnes;
     }
 
-    public function addChoix(Choix $choix): self
+    public function addResponseCampagne(ResponseCampagne $responseCampagne): self
     {
-        if (!$this->choixes->contains($choix)) {
-            $this->choixes->add($choix);
-            $choix->setCampagneChoix($this);
+        if (!$this->responseCampagnes->contains($responseCampagne)) {
+            $this->responseCampagnes->add($responseCampagne);
+            $responseCampagne->setCampagne($this);
         }
 
         return $this;
     }
 
-    public function removeChoix(Choix $choix): self
+    public function removeResponseCampagne(ResponseCampagne $responseCampagne): self
     {
-        if ($this->choixes->removeElement($choix)) {
+        if ($this->responseCampagnes->removeElement($responseCampagne)) {
             // set the owning side to null (unless already changed)
-            if ($choix->getCampagneChoix() === $this) {
-                $choix->setCampagneChoix(null);
+            if ($responseCampagne->getCampagne() === $this) {
+                $responseCampagne->setCampagne(null);
             }
         }
 

@@ -1,0 +1,57 @@
+{# {% for campagne in campagnes %}
+	{{ campagne.dateDebut|date("m/d/Y") }}
+	{{ campagne.dateFin|date("m/d/Y") }}
+	{% for blocOption in campagne.blocOptions %}
+		{% for ue in blocOption.UEs %}
+			{{ ue.label }}
+			<div class="text-end">
+				{{ form_widget(form) }}
+				<button class="btn btn-sm btn-primary">
+					<i class="fas fa-save"></i>
+					{{ button_label|default('Enregistrer') }}
+				</button>
+			</div>
+		{% endfor %}
+	{% endfor %}
+{% endfor %}
+
+{{ include('etudiant/choix_options/_form.html.twig', {'button_label': 'Mettre à jour'}) }} #}
+
+
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }} - Choix des options
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex">
+        <div class="flex-grow-1">
+            <h4>Ordre de choix de l'UE</h4>
+        </div>
+        {{ campagne.dateDebut|date("m/d/Y") }}
+        {{ campagne.dateFin|date("m/d/Y") }}
+        {% for blocOption in campagne.blocOptions %}
+            {% for ue in blocOption.UEs %}
+                {{ ue.label }}
+                <div class="text-end">
+                 {{ include('etudiant/choix_options/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+                    <button class="btn btn-sm btn-primary">
+                        <i class="fas fa-save"></i>
+                        {{ button_label|default('Enregistrer') }}
+                    </button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        <div class="flex-shrink-0">
+            <div class="d-flex gap-2">
+                <a href="{{ path('app_etudiant_choix_options') }}" class="btn btn-sm btn-primary">
+                    <i class="fas fa-arrow-left"></i>
+                    {{ 'utils.back_to_list'|trans }} des campagnes
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
