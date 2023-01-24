@@ -11,8 +11,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\EtudiantRepository;
 use App\Repository\ResponseCampagneRepository;
 use Symfony\Component\HttpFoundation\Request;
-use App\Form\ChoixType;
-
+use App\Form\Etudiant\ResponseCampagneType;
+use App\Repository\ChoixRepository;
 
 class ChoixOptionsController extends AbstractController
 {
@@ -29,34 +29,58 @@ class ChoixOptionsController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_etudiant_choix_options_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, CampagneChoix $campagne, ResponseCampagneRepository $responseCampagneRepository, EtudiantRepository $etudiantRepository): Response
+    public function edit(Request $request, CampagneChoix $campagne, ResponseCampagneRepository $responseCampagneRepository, EtudiantRepository $etudiantRepository, ChoixRepository $choixRepository): Response
     {
-        $responseCampagne = new ResponseCampagne();
-        $etudiant = $etudiantRepository->findOneBy(['mail' => $this->getUser()->getUserIdentifier()]);            
-        $responseCampagne
-            ->setCampagne($campagne)
-            ->setEtudiant($etudiant);
+        // $responseCampagne = new ResponseCampagne();
+        // $etudiant = $etudiantRepository->findOneBy(['mail' => $this->getUser()->getUserIdentifier()]);            
+        // $responseCampagne
+        //     ->setCampagne($campagne)
+        //     ->setEtudiant($etudiant);
+
+        // foreach($campagne->getBlocOptions() as $blocOption) {
+        //     foreach($blocOption->getUEs() as $ue) {
+        //         $choix = new Choix();
+        //         $choix->setUE($ue);
+        //         $responseCampagne->addChoix($choix);
+        //     }
+        // }
+        
+        // $form = $this->createForm(ResponseCampagneType::class, $responseCampagne);
+        // $form->handleRequest($request);
+
+        // if ($form->isSubmitted() && $form->isValid()) {
+        //     $responseCampagneRepository->save($responseCampagne, true);
+
+        //     return $this->redirectToRoute('app_etudiant_choix_options', [], Response::HTTP_SEE_OTHER);
+        // }
+
+        // return $this->render('etudiant/choix_options/edit.html.twig', [
+        //     'campagne' => $campagne,
+        //     'form' => $form,
+        // ]);
+        // dd($campagne);
 
         foreach($campagne->getBlocOptions() as $blocOption) {
-            foreach($blocOption->getUEs() as $ue) {
+            foreach($blocOption->getUEs() as $index => $ue) {
                 $choix = new Choix();
                 $choix->setUE($ue);
-                $responseCampagne->addChoix($choix);
+                $choix->setOrdre($index);
+                $blocOption->addChoix($choix);
+                // $choixRepository->save($choix, true);
             }
         }
-        
-        $form = $this->createForm(ChoixType::class, $choix);
+
+        $form = $this->createForm(ResponseCampagneType::class, $campagne);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
-            $responseCampagneRepository->save($responseCampagne, true);
-
-            return $this->redirectToRoute('app_etudiant_choix_options', [], Response::HTTP_SEE_OTHER);
+            // $em = $this->getDoctrine()->getManager();
+            // $em->persist($campagne);
+            // $em->flush();
+            return $this->redirectToRoute('campagne_choix_index');
         }
-
         return $this->render('etudiant/choix_options/edit.html.twig', [
-            'campagne' => $campagne,
             'form' => $form,
+            'campagne' => $campagne,
         ]);
     }
 }

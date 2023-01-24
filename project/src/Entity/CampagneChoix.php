@@ -87,6 +87,7 @@ class CampagneChoix
      */
     public function getBlocOptions(): Collection
     {
+        dump("test1");
         return $this->blocOptions;
     }
 

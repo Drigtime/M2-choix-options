@@ -22,6 +22,9 @@ class Choix
     #[ORM\ManyToOne(inversedBy: 'choixes')]
     private ?ResponseCampagne $responseCampagne = null;
 
+    #[ORM\ManyToOne(inversedBy: 'choixes')]
+    private ?BlocOption $blocOption = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -59,6 +62,18 @@ class Choix
     public function setResponseCampagne(?ResponseCampagne $responseCampagne): self
     {
         $this->responseCampagne = $responseCampagne;
+
+        return $this;
+    }
+
+    public function getBlocOption(): ?BlocOption
+    {
+        return $this->blocOption;
+    }
+
+    public function setBlocOption(?BlocOption $blocOption): self
+    {
+        $this->blocOption = $blocOption;
 
         return $this;
     }
