@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: BlocOptionRepository::class)]
-class BlocOption 
+class BlocOption
 // implements ArrayAccess
 {
     #[ORM\Id]
@@ -20,7 +20,7 @@ class BlocOption
     #[ORM\Column]
     private ?int $nbUEChoix = null;
 
-    #[ORM\ManyToOne(inversedBy: 'blocOptions')]
+    #[ORM\ManyToOne(targetEntity: CampagneChoix::class, inversedBy: 'blocOptions')]
     private ?CampagneChoix $campagneChoix = null;
 
     #[ORM\ManyToOne(inversedBy: 'blocOptions')]
