@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Etudiant;
 use App\Form\MoveEtudiantType;
-use App\Form\PassageAnneeType;
+use App\Form\PassageAnnee\M2_Step_1\AnneeFormationType;
 use App\Repository\AnneeFormationRepository;
 use App\Repository\EtudiantRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,19 +28,60 @@ class PassageAnneeController extends AbstractController
     #[Route('/passage_annee/new', name: 'app_passage_annee_new')]
     public function new(Request $request, AnneeFormationRepository $anneeFormationRepository): Response
     {
-        $form = $this->createForm(PassageAnneeType::class);
-        $form->setData([
-            'anneeFormations' => [
-                $anneeFormationRepository->findOneBy(['label' => 'M2']),
-                $anneeFormationRepository->findOneBy(['label' => 'M1']),
-            ]
-        ]);
+        $form = $this->createForm(AnneeFormationType::class, $anneeFormationRepository->findOneBy(['label' => 'M1']));
+//        $form->setData([
+//            'anneeFormations' => [
+//                $anneeFormationRepository->findOneBy(['label' => 'M2']),
+//                $anneeFormationRepository->findOneBy(['label' => 'M1']),
+//            ]
+//        ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            dd($data);
+
+            // Get all Etudiant with valide = "1" (redouble)
+            $redoubles = [];
+            foreach ($form->get('parcours') as $parcours) {
+                foreach ($parcours->get('etudiants') as $etudiant) {
+                    if ($etudiant->get('valide')->getData() === '1') {
+                        $redoubles[] = $etudiant->getData();
+                    }
+                }
+            }
+
+            // Get all Etudiant with valide = "2" (arrête)
+            $arretes = [];
+            foreach ($form->get('parcours') as $parcours) {
+                foreach ($parcours->get('etudiants') as $etudiant) {
+                    if ($etudiant->get('valide')->getData() === '2') {
+                        $arretes[] = $etudiant->getData();
+                    }
+                }
+            }
+
+            // Get all Etudiant with valide = "0" (valide)
+            $valides = [];
+            foreach ($form->get('parcours') as $parcours) {
+                foreach ($parcours->get('etudiants') as $etudiant) {
+                    if ($etudiant->get('valide')->getData() === '0') {
+                        $valides[] = $etudiant->getData();
+                    }
+                }
+            }
+
+            // TODO Suppression des étudiants qui arrêté
+
+            // TODO Formulaire pour indiquer les UE à valider pour les étudiants qui redouble
+
+            // TODO Dans le cas des M2 il faut supprimer les étudiants qui ont validé toutes les UE du parcours
+
+//            dump($form->get('parcours')->get(0)->get('etudiants')->get(0)->get('valide')->getData());
+            dump($redoubles);
+            dump($arretes);
+            dump($valides);
+            die();
         }
 
         return $this->render('passage_annee/new.html.twig', [

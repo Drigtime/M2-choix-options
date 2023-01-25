@@ -1,24 +1,22 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\PassageAnnee\M2_Step_1;
 
+use App\Entity\Parcours;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 
-class PassageAnneeType extends AbstractType
+class ParcoursType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('anneeFormations', CollectionType::class, [
-                'entry_type' => PassageAnneeAnneeFormationType::class,
+            ->add('etudiants', CollectionType::class, [
+                'entry_type' => EtudiantType::class,
                 'entry_options' => ['label' => false],
-                'allow_add' => true,
-                'allow_delete' => true,
-                'by_reference' => false,
                 'label' => false,
             ])
         ;
@@ -27,7 +25,7 @@ class PassageAnneeType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-//            'data_class' => Etudiant::class,
+            'data_class' => Parcours::class,
         ]);
     }
 }

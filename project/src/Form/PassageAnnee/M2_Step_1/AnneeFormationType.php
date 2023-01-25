@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\PassageAnnee\M2_Step_1;
 
 use App\Entity\AnneeFormation;
 use Symfony\Component\Form\AbstractType;
@@ -9,17 +9,14 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 
-class PassageAnneeAnneeFormationType extends AbstractType
+class AnneeFormationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('parcours', CollectionType::class, [
-                'entry_type' => PassageAnneeParcoursType::class,
+                'entry_type' => ParcoursType::class,
                 'entry_options' => ['label' => false],
-                'allow_add' => true,
-                'allow_delete' => true,
-                'by_reference' => false,
                 'label' => false,
             ])
         ;

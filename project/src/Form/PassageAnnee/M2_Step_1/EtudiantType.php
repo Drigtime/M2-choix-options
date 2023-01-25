@@ -1,27 +1,28 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\PassageAnnee\M2_Step_1;
 
-use App\Entity\BlocUE;
 use App\Entity\Etudiant;
-use App\Entity\EtudiantUE;
-use App\Entity\Parcours;
-use App\Entity\UE;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 
-class PassageAnneeEtudiantUEType extends AbstractType
+class EtudiantType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('acquis', null, [
-                'label' => 'Acquis',
+            ->add('valide', ChoiceType::class, [
+                'label' => false,
                 'required' => true,
+                'choices' => [
+                    'Valide' => '0',
+                    'Redouble' => '1',
+                    'Arrête' => '2'
+                ],
+                'mapped' => false,
             ])
         ;
     }
@@ -29,7 +30,7 @@ class PassageAnneeEtudiantUEType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => EtudiantUE::class,
+            'data_class' => Etudiant::class,
         ]);
     }
 }

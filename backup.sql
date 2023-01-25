@@ -333,7 +333,7 @@ CREATE TABLE `etudiant` (
   PRIMARY KEY (`id`),
   KEY `IDX_717E22E36E38C0DB` (`parcours_id`),
   CONSTRAINT `FK_717E22E36E38C0DB` FOREIGN KEY (`parcours_id`) REFERENCES `parcours` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -344,7 +344,47 @@ LOCK TABLES `etudiant` WRITE;
 /*!40000 ALTER TABLE `etudiant` DISABLE KEYS */;
 INSERT INTO `etudiant` VALUES
 (2,4,'Varlet','William',''),
-(3,4,'Leturgez','Felix','');
+(3,4,'Leturgez','Felix',''),
+(4,4,'Ingleton','Amara','aingleton0@salon.com'),
+(5,4,'Clutram','Gunther','gclutram1@mozilla.org'),
+(6,4,'Philippeaux','Cortie','cphilippeaux2@theguardian.com'),
+(7,4,'Mycroft','Carlin','cmycroft3@ycombinator.com'),
+(8,4,'Raspison','Dasya','draspison4@theglobeandmail.com'),
+(9,4,'Colleymore','Hall','hcolleymore5@intel.com'),
+(10,4,'Baudesson','Andras','abaudesson6@timesonline.co.uk'),
+(11,4,'Cartlidge','Colette','ccartlidge7@cnbc.com'),
+(12,4,'Fawloe','Wrennie','wfawloe8@sphinn.com'),
+(13,4,'Fairy','Sallyann','sfairy9@ycombinator.com'),
+(14,4,'Bratten','Jeannie','jbrattena@amazon.co.jp'),
+(15,5,'Mewrcik','Winnah','wmewrcikb@phpbb.com'),
+(16,5,'Peealess','Ashlin','apeealessc@google.com.au'),
+(17,5,'Dunseith','Garv','gdunseithd@ow.ly'),
+(18,5,'McDuall','Huntlee','hmcdualle@answers.com'),
+(19,5,'Pimme','Alayne','apimmef@bigcartel.com'),
+(20,5,'Hufton','Ruddy','rhuftong@nymag.com'),
+(21,5,'Elmer','Rosalynd','relmerh@uiuc.edu'),
+(22,5,'Winterton','Whitney','wwintertoni@xing.com'),
+(23,5,'Carson','Shay','scarsonj@wufoo.com'),
+(24,5,'Treherne','Luke','ltrehernek@behance.net'),
+(25,5,'Mieville','Alexandro','amievillel@seattletimes.com'),
+(26,5,'Labbett','Amalie','alabbettm@oracle.com'),
+(27,5,'Sogg','Daphne','dsoggn@washington.edu'),
+(28,1,'Collip','Adelheid','acollipo@twitpic.com'),
+(29,1,'Fausch','Georgianna','gfauschp@cafepress.com'),
+(30,1,'Deackes','Maggie','mdeackesq@apple.com'),
+(31,1,'Whal','Scarface','swhalr@wired.com'),
+(32,1,'Stronack','Dulci','dstronacks@dion.ne.jp'),
+(33,1,'Izac','Wilone','wizact@github.com'),
+(34,1,'Phateplace','Hasty','hphateplaceu@columbia.edu'),
+(35,1,'McLaughlan','Winston','wmclaughlanv@home.pl'),
+(36,1,'Goodlett','Karlens','kgoodlettw@army.mil'),
+(37,1,'Lebourn','Karoly','klebournx@vimeo.com'),
+(38,1,'Kerins','Jacqui','jkerinsy@yellowpages.com'),
+(39,1,'Teggin','Lynett','ltegginz@360.cn'),
+(40,1,'Lewry','Bond','blewry10@gmpg.org'),
+(41,1,'Fallanche','Jillayne','jfallanche11@discuz.net'),
+(42,1,'Pear','Morten','mpear12@blogger.com'),
+(43,1,'Goade','Alberta','agoade13@latimes.com');
 /*!40000 ALTER TABLE `etudiant` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -490,9 +530,7 @@ LOCK TABLES `parcours` WRITE;
 INSERT INTO `parcours` VALUES
 (1,1,'S1'),
 (4,1,'S2_Alternants'),
-(5,1,'S2_Stagiaires'),
-(9,1,'test33'),
-(10,1,'testtt');
+(5,1,'S2_Stagiaires');
 /*!40000 ALTER TABLE `parcours` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -636,4 +674,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-01-14 15:48:27
+-- Dump completed on 2023-01-25 17:17:07
