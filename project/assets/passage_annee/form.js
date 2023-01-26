@@ -1,31 +1,18 @@
-import {createApp} from 'vue'
+import $ from "jquery";
 
-createApp({
-    delimiters: ['${', '}$'],
-    data() {
-        return {
-            selects: [],
-        };
-    },
-    mounted() {
-        this.selects = document.querySelectorAll('#parcours-table select');
-    },
-    methods: {
-        updateRowColor() {
-            // Iterate over the select elements
-            this.selects.forEach(select => {
-                // Get the parent tr element
-                const tr = select.closest('tr');
-                // Remove the yellow and red class
-                tr.classList.remove('table-warning', 'table-danger');
-                // Check the selected value and add the corresponding class
-                if(select.value === '1'){
-                    tr.classList.add('table-warning');
-                } else if(select.value === '2'){
-                    tr.classList.add('table-danger');
-                }
-            });
-        },
-
+$('#parcours-table select').on('change', function () {
+    const $tr = $(this).closest('tr');
+    $tr.removeClass('table-warning table-danger');
+    if ($(this).val() === '1') {
+        $tr.addClass('table-warning');
+    } else if ($(this).val() === '2') {
+        $tr.addClass('table-danger');
     }
-}).mount('#app')
+});
+
+$("#searchInput").on("keyup search", function () {
+    const value = $(this).val().toLowerCase();
+    $("#parcours-table tbody tr").filter(function () {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+});

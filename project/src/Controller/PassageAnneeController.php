@@ -4,13 +4,15 @@ namespace App\Controller;
 
 use App\Entity\Etudiant;
 use App\Form\MoveEtudiantType;
-use App\Form\PassageAnnee\M2_Step_1\AnneeFormationType;
+use App\Form\PassageAnnee\Step_1\AnneeFormationType as Step1AnneeFormationType;
+use App\Form\PassageAnnee\Step_2\AnneeFormationType as Step2AnneeFormationType;
 use App\Repository\AnneeFormationRepository;
 use App\Repository\EtudiantRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class PassageAnneeController extends AbstractController
@@ -25,16 +27,18 @@ class PassageAnneeController extends AbstractController
         ]);
     }
 
-    #[Route('/passage_annee/new', name: 'app_passage_annee_new')]
-    public function new(Request $request, AnneeFormationRepository $anneeFormationRepository): Response
+    // $anneeFormation is a string like "M2" or "M1"
+    #[Route('/passage_annee/workflow/step/{anneeFormation}', name: 'app_passage_annee_worflow_step_1', requirements: ['anneeFormation' => 'M1|M2'], methods: ['GET', 'POST'])]
+    public function newStep11(Request $request, string $anneeFormation, AnneeFormationRepository $anneeFormationRepository, SessionInterface $session): Response
     {
-        $form = $this->createForm(AnneeFormationType::class, $anneeFormationRepository->findOneBy(['label' => 'M1']));
-//        $form->setData([
-//            'anneeFormations' => [
-//                $anneeFormationRepository->findOneBy(['label' => 'M2']),
-//                $anneeFormationRepository->findOneBy(['label' => 'M1']),
-//            ]
-//        ]);
+        $etudiants = [];
+        foreach ($anneeFormationRepository->findOneBy(['label' => $anneeFormation])->getParcours() as $parcours) {
+            foreach ($parcours->getEtudiants() as $etudiant) {
+                $etudiants[] = $etudiant;
+            }
+        }
+
+        $form = $this->createForm(Step1AnneeFormationType::class, ['etudiants' => $etudiants]);
 
         $form->handleRequest($request);
 
@@ -43,49 +47,63 @@ class PassageAnneeController extends AbstractController
 
             // Get all Etudiant with valide = "1" (redouble)
             $redoubles = [];
-            foreach ($form->get('parcours') as $parcours) {
-                foreach ($parcours->get('etudiants') as $etudiant) {
-                    if ($etudiant->get('valide')->getData() === '1') {
-                        $redoubles[] = $etudiant->getData();
-                    }
+            foreach ($form->get('etudiants') as $etudiant) {
+                if ($etudiant->get('statut')->getData() === '1') {
+                    $redoubles[] = $etudiant->getData();
                 }
             }
 
-            // Get all Etudiant with valide = "2" (arrête)
-            $arretes = [];
-            foreach ($form->get('parcours') as $parcours) {
-                foreach ($parcours->get('etudiants') as $etudiant) {
-                    if ($etudiant->get('valide')->getData() === '2') {
-                        $arretes[] = $etudiant->getData();
-                    }
-                }
+            $session->set("form_step_{$anneeFormation}_1_data", $data);
+            $session->set("form_step_{$anneeFormation}_1_redoublants", $redoubles);
+
+            if (count($redoubles) > 0) {
+                return $this->redirectToRoute('app_passage_annee_worflow_step_1_2', ['anneeFormation' => $anneeFormation]);
             }
 
-            // Get all Etudiant with valide = "0" (valide)
-            $valides = [];
-            foreach ($form->get('parcours') as $parcours) {
-                foreach ($parcours->get('etudiants') as $etudiant) {
-                    if ($etudiant->get('valide')->getData() === '0') {
-                        $valides[] = $etudiant->getData();
-                    }
-                }
+            if ($anneeFormation === 'M1') {
+                $this->addFlash('success', 'Les étudiants ont bien été déplacés');
+                return $this->redirectToRoute('app_passage_annee');
             }
 
-            // TODO Suppression des étudiants qui arrêté
-
-            // TODO Formulaire pour indiquer les UE à valider pour les étudiants qui redouble
-
-            // TODO Dans le cas des M2 il faut supprimer les étudiants qui ont validé toutes les UE du parcours
-
-//            dump($form->get('parcours')->get(0)->get('etudiants')->get(0)->get('valide')->getData());
-            dump($redoubles);
-            dump($arretes);
-            dump($valides);
-            die();
+            return $this->redirectToRoute('app_passage_annee_worflow_step_1', ['anneeFormation' => 'M1']);
         }
 
-        return $this->render('passage_annee/new.html.twig', [
+        return $this->render('passage_annee/form_step_1_1.html.twig', [
             'form' => $form->createView(),
+            'anneeFormation' => $anneeFormation,
+        ]);
+    }
+
+    #[Route('/passage_annee/workflow/step/{anneeFormation}/redoublants', name: 'app_passage_annee_worflow_step_1_2', requirements: ['anneeFormation' => 'M1|M2'], methods: ['GET', 'POST'])]
+    public function newStep12(Request $request, string $anneeFormation, EtudiantRepository $etudiantRepository, SessionInterface $session): Response
+    {
+        $dataEtudiants = $session->get("form_step_{$anneeFormation}_1_redoublants");
+        $etudiants = [];
+        foreach ($dataEtudiants as $dataEtudiant) {
+            $etudiants[] = $etudiantRepository->find($dataEtudiant->getId());
+        }
+
+        $form = $this->createForm(Step2AnneeFormationType::class, ['etudiants' => $etudiants]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+
+            $session->set("form_step_{$anneeFormation}_2_data", $data);
+            $session->set("form_step_{$anneeFormation}_2_redoublants", $data['etudiants']);
+
+            if ($anneeFormation === 'M1') {
+                $this->addFlash('success', 'Les étudiants ont bien été déplacés');
+                return $this->redirectToRoute('app_passage_annee');
+            }
+
+            return $this->redirectToRoute('app_passage_annee_worflow_step_1', ['anneeFormation' => 'M1']);
+        }
+
+        return $this->render('passage_annee/form_step_1_2.html.twig', [
+            'form' => $form->createView(),
+            'anneeFormation' => $anneeFormation,
         ]);
     }
 

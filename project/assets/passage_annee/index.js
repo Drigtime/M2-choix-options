@@ -4,14 +4,15 @@ import $ from "jquery";
 // for every checkbox in the document that have data-check-all attribute, add a click event listener to check or uncheck all checkboxes in the container
 $(document).on('click', '[data-check-all]', function () {
     const $container = $(this).closest('table').find('[data-check-all-container]');
-    const $checkboxes = $container.find('input[type="checkbox"]');
+    const $checkboxes = $container.find(':checkbox');
     $checkboxes.prop('checked', $(this).prop('checked'));
+    $checkboxes.trigger('change');
 })
 
 // On any checkbox change, enable or disable the button
-$(document).on('change', 'input[type="checkbox"]', function () {
+$(document).on('change', ':checkbox', function () {
     const $container = $(this).closest('table').find('[data-check-all-container]');
-    const $checkboxes = $container.find('input[type="checkbox"]');
+    const $checkboxes = $container.find(':checkbox');
     const $moveButton = $container.closest('div.tab-pane').find('[data-move-selected]');
     if ($checkboxes.filter(':checked').length > 0) {
         $moveButton.toggleClass('disabled', false)
@@ -20,11 +21,34 @@ $(document).on('change', 'input[type="checkbox"]', function () {
     }
 })
 
+$(document).on('change', 'tbody :checkbox', function() {
+    // if checked, row turn green and if unchecked, row return to normal
+    if ($(this).prop('checked')) {
+        $(this).closest('tr').addClass('table-info');
+    } else {
+        $(this).closest('tr').removeClass('table-info');
+    }
+})
+
+let lastChecked = null;
+
+$(document).on('click', 'tbody :checkbox', function(e) {
+    if (e.shiftKey) {
+        const checkboxesElements = $('tbody :checkbox');
+        const start = checkboxesElements.index(this);
+        const end = checkboxesElements.index(lastChecked);
+        const checkboxes = checkboxesElements.slice(Math.min(start, end), Math.max(start, end) + 1);
+        checkboxes.prop('checked', lastChecked.checked);
+        checkboxes.trigger('change');
+    }
+    lastChecked = this;
+});
+
 $(document).on('click', '[data-move-selected]', function (e) {
     e.preventDefault();
 
     const $container = $(this).closest('div.tab-pane').find('[data-check-all-container]');
-    const $checkboxes = $container.find('input[type="checkbox"]');
+    const $checkboxes = $container.find(':checkbox');
     const $selected = $checkboxes.filter(':checked');
 
     const url = $(this).data('url');

@@ -21,7 +21,7 @@
                 <th>Id</th>
                 <th>Nom</th>
                 <th>UEs</th>
-                <th>actions</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -29,7 +29,7 @@
             <tr>
                 <td>{{ bloc_ue.id }}</td>
                 <td>{{ bloc_ue.blocUECategory.label }}</td>
-                <td>
+                <td class="text-end">
                     {% for ue in bloc_ue.UEs %}
                         <span class="badge bg-primary">
                             <a href="{{ path('app_ue_show', {'id': ue.id}) }}" class="text-white text-decoration-none">{{ ue.label }}</a>

@@ -20,7 +20,7 @@
             <tr>
                 <th>Id</th>
                 <th>Nom</th>
-                <th>actions</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -28,7 +28,7 @@
             <tr>
                 <td>{{ bloc_u_e_category.id }}</td>
                 <td>{{ bloc_u_e_category.label }}</td>
-                <td>
+                <td class="text-end">
                     <div class="btn-group">
                         <a href="{{ path('app_bloc_ue_category_show', {'id': bloc_u_e_category.id}) }}"
                            class="btn btn-sm btn-primary">

@@ -6,12 +6,10 @@
 
 {% block body %}
     <div class="d-flex">
-        <div class="flex-grow-1">
-            <h4>Gestion des éléves par parcours</h4>
-        </div>
-        <div class="flex-shrink-0">
-            <a href="{{ path('app_passage_annee_new') }}"
-                    class="btn btn-sm btn-primary">
+        <h4>Gestion des éléves par parcours</h4>
+        <div class="ms-auto">
+            <a href="{{ path('app_passage_annee_worflow_step_1', {'anneeFormation': 'M2'}) }}"
+               class="btn btn-sm btn-primary">
                 <i class="fas fa-plus"></i>
                 Démarrer un passage d'année
             </a>
