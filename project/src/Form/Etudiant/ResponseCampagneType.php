@@ -15,8 +15,10 @@ class ResponseCampagneType extends AbstractType
     {
         $builder->add('blocOptions', CollectionType::class, [
             'entry_type' => BlocOptionType::class,
+            'entry_options' => ['label' => false],
             'allow_add' => false,
             'allow_delete' => false,
+            'label' => false,
         ]);
     }
 

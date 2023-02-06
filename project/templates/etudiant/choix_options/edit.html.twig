@@ -1,23 +1,3 @@
-{# {% for campagne in campagnes %}
-	{{ campagne.dateDebut|date("m/d/Y") }}
-	{{ campagne.dateFin|date("m/d/Y") }}
-	{% for blocOption in campagne.blocOptions %}
-		{% for ue in blocOption.UEs %}
-			{{ ue.label }}
-			<div class="text-end">
-				{{ form_widget(form) }}
-				<button class="btn btn-sm btn-primary">
-					<i class="fas fa-save"></i>
-					{{ button_label|default('Enregistrer') }}
-				</button>
-			</div>
-		{% endfor %}
-	{% endfor %}
-{% endfor %}
-
-{{ include('etudiant/choix_options/_form.html.twig', {'button_label': 'Mettre à jour'}) }} #}
-
-
 {% extends 'base.html.twig' %}
 
 {% block title %}
@@ -26,46 +6,54 @@
 {% endblock %}
 
 {% block body %}
-	<div class="d-flex">
-		<div class="flex-grow-1">
-			<h4>Ordre de choix de l'UE</h4>
-		</div>
-		{{ campagne.dateDebut|date("m/d/Y") }}
-		{{ campagne.dateFin|date("m/d/Y") }}
-		{# {{ campagne.blocOptions }} #}
-		{{ form_start(form) }}
-        {# {{ dump(blocOptions) }} #}
-		{# {% for blocOption in form.blocOptions %} #}
-			{# {% for choix in blocOption.children %}
-				{{ dump(choix.vars)}}
-				{{ choix.vars.value.ue.label }}
-				{{ form_widget(choix) }} #}
-			{# {% endfor %} #}
-		{# {% endfor %} #}
-		{{ form_end(form) }}
-
-
-		{# {{ include('etudiant/choix_options/_form.html.twig', {'button_label': 'Mettre à jour'}) }} #}
-		{# {% for blocOption in campagne.blocOptions %}
-																            {% for ue in blocOption.UEs %}
-																                {{ ue.label }}
-																                <div class="text-end">
-																                    <button class="btn btn-sm btn-primary">
-																                        <i class="fas fa-save"></i>
-																                        {{ button_label|default('Enregistrer') }}
-																                    </button>
-																                </div>
-																            {% endfor %}
-																        {% endfor %} #}
-			<div class="flex-shrink-0"> <div class="d-flex gap-2">
-				<a href="{{ path('app_etudiant_choix_options') }}" class="btn btn-sm btn-primary">
-					<i class="fas fa-arrow-left"></i>
-					{{ 'utils.back_to_list'|trans }}
-					des campagnes
-				</a>
-			</div>
-		</div>
-	</div>
-
-
+  {# <div class="card"> #}
+    {# <div class="card-header">
+      <h4>Ordre de choix de l'UE</h4>
+    </div> #}
+    {# <div class="card-body"> #}
+    <div class="row">
+    <div class="col-md-6">
+      <p style="text-align: center; font-weight: bold; margin-top: 2em">Début de la campagne : {{ campagne.dateDebut|date("m/d/Y") }}</p>
+    </div>
+    <div class="col-md-6">
+      <p style="text-align: center; font-weight: bold; margin-top: 2em">Fin de la campagne : {{ campagne.dateFin|date("m/d/Y") }}</p>
+    </div>
+    </div>
+      {{ form_start(form) }}
+        {% for blocOption in form.blocOptions %}
+          <div class="card my-3">
+            <div class="card-header">
+              {{ blocOption.vars.value.blocUE.blocUECategory.label }}
+            </div>
+            <div class="card-body">
+              {% for choixes in blocOption %}
+                  {% for choix in choixes %}                  
+                    <div class="card my-3">
+                      <div class="form-group">
+                        <div class="card-header">
+                          {{ choix.vars.data.UE.label }}
+                        </div>
+                        <div class="card-body"> 
+                          {{ form_row(choix) }}
+                            <button class="btn btn-sm btn-primary">
+                              <i class="fas fa-save"></i>
+                              {{ button_label|default('Enregistrer') }}
+                            </button>
+                        </div>
+                      </div>
+                    </div>
+                  {% endfor %}
+              {% endfor %}
+            </div>
+          </div>
+        {% endfor %}
+      {{ form_end(form) }}
+    {# </div> #}
+    <div class="card-footer">
+      <a href="{{ path('app_etudiant_choix_options') }}" class="btn btn-primary">
+        <i class="fas fa-arrow-left"></i>
+        {{ 'utils.back_to_list'|trans }} des campagnes
+      </a>
+    </div>
+  {# </div> #}
 {% endblock %}

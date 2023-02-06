@@ -31,35 +31,6 @@ class ChoixOptionsController extends AbstractController
     #[Route('/{id}/edit', name: 'app_etudiant_choix_options_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, CampagneChoix $campagne, ResponseCampagneRepository $responseCampagneRepository, EtudiantRepository $etudiantRepository, ChoixRepository $choixRepository): Response
     {
-        // $responseCampagne = new ResponseCampagne();
-        // $etudiant = $etudiantRepository->findOneBy(['mail' => $this->getUser()->getUserIdentifier()]);            
-        // $responseCampagne
-        //     ->setCampagne($campagne)
-        //     ->setEtudiant($etudiant);
-
-        // foreach($campagne->getBlocOptions() as $blocOption) {
-        //     foreach($blocOption->getUEs() as $ue) {
-        //         $choix = new Choix();
-        //         $choix->setUE($ue);
-        //         $responseCampagne->addChoix($choix);
-        //     }
-        // }
-        
-        // $form = $this->createForm(ResponseCampagneType::class, $responseCampagne);
-        // $form->handleRequest($request);
-
-        // if ($form->isSubmitted() && $form->isValid()) {
-        //     $responseCampagneRepository->save($responseCampagne, true);
-
-        //     return $this->redirectToRoute('app_etudiant_choix_options', [], Response::HTTP_SEE_OTHER);
-        // }
-
-        // return $this->render('etudiant/choix_options/edit.html.twig', [
-        //     'campagne' => $campagne,
-        //     'form' => $form,
-        // ]);
-        // dd($campagne);
-
         foreach($campagne->getBlocOptions() as $blocOption) {
             foreach($blocOption->getUEs() as $index => $ue) {
                 $choix = new Choix();

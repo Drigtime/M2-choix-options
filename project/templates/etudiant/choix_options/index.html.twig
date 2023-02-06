@@ -3,58 +3,42 @@
 {% block title %}Campagnes index{% endblock %}
 
 {% block body %}
-<div class="d-flex">
-	<div class="flex-grow-1">
-		<h4>Liste des campagnes de choix d'options</h4>
-	</div>
-</div>
-
-<table class="table">
-	<thead>
-	<tr>
-		{# <th>Id</th> #}
-		<th>Date de début</th>
-		<th>Date de fin</th>
-		<th>Bloc d'UEs</th>
-		<th>actions</th>
-	</tr>
-	</thead>
-	<tbody>
-	{% for campagne in campagnes %}
-		<tr>
-			{# <td>{{ campagne.id }}</td> #}
-			<td>{{ campagne.dateDebut|date("m/d/Y") }}</td>
-			<td>{{ campagne.dateFin|date("m/d/Y") }}</td>
-			<td>
-				{% for blocOption in campagne.blocOptions %}
-					{% for ue in blocOption.UEs %}
-						{{ ue.label }}</br>
-					{% else %}
-					<p>Pas encore d'UE à choisir</p>
-					{% endfor %}
-					<p>Nbr d'UEs à choisir : {{ blocOption.nbUEChoix }}</p>
-				{% endfor %}
-			</td>
-			<td>
-				<div class="btn-group">
-					{# <a 
-					href="{{ path('app_etudiant_choix_options_show', {'id': campagne.id}) }}"
-						class="btn btn-sm btn-primary">
-						<i class="fa fa-eye"></i>
-					</a> #}
-					<a 
-					href="{{ path('app_etudiant_choix_options_edit', {'id': campagne.id}) }}"
-						class="btn btn-sm btn-primary">
-						<i class="fa fa-edit"></i>
-					</a>
-				</div>
-			</td>
-		</tr>
+  <h4>Liste des campagnes de choix d'options</h4>
+  <div class="row">
+    {% for campagne in campagnes %}
+      <div class="col-sm-12 col-md-12 col-lg-6 col-xl-4">
+        <div class="card my-3">
+          <div class="card-header">
+            <h5>Campagne du {{ campagne.dateDebut|date("m/d/Y") }} au {{ campagne.dateFin|date("m/d/Y") }}</h5>
+          </div>
+          <div class="card-body">
+            {% for blocOption in campagne.blocOptions %}
+              <div class="card sub-card my-3">
+                <div class="card-header">
+                  <h6>{{ blocOption.blocUE.blocUECategory.label }}</h6>
+                  Nombre d'UE à choisir : {{ blocOption.nbUEChoix }}
+                </div>
+                <div class="card-body">
+                  {% for ue in blocOption.UEs %}
+                    {{ ue.label }}</br>
+                  {% else %}
+                    <p>Pas encore d'UE à choisir</p>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+          <div class="card-footer">
+            <div class="btn-group">
+            	<a href="{{ path('app_etudiant_choix_options_edit', {'id': campagne.id}) }}" class="btn btn-primary">
+					<i class="fa fa-edit"></i> Modifier mes choix
+				</a>
+			</div>
+		  </div>
+	  	</div>
+	  </div>
 	{% else %}
-		<tr>
-			<td colspan="5">Aucune campagne de choix</td>
-		</tr>
+	<p>Aucune campagne de choix</p>
 	{% endfor %}
-	</tbody>
-</table>
+  </div>
 {% endblock %}

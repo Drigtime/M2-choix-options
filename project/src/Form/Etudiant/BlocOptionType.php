@@ -15,8 +15,10 @@ class BlocOptionType extends AbstractType
     {
         $builder->add('choixes', CollectionType::class, [
             'entry_type' => ChoixType::class,
+            'entry_options' => ['label' => false],
             'allow_add' => false,
             'allow_delete' => false,
+            'label' => false,
         ]);
     }
 
