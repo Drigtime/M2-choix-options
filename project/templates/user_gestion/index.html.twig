@@ -1,60 +1,45 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello UserGestionController!
-{% endblock %}
+{% block title %}UserGestion index{% endblock %}
 
 {% block body %}
-	<h1>Etudiants</h1>
+    <h1>Import des etudiants</h1>
+     {{ form_start(form, {'attr':{'novalidate':'novalidate'}})}}
+    {{form_label(form.fileImport)}}
+    {{form_widget(form.fileImport)}}
+    {{form_errors(form.fileImport)}}
+    <input type="submit" class="btn btn-primary" value="Valider">
+     {{ form_end(form)}}
 
-	<div class="container-fluid">
-		<div class="row justify-content-center">
-			<div class="col-6 pt-0 d-grid gap-2" style="border-radius:5px">
 
-				<button type="button" class="btn-import btn btn-lg btn-block pt-0 px-0" style="border-radius:5px">
 
-					<div class="col-12 px-0 py-0" style="height:70px;border-top-left-radius:5px;border-top-right-radius:5px;background-color:grey">
-						<h4 class="text-white pt-3">Importer des étudiants</h4>
-					</div>
-					<div class="col-12" style="height:250px">
-						<i class="fas fa-file-import fa-9x pt-3" style="color:grey"></i>
-					</div>
-					<div class="col-12">
-						<p style="color:grey">Le fichier doit être en format CSV</p>
-					</div>
-				</button>
-			</div>
-			<div class="col-6 pt-0 d-grid gap-2" style="border-radius:5px">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>Email</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for user_gestion in user_gestions %}
+            <tr>
+                <td>{{ user_gestion.Nom }}</td>
+                <td>{{ user_gestion.Prenom }}</td>
+                <td>{{ user_gestion.Email }}</td>
+                <td>
+                    <a href="{{ path('app_user_gestion_show', {'id': user_gestion.id}) }}">show</a>
+                    <a href="{{ path('app_user_gestion_edit', {'id': user_gestion.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
-				<button type="button" class="btn-import btn btn-lg btn-block pt-0 px-0" style="border-radius:5px">
-
-					<div class="col-12 px-0 py-0" style="height:70px;border-top-left-radius:5px;border-top-right-radius:5px;background-color:grey">
-						<h4 class="text-white pt-3">Exporter des étudiants</h4>
-					</div>
-					<div class="col-12" style="height:250px">
-						<i class="fas fa-file-export fa-9x pt-3" style="color:grey"></i>
-					</div>
-					<div class="col-12">
-						<p style="color:grey">Le fichier sera en format CSV</p>
-					</div>
-				</button>
-			</div>
-		</div>
-
-        <h3>Liste des étudiants</h3>
-
-		<table class="table">
-			<thead>
-				<tr>
-					<th scope="col">Nom</th>
-					<th scope="col">Prenom</th>
-					<th scope="col">Année</th>
-					<th scope="col">Spécialité</th>
-				</tr>
-			</thead>
-			<tbody>
-				
-			</tbody>
-		</table>
-
-	</div>
+    <a href="{{ path('app_user_gestion_new') }}">Create new</a>
 {% endblock %}
