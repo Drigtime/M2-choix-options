@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}UserGestion{% endblock %}
+
+{% block body %}
+    <h1>UserGestion</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ user_gestion.id }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ user_gestion.Nom }}</td>
+            </tr>
+            <tr>
+                <th>Prenom</th>
+                <td>{{ user_gestion.Prenom }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ user_gestion.Email }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_user_gestion_index') }}">back to list</a>
+
+    <a href="{{ path('app_user_gestion_edit', {'id': user_gestion.id}) }}">edit</a>
+
+    {{ include('user_gestion/_delete_form.html.twig') }}
+{% endblock %}
