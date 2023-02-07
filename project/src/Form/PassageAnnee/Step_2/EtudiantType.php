@@ -14,6 +14,7 @@ class EtudiantType extends AbstractType
     {
         $builder
             ->add('etudiantUEs', CollectionType::class, [
+                'label' => false,
                 'entry_type' => EtudiantUEType::class,
                 'entry_options' => ['label' => false]
             ]);

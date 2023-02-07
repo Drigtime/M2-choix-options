@@ -27,6 +27,12 @@ class PassageAnneeController extends AbstractController
         ]);
     }
 
+    #[Route('/passage_annee/workflow/new', name: 'app_passage_annee_worflow_new')]
+    public function new(Request $request, AnneeFormationRepository $anneeFormationRepository, SessionInterface $session): Response
+    {
+        return $this->redirectToRoute('app_passage_annee_worflow_step_1', ['anneeFormation' => 'M2']);
+    }
+
     // $anneeFormation is a string like "M2" or "M1"
     #[Route('/passage_annee/workflow/step/{anneeFormation}', name: 'app_passage_annee_worflow_step_1', requirements: ['anneeFormation' => 'M1|M2'], methods: ['GET', 'POST'])]
     public function newStep11(Request $request, string $anneeFormation, AnneeFormationRepository $anneeFormationRepository, SessionInterface $session): Response
@@ -56,7 +62,7 @@ class PassageAnneeController extends AbstractController
             $session->set("form_step_{$anneeFormation}_1_data", $data);
             $session->set("form_step_{$anneeFormation}_1_redoublants", $redoubles);
 
-            if (count($redoubles) > 0) {
+            if (!empty($redoubles)) {
                 return $this->redirectToRoute('app_passage_annee_worflow_step_1_2', ['anneeFormation' => $anneeFormation]);
             }
 

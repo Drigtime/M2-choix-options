@@ -12,6 +12,7 @@ class AnneeFormationType extends AbstractType
     {
         $builder
             ->add('etudiants', CollectionType::class, [
+                'label' => false,
                 'entry_type' => EtudiantType::class,
                 'entry_options' => ['label' => false]
             ]);
