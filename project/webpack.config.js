@@ -27,7 +27,9 @@ Encore
     .addEntry('bloc_ue_form', './assets/bloc_ue/form.js')
     .addEntry('campagne_choix_form', './assets/campagne_choix/form.js')
     .addEntry('campagne_choix_show', './assets/campagne_choix/show.js')
+
     .addEntry('passage_annee_index', './assets/passage_annee/index.js')
+    .addEntry('passage_annee_form', './assets/passage_annee/form.js')
 
     .addStyleEntry('login', './assets/styles/login.css')
 
@@ -73,7 +75,8 @@ Encore
 
     // uncomment if you use React
     //.enableReactPreset()
-    // .enableVueLoader()
+    .enableVueLoader()
+    // .enableVueLoader(() => {}, { runtimeCompilerBuild: false })
 
     // uncomment to get integrity="..." attributes on your script & link tags
     // requires WebpackEncoreBundle 1.4 or higher

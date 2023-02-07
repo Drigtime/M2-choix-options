@@ -20,7 +20,7 @@
             <tr>
                 <th>Id</th>
                 <th>Nom</th>
-                <th>actions</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -28,7 +28,7 @@
             <tr>
                 <td>{{ annee_formation.id }}</td>
                 <td>{{ annee_formation.label }}</td>
-                <td>
+                <td class="text-end">
                     <div class="btn-group">
                         <a href="{{ path('app_annee_formation_edit', {'id': annee_formation.id}) }}"
                            class="btn btn-sm btn-primary">

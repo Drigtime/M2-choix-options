@@ -22,7 +22,7 @@
             <th>Parcours</th>
             <th>Date de début</th>
             <th>Date de fin</th>
-            <th>actions</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -32,7 +32,7 @@
                 <td>{{ campagne_choix.parcours }}</td>
                 <td>{{ campagne_choix.dateDebut ? campagne_choix.dateDebut|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ campagne_choix.dateFin ? campagne_choix.dateFin|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
+                <td class="text-end">
                     <div class="btn-group">
                         <a href="{{ path('app_campagne_choix_show', {'id': campagne_choix.id}) }}"
                            class="btn btn-sm btn-primary">

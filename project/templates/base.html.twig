@@ -65,101 +65,86 @@
 			{% endif %}
 		</nav>
 
-		<div id="layoutSidenav">
-			{% if app.user %}
-				<div id="layoutSidenav_nav">
-					<nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-						<div class="sb-sidenav-menu">
-							<div class="nav">
-								<a class="nav-link" href="{{ path('app_default') }}">
-									<div class="sb-nav-link-icon">
-										<i class="fas fa-tachometer-alt"></i>
-									</div>
-									Accueil
-								</a>
-								{% if is_granted("ROLE_ADMIN") %}
-									<div class="sb-sidenav-menu-heading">Configuration</div>
-									<a class="nav-link" href="{{ path('app_passage_annee') }}">
-										<div class="sb-nav-link-icon">
-											<i class="fas fa-columns"></i>
-										</div>
-										Passage d'année
-									</a>
-									<a class="nav-link" href="{{ path('app_parcours_index') }}">
-										<div class="sb-nav-link-icon">
-											<i class="fas fa-columns"></i>
-										</div>
-										Parcours
-									</a>
-									<a class="nav-link" href="{{ path('app_campagne_choix_index') }}">
-										<div class="sb-nav-link-icon">
-											<i class="fas fa-columns"></i>
-										</div>
-										Campagne de choix
-									</a>
-									{#                            <a class="nav-link" href="{{ path('app_bloc_ue_index') }}"> #}
-									{#                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div> #}
-									{#                                Bloc UE #}
-									{#                            </a> #}
-										<a class="nav-link" href="{{ path('app_bloc_ue_category_index') }}"> <div class="sb-nav-link-icon">
-											<i class="fas fa-columns"></i>
-										</div>
-										Categorie de bloc UE
-									</a>
-									<a class="nav-link" href="{{ path('app_ue_index') }}">
-										<div class="sb-nav-link-icon">
-											<i class="fas fa-columns"></i>
-										</div>
-										UE
-									</a>
-									<a class="nav-link" href="{{ path('app_annee_formation_index') }}">
-										<div class="sb-nav-link-icon">
-											<i class="fas fa-columns"></i>
-										</div>
-										Annee formation
-									</a>
-									<div class="sb-sidenav-menu-heading">Gestion des utilisateurs</div>
-									<a class="nav-link" href="{{ path('app_user_gestion_index') }}">
-										<div class="sb-nav-link-icon">
-											<i class="fas fa-columns"></i>
-										</div>
-										Import/export des étudiants
-									</a>
-								{% endif %}
-								{% if is_granted("ROLE_ADMIN") == false %}
-									<a class="nav-link" href="#">
-										<div class="sb-nav-link-icon">
-											<i class="fas fa-columns"></i>
-										</div>
-										Parcours
-									</a>
-									<a class="nav-link" href="{{ path('app_etudiant_choix_options') }}">
-										<div class="sb-nav-link-icon">
-											<i class="fas fa-columns"></i>
-										</div>
-										Campagne de choix
-									</a>
-								{% endif %}
-							</div>
-						</div>
-					</nav>
-				</div>
-			{% endif %}
-			<div id="layoutSidenav_content">
-				<main>
-					<div class="container-fluid px-4 pt-2">
-						{% for type, messages in app.flashes %}
-							<div class="alert alert-{{ type }} alert-dismissible fade show" role="alert">
-								{% for message in messages %}
-									<p class="m-0">{{ message }}</p>
-								{% endfor %}
-								<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-							</div>
-						{% endfor %}
-						{% block body %}{% endblock %}
-					</div>
-				</main>
-			</div>
-		</div>
-	</body>
+<div id="layoutSidenav">
+    {% if app.user %}
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        <a class="nav-link" href="{{ path('app_default') }}">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            Accueil
+                        </a>
+						<a class="nav-link" href="{{ path('app_passage_annee') }}">
+                            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                            Gestion des parcours
+                        </a>
+                        <a class="nav-link" href="{{ path('app_passage_annee') }}">
+                            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                            Passage d'année
+                        </a>
+                        {% if is_granted("ROLE_ADMIN") %}
+                            <div class="sb-sidenav-menu-heading">Configuration</div>
+                            <a class="nav-link" href="{{ path('app_parcours_index') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                Parcours
+                            </a>
+                            <a class="nav-link" href="{{ path('app_campagne_choix_index') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                Campagne de choix
+                            </a>
+                            {#                            <a class="nav-link" href="{{ path('app_bloc_ue_index') }}"> #}
+                            {#                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div> #}
+                            {#                                Bloc UE #}
+                            {#                            </a> #}
+                            <a class="nav-link" href="{{ path('app_bloc_ue_category_index') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                Categorie de bloc UE
+                            </a>
+                            <a class="nav-link" href="{{ path('app_ue_index') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                UE
+                            </a>
+                            <a class="nav-link" href="{{ path('app_annee_formation_index') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                Annee formation
+                            </a>
+                            <div class="sb-sidenav-menu-heading">Gestion des utilisateurs</div>
+                            <a class="nav-link" href="{{ path('app_user_gestion') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                Import/export des étudiants
+                            </a>
+                        {% endif %}
+                        {% if is_granted("ROLE_ADMIN") == false %}
+                            <a class="nav-link" href="#">
+                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                Parcours
+                            </a>
+                            <a class="nav-link" href="#">
+                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                Campagne de choix
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </nav>
+        </div>
+    {% endif %}
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid px-4 pt-2">
+                {% for type, messages in app.flashes %}
+                    <div class="alert alert-{{ type }} alert-dismissible fade show" role="alert">
+                        {% for message in messages %}
+                            <p class="m-0">{{ message }}</p>
+                        {% endfor %}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+                {% block body %}{% endblock %}
+            </div>
+        </main>
+    </div>
+</div>
+</body>
 </html>

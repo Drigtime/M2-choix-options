@@ -1,0 +1,109 @@
+{% extends 'passage_annee/_base_form_step.html.twig' %}
+
+{% block title %}
+
+{% endblock %}
+
+{% block content %}
+    <div>
+        {{ form_start(form) }}
+        <div class="d-flex my-3">
+            <h4 class="mt-3 mb-0">
+                Étape 1.2 - Spécification des UEs reussi par les élèves redoublants en {{ anneeFormation }}
+            </h4>
+            <div class="ms-auto d-flex align-content-center flex-wrap">
+                <div class="btn-group">
+                    <a href="{{ path('app_passage_annee_worflow_step_1', {'anneeFormation': anneeFormation}) }}"
+                       class="btn btn-secondary">
+                        Précédent
+                    </a>
+                    {% if anneeFormation == 'M1' %}
+                        <button type="submit" class="btn btn-primary">Valider</button>
+                    {% else %}
+                        <button type="submit" class="btn btn-primary">Suivant</button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-3">
+            {% for etudiant in form.etudiants %}
+                {% set etudiantId = etudiant.vars.value.id %}
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="card">
+                        <div class="card-header py-1 px-2">
+                            {{ etudiant.vars.value.nom }} {{ etudiant.vars.value.prenom }}
+                        </div>
+                        <div class="card-body p-2">
+                            {% set groupedUes = {} %}
+                            {% for pacroursBlocUe in etudiant.vars.value.parcours.getBlocUEs %}
+                                {% for etudiantUe in etudiant.etudiantUEs %}
+                                    {% if etudiantUe.vars.value.ue in pacroursBlocUe.ues %}
+                                        {% if pacroursBlocUe.id not in groupedUes %}
+                                            {# Obliger de mettre '_' devant l'id, sinon par exemple l'id 47 est juste transformé en index 0, la ca devient _47 #}
+                                            {% set groupedUes = groupedUes|merge({('_' ~ pacroursBlocUe.id): [etudiantUe]}) %}
+                                        {% else %}
+                                            {% set groupedUes = groupedUes|merge({(pacroursBlocUe.id): groupedUes[pacroursBlocUe.id]|merge([etudiantUe])}) %}
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                            <div class="accordion" id="accordionExample{{ etudiantId }}">
+                                {% for id, etudiantUes in groupedUes %}
+                                    {% set trueId = id|split('_')[1] %}
+                                    {% set groupeUE = etudiant.vars.value.parcours.getBlocUEs|filter((blocUE) => blocUE.id == trueId)|first %}
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header"
+                                            id="accordion-heading-{{ etudiantId }}-{{ trueId }}">
+                                            <button class="accordion-button p-2" type="button" data-bs-toggle="collapse"
+                                                    data-bs-target="#accordion-collapse-{{ etudiantId }}-{{ trueId }}"
+                                                    aria-expanded="true"
+                                                    aria-controls="accordion-collapse-{{ etudiantId }}-{{ trueId }}">
+                                                {{ groupeUE.blocUECategory.label }}
+                                            </button>
+                                        </h2>
+                                        <div id="accordion-collapse-{{ etudiantId }}-{{ trueId }}"
+                                             class="accordion-collapse collapse show"
+                                             aria-labelledby="accordion-heading-{{ etudiantId }}-{{ trueId }}">
+                                            <div class="accordion-body p-2">
+                                                {% for etudiantUe in etudiantUes %}
+                                                    {{ form_row(etudiantUe.acquis, {'label': etudiantUe.vars.value.ue.label}) }}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="d-flex justify-content-end mb-3">
+            <div class="btn-group">
+                <a href="{{ path('app_passage_annee_worflow_step_1', {'anneeFormation': anneeFormation}) }}"
+                   class="btn btn-secondary">
+                    Précédent
+                </a>
+                {% if anneeFormation == 'M1' %}
+                    <button type="submit" class="btn btn-primary">Valider</button>
+                {% else %}
+                    <button type="submit" class="btn btn-primary">Suivant</button>
+                {% endif %}
+            </div>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('passage_annee_form') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('passage_annee_form') }}
+{% endblock %}
+

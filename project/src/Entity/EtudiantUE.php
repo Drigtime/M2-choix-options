@@ -6,6 +6,7 @@ use App\Repository\EtudiantUERepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: EtudiantUERepository::class)]
+#[ORM\Table(name: 'etudiant_ue')]
 class EtudiantUE
 {
     #[ORM\Id]
@@ -13,10 +14,10 @@ class EtudiantUE
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'etudiantUEs')]
+    #[ORM\ManyToOne(targetEntity: Etudiant::class, inversedBy: 'etudiantUEs')]
     private ?Etudiant $etudiant = null;
 
-    #[ORM\ManyToOne(inversedBy: 'etudiantUEs')]
+    #[ORM\ManyToOne(targetEntity: UE::class, inversedBy: 'etudiantUEs')]
     private ?UE $UE = null;
 
     #[ORM\Column]

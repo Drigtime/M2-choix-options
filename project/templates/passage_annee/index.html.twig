@@ -5,97 +5,23 @@
 {% endblock %}
 
 {% block body %}
-    <h5>Liste des années de formation</h5>
-    {% for annee in anneeFormation %}
-        <div class="card mb-4">
-            <div class="card-header">
-                {{ annee.label }}
-            </div>
-            <div class="card-body p-2">
-                {% if annee.parcours|length > 0 %}
-
-                    <ul class="nav nav-tabs" id="anneeTab" role="tablist">
-                        {% for parcours in annee.parcours %}
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link {{ loop.first ? 'active' }}" id="parcours-{{ parcours.id }}-tab"
-                                        data-bs-toggle="tab"
-                                        href="#parcours-{{ parcours.id }}" role="tab"
-                                        aria-controls="parcours-{{ parcours.id }}"
-                                        aria-selected="false">{{ parcours.label }}</button>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                    <div class="tab-content" id="anneeTabContent">
-                        {% for parcours in annee.parcours %}
-                            <div class="tab-pane fade p-2 border border-top-0 {{ loop.first ? 'show active' }}"
-                                 id="parcours-{{ parcours.id }}"
-                                 role="tabpanel"
-                                 aria-labelledby="parcours-{{ parcours.id }}-tab">
-                                {% if parcours.etudiants|length > 0 %}
-                                    <div class="d-flex">
-                                        <div class="flex-grow-1">
-                                            <h6>Liste des étudiants</h6>
-                                        </div>
-                                        <div class="flex-shrink-0">
-                                            <a href="placeholder" data-move-selected class="btn btn-sm btn-primary disabled">
-                                                <i class="fa-solid fa-angles-right"></i>
-                                                Déplacer
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <table class="table">
-                                        <thead>
-                                        <tr>
-                                            <th scope="col">
-                                                <input type="checkbox" class="form-check-input" data-check-all alt="Tout cocher">
-                                            </th>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Nom</th>
-                                            <th scope="col">Prénom</th>
-                                            <th scope="col">Actions</th>
-                                        </thead>
-                                        <tbody data-check-all-container>
-                                        {% for etudiant in parcours.etudiants %}
-                                            <tr>
-                                                <td>
-                                                    <input type="checkbox" name="etudiant[]" value="{{ etudiant.id }}">
-                                                </td>
-                                                <td>{{ etudiant.id }}</td>
-                                                <td>{{ etudiant.nom }}</td>
-                                                <td>{{ etudiant.prenom }}</td>
-                                                <td>
-                                                    <div class="btn-group">
-                                                        <a href="placeholder_move" class="btn btn-primary btn-sm"
-                                                           data-bs-popper="static" data-bs-toggle="tooltip"
-                                                           data-bs-placement="left"
-                                                           title="Déplacer vers un autre parcours">
-                                                            <i class="fa-solid fa-angles-right"></i>
-                                                        </a>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        {% endfor %}
-                                        </tbody>
-                                    </table>
-                                {% else %}
-                                    <div class="alert alert-info p-2 m-0" role="alert">
-                                        Aucun étudiant dans ce parcours
-                                    </div>
-                                {% endif %}
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <div class="alert alert-info p-2 m-0" role="alert">
-                        Aucun parcours dans cette année
-                    </div>
-                {% endif %}
-            </div>
+    <div class="d-flex">
+        <h4>Gestion des éléves par parcours</h4>
+        <div class="ms-auto">
+            <a href="{{ path('app_passage_annee_worflow_new') }}"
+               class="btn btn-sm btn-primary">
+                <i class="fas fa-plus"></i>
+                Démarrer un passage d'année
+            </a>
         </div>
-    {% endfor %}
+    </div>
+    <div id="list-annee">
+        {{ include('passage_annee/_list_annee.html.twig') }}
+    </div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     {{ encore_entry_script_tags('passage_annee_index') }}
+
 {% endblock %}
