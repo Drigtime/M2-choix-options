@@ -83,7 +83,7 @@
              data-no-bloc-ue="{{ formMacros.printNoBlocOption()|e('html_attr') }}"
         >
             {% if form.blocOptions.children is not empty %}
-                {% for blocOption in form.blocOptions|reverse %}
+                {% for blocOption in form.blocOptions %}
                     {{ formMacros.printBlocOption(blocOption) }}
                 {% endfor %}
             {% else %}

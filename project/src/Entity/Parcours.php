@@ -25,10 +25,10 @@ class Parcours
     private Collection $groupes;
 
     #[ORM\OneToMany(mappedBy: 'parcours', targetEntity: BlocUE::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
-    private Collection $blocUEs;
+    private Collection $blocUEs; 
 
     #[ORM\OneToMany(mappedBy: 'parcours', targetEntity: CampagneChoix::class)]
-    private Collection $campagneChoixes;
+    private Collection $campagneChoixes; 
 
     #[ORM\OneToMany(mappedBy: 'parcours', targetEntity: Etudiant::class)]
     private Collection $etudiants;
