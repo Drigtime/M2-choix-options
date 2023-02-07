@@ -75,15 +75,15 @@
                             <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                             Accueil
                         </a>
-						<a class="nav-link" href="{{ path('app_passage_annee') }}">
-                            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                            Gestion des parcours
-                        </a>
-                        <a class="nav-link" href="{{ path('app_passage_annee') }}">
-                            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                            Passage d'année
-                        </a>
                         {% if is_granted("ROLE_ADMIN") %}
+                            <a class="nav-link" href="{{ path('app_passage_annee') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                Gestion des parcours
+                            </a>
+                            <a class="nav-link" href="{{ path('app_passage_annee') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                Passage d'année
+                            </a>
                             <div class="sb-sidenav-menu-heading">Configuration</div>
                             <a class="nav-link" href="{{ path('app_parcours_index') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
@@ -116,11 +116,11 @@
                             </a>
                         {% endif %}
                         {% if is_granted("ROLE_ADMIN") == false %}
-                            <a class="nav-link" href="#">
+                            <a class="nav-link" href="{{ path('app_etudiant_parcours') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Parcours
                             </a>
-                            <a class="nav-link" href="#">
+                            <a class="nav-link" href="{{ path('app_etudiant_choix_options') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Campagne de choix
                             </a>
