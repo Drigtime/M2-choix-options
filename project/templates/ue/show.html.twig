@@ -44,6 +44,14 @@
             <th>Actif</th>
             <td>{{ ue.active ? 'Oui' : 'Non' }}</td>
         </tr>
+        <tr>
+            <th>Groupes</th>
+            <td>
+                {% for groupe in ue.groupes %}
+                    <a href="{{ path('app_groupe_show', {'id': groupe.id}) }}">{{ groupe.label }}</a>
+                {% endfor %}
+            </td>
+        </tr>
         </tbody>
     </table>
 

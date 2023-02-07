@@ -19,9 +19,6 @@ class Groupe
     private ?string $label = null;
 
     #[ORM\ManyToOne(inversedBy: 'groupes')]
-    private ?Parcours $parcours = null;
-
-    #[ORM\ManyToOne(inversedBy: 'groupes')]
     private ?UE $ue = null;
 
     #[ORM\ManyToMany(targetEntity: Etudiant::class, inversedBy: 'groupes')]
@@ -45,18 +42,6 @@ class Groupe
     public function setLabel(string $label): self
     {
         $this->label = $label;
-
-        return $this;
-    }
-
-    public function getParcours(): ?Parcours
-    {
-        return $this->parcours;
-    }
-
-    public function setParcours(?Parcours $parcours): self
-    {
-        $this->parcours = $parcours;
 
         return $this;
     }
