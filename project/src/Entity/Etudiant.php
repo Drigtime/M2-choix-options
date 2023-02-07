@@ -27,20 +27,20 @@ class Etudiant
     #[ORM\ManyToOne(targetEntity: Parcours::class, inversedBy: 'etudiants')]
     private ?Parcours $parcours = null;
 
-    #[ORM\OneToMany(mappedBy: 'etudiant', targetEntity: Choix::class)]
-    private Collection $choixes;
-
     #[ORM\ManyToMany(targetEntity: Groupe::class, mappedBy: 'etudiants')]
     private Collection $groupes;
 
     #[ORM\OneToMany(mappedBy: 'etudiant', targetEntity: EtudiantUE::class)]
     private Collection $etudiantUEs;
 
+    #[ORM\OneToMany(mappedBy: 'etudiant', targetEntity: ResponseCampagne::class, orphanRemoval: true)]
+    private Collection $responseCampagnes;
+
     public function __construct()
     {
-        $this->choixes = new ArrayCollection();
         $this->groupes = new ArrayCollection();
         $this->etudiantUEs = new ArrayCollection();
+        $this->responseCampagnes = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -102,36 +102,6 @@ class Etudiant
     }
 
     /**
-     * @return Collection<int, Choix>
-     */
-    public function getChoixes(): Collection
-    {
-        return $this->choixes;
-    }
-
-    public function addChoix(Choix $choix): self
-    {
-        if (!$this->choixes->contains($choix)) {
-            $this->choixes->add($choix);
-            $choix->setEtudiant($this);
-        }
-
-        return $this;
-    }
-
-    public function removeChoix(Choix $choix): self
-    {
-        if ($this->choixes->removeElement($choix)) {
-            // set the owning side to null (unless already changed)
-            if ($choix->getEtudiant() === $this) {
-                $choix->setEtudiant(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, Groupe>
      */
     public function getGroupes(): Collection
@@ -182,6 +152,36 @@ class Etudiant
             // set the owning side to null (unless already changed)
             if ($etudiantUE->getEtudiant() === $this) {
                 $etudiantUE->setEtudiant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ResponseCampagne>
+     */
+    public function getResponseCampagnes(): Collection
+    {
+        return $this->responseCampagnes;
+    }
+
+    public function addResponseCampagne(ResponseCampagne $responseCampagne): self
+    {
+        if (!$this->responseCampagnes->contains($responseCampagne)) {
+            $this->responseCampagnes->add($responseCampagne);
+            $responseCampagne->setEtudiant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeResponseCampagne(ResponseCampagne $responseCampagne): self
+    {
+        if ($this->responseCampagnes->removeElement($responseCampagne)) {
+            // set the owning side to null (unless already changed)
+            if ($responseCampagne->getEtudiant() === $this) {
+                $responseCampagne->setEtudiant(null);
             }
         }
 

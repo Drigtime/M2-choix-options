@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	{{ parent() }}
+	- Choix des options
+{% endblock %}
+
+{% block body %}
+  {# <div class="card"> #}
+    {# <div class="card-header">
+      <h4>Ordre de choix de l'UE</h4>
+    </div> #}
+    {# <div class="card-body"> #}
+    <div class="row">
+    <div class="col-md-6">
+      <p style="text-align: center; font-weight: bold; margin-top: 2em">Début de la campagne : {{ campagne.dateDebut|date("m/d/Y") }}</p>
+    </div>
+    <div class="col-md-6">
+      <p style="text-align: center; font-weight: bold; margin-top: 2em">Fin de la campagne : {{ campagne.dateFin|date("m/d/Y") }}</p>
+    </div>
+    </div>
+      {{ form_start(form) }}
+        {% for blocOption in form.blocOptions %}
+          <div class="card my-3">
+            <div class="card-header">
+              {{ blocOption.vars.value.blocUE.blocUECategory.label }}
+            </div>
+            <div class="card-body">
+              {% for choixes in blocOption %}
+                  {% for choix in choixes %}                  
+                    <div class="card my-3">
+                      <div class="form-group">
+                        <div class="card-header">
+                          {{ choix.vars.data.UE.label }}
+                        </div>
+                        <div class="card-body"> 
+                          {{ form_row(choix) }}
+                            <button class="btn btn-sm btn-primary">
+                              <i class="fas fa-save"></i>
+                              {{ button_label|default('Enregistrer') }}
+                            </button>
+                        </div>
+                      </div>
+                    </div>
+                  {% endfor %}
+              {% endfor %}
+            </div>
+          </div>
+        {% endfor %}
+      {{ form_end(form) }}
+    {# </div> #}
+    <div class="card-footer">
+      <a href="{{ path('app_etudiant_choix_options') }}" class="btn btn-primary">
+        <i class="fas fa-arrow-left"></i>
+        {{ 'utils.back_to_list'|trans }} des campagnes
+      </a>
+    </div>
+  {# </div> #}
+{% endblock %}

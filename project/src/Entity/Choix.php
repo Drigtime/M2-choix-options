@@ -17,13 +17,13 @@ class Choix
     private ?int $ordre = null;
 
     #[ORM\ManyToOne(inversedBy: 'choixes')]
-    private ?Etudiant $etudiant = null;
-
-    #[ORM\ManyToOne(inversedBy: 'choixes')]
     private ?UE $UE = null;
 
     #[ORM\ManyToOne(inversedBy: 'choixes')]
-    private ?CampagneChoix $campagneChoix = null;
+    private ?ResponseCampagne $responseCampagne = null;
+
+    #[ORM\ManyToOne(inversedBy: 'choixes')]
+    private ?BlocOption $blocOption = null;
 
     public function getId(): ?int
     {
@@ -42,18 +42,6 @@ class Choix
         return $this;
     }
 
-    public function getEtudiant(): ?Etudiant
-    {
-        return $this->etudiant;
-    }
-
-    public function setEtudiant(?Etudiant $etudiant): self
-    {
-        $this->etudiant = $etudiant;
-
-        return $this;
-    }
-
     public function getUE(): ?UE
     {
         return $this->UE;
@@ -66,14 +54,26 @@ class Choix
         return $this;
     }
 
-    public function getCampagneChoix(): ?CampagneChoix
+    public function getResponseCampagne(): ?ResponseCampagne
     {
-        return $this->campagneChoix;
+        return $this->responseCampagne;
     }
 
-    public function setCampagneChoix(?CampagneChoix $campagneChoix): self
+    public function setResponseCampagne(?ResponseCampagne $responseCampagne): self
     {
-        $this->campagneChoix = $campagneChoix;
+        $this->responseCampagne = $responseCampagne;
+
+        return $this;
+    }
+
+    public function getBlocOption(): ?BlocOption
+    {
+        return $this->blocOption;
+    }
+
+    public function setBlocOption(?BlocOption $blocOption): self
+    {
+        $this->blocOption = $blocOption;
 
         return $this;
     }
