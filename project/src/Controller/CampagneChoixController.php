@@ -136,6 +136,8 @@ class CampagneChoixController extends AbstractController
                             {
                                 $groupe->setLabel($UE->getLabel() . "-Groupe-" . strval($indice));
                                 $UE->addGroupe($groupe);
+                                $groupeRep->save($groupe, true);
+                                dump($groupe);
                                 $indice = $indice+1;
                                 $groupe = new Groupe();
                             }
@@ -143,6 +145,8 @@ class CampagneChoixController extends AbstractController
                             {
                                 $groupe->setLabel($UE->getLabel() . "-Groupe-" . strval($indice));
                                 $UE->addGroupe($groupe);
+                                $groupeRep->save($groupe, true);
+                                dump($groupe);
                                 $indice = $indice+1;
                                 $groupe = new Groupe();
                             } 
@@ -152,6 +156,7 @@ class CampagneChoixController extends AbstractController
                             }
 
                         }
+                        dump($groupe);
                         $groupeRep->save($groupe);
                         break;
                     //aleatoire
@@ -166,6 +171,7 @@ class CampagneChoixController extends AbstractController
                                 $groupe->setLabel($UE->getLabel() . "-Groupe-" . strval($indice));
                                 $UE->addGroupe($groupe);
                                 $indice = $indice+1;
+                                dump($groupe);
                                 $groupe = new Groupe();
                                 $groupe->addEtudiant($result[$j]);
                             }
@@ -173,6 +179,7 @@ class CampagneChoixController extends AbstractController
                             {
                                 $groupe->setLabel($UE->getLabel() . "-Groupe-" . strval($indice));
                                 $UE->addGroupe($groupe);
+                                dump($groupe);
                                 $indice = $indice+1;
                                 $groupe = new Groupe();
                             } 
@@ -181,8 +188,9 @@ class CampagneChoixController extends AbstractController
                                 $groupe->addEtudiant($result[$j]);
                             }
                         }
+                        dump($groupe);
                         $UE->addGroupe($groupe);
-                        $groupeRep->save($groupe);
+                        $groupeRep->save($groupe, true);
                         break;
                     //manuel
                     case 3:

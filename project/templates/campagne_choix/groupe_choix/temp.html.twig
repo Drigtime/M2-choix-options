@@ -1,73 +1,31 @@
-
+<nav>
+  <div class="nav nav-tabs" id="nav-tab" role="tablist">
     {% for bloc_ue in campagne_choix.blocOptions %}
-    <div class="card mb-4">
-        <div class="card-header">
-            {{ bloc_ue.blocUE.blocUECategory.label }}
-        </div>
-        
-            {% for ue in bloc_ue.ues %}
-            <div class="card mb-4">
-            
-                <div class="card-header">
-                    {{ ue.label }}
-                </div>
-                <div class="row">
-                {% for groupe in ue.groupes %}
-                        <div class="col-sm-4">
-                        <div class="card">
-                       <h5 class="card-title"> {{groupe.label}}</h5>
-                        {% if groupe.etudiants %}
-                                <table class="table">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">
-                                            <input type="checkbox" class="form-check-input" data-check-all
-                                                   alt="Tout cocher">
-                                        </th>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Nom</th>
-                                        <th scope="col">Prénom</th>
-                                        <th scope="col"></th>
-                                    </thead>
-                                    <tbody data-check-all-container>
-
-                            {% for etudiant in groupe.etudiants %}
-                            <tr>
-                                            <td>
-                                                <input type="checkbox" class="form-check-input" name="etudiant[]"
-                                                       value="{{ etudiant.id }}">
-                                            </td>
-                                            <td>{{ etudiant.id }}</td>
-                                            <td>{{ etudiant.nom }}</td>
-                                            <td>{{ etudiant.prenom }}</td>
-                                            <td class="text-end">
-                                                <div class="btn-group">
-                                                    <a id="add-bloc-ue"
-                                                       data-action="load-form"
-                                                       data-modal-title="Déplacer l'étudiant vers un autre parcours"
-                                                       data-url="{{ path('app_passage_annee_move_student', {id: etudiant.id}) }}"
-                                                       data-ajax-target="#list-annee"
-                                                       class="btn btn-primary btn-sm"
-                                                       data-bs-popper="static" data-bs-toggle="tooltip"
-                                                       data-bs-placement="left"
-                                                       title="Déplacer vers un autre parcours">
-                                                        <i class="fa-solid fa-angles-right"></i>
-                                                    </a>
-                                                </div>
-                                            </td>
-                                        </tr>
-                            {% endfor %}
-                                    </tbody>
-                                </table>
-                        </div>
-                        </div>
-                        {% else %}
-                        Pas de groupes crées 
-                        {% endif %}
-                {% endfor %}
-                </div>
-            </div>
-            {% endfor %}
-    </div>
+    <button class="nav-link" id="nav-bloc-{{bloc_ue.id}}-tab" data-bs-toggle="tab" data-bs-target="#nav-bloc-{{bloc_ue.id}}" type="button" role="tab" aria-controls="nav-bloc-{{bloc_ue.id}} nav-tab-bloc-{{bloc_ue.id}}" aria-selected="false">
+    {{ bloc_ue.blocUE.blocUECategory.label }}
+    </button>
     {% endfor %}
-    <a href="{{ path('app_bloc_ue_index') }}">back to list</a>
+  </div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+    {% for bloc_ue in campagne_choix.blocOptions %}
+    <div class="fade" id="nav-bloc-{{bloc_ue.id}}" role="tabpanel" aria-labelledby="nav-bloc-{{bloc_ue.id}}-tab">
+
+    <nav>
+    <div class="nav nav-tabs" id="nav-tab-bloc-{{bloc_ue.id}}" role="tab">
+    {% for ue in bloc_ue.ues %}    
+        <button class="nav-link" id="nav-ue-{{ue.id}}-tab" data-bs-toggle="tab" data-bs-target="#nav-ue-{{ue.id}}" type="button" role="tab" aria-controls="nav-ue-{{ue.id}}" aria-selected="false" style="background-color:transparent!important;border:none!important">
+        {{ue.label}}
+        </button>
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade" id="nav-bloc-{{ue.id}}" role="tabpanel" aria-labelledby="nav-bloc-{{ue.id}}-tab">
+            {{ue.label}}
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+    </nav>
+    </div>
+  {% endfor %}
+</div>
+

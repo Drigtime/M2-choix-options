@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/groupe')]
+#[Route('/admin/groupe')]
 class GroupeController extends AbstractController
 {
     #[Route('/', name: 'app_groupe_index', methods: ['GET'])]
