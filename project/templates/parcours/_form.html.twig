@@ -1,28 +1,70 @@
 {% import _self as formMacros %}
 
- {% macro printBlocUE(blocUE) %}
-     <div class="col-12 col-md-6" data-bloc-ue data-index="{{ blocUE.vars.name }}">
-         <div class="card">
-             <div class="card-header">
-                 <div class="d-flex">
-                     <div class="flex-grow-1">
-                         Bloc UE
-                         n°{{ blocUE.vars.name == "__name__" ? "__name__" : blocUE.vars.name|number_format + 1 }}
-                     </div>
-                     <div class="flex-shrink-0">
-                         <button type="button" class="btn btn-sm btn-danger" data-action="delete-bloc-ue">
-                             <i class="fas fa-trash"></i>
-                         </button>
-                     </div>
-                 </div>
-             </div>
-             <div class="card-body p-2">
-                 {{ form_row(blocUE.blocUECategory, { 'attr': { 'data-ues-container': blocUE.ues.vars.id, 'data-previous-value': blocUE.blocUECategory.vars.value } }) }}
-                 {{ form_row(blocUE.ues) }}
-             </div>
-         </div>
-     </div>
- {% endmacro %}
+{% macro printUE(ueRow) %}
+    <div class="row mb-2 g-2">
+        <div class="col-12 col-md-6">
+            {{ form_widget(ueRow.ue) }}
+        </div>
+        <div class="col-12 col-md-6 d-flex gap-2">
+            {{ form_widget(ueRow.statut) }}
+            <div class="d-flex align-items-center">
+                <button type="button" class="btn btn-sm btn-danger" data-action="delete-ue">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro printNoUE() %}
+    <div class="alert alert-info m-0 p-2">
+        Aucune UE n'a encore été ajoutée.
+    </div>
+{% endmacro %}
+
+{% macro printBlocUE(blocUE) %}
+    <div class="col-12 col-md-6" data-bloc-ue data-index="{{ blocUE.vars.name }}">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex">
+                    <div class="flex-grow-1">
+                        Bloc UE n°{{ blocUE.vars.name == "__name__" ? "__name__" : blocUE.vars.name|number_format + 1 }}
+                    </div>
+                    <div class="flex-shrink-0">
+                        <button type="button" class="btn btn-sm btn-danger" data-action="delete-bloc-ue">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-2">
+                {{ form_row(blocUE.blocUECategory, { 'attr': { 'data-ues-container': blocUE.ues.vars.id, 'data-previous-value': blocUE.blocUECategory.vars.value } }) }}
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex">
+                            <div class="flex-grow-1">
+                                Liste des UEs
+                            </div>
+                            <div class="flex-shrink-0">
+                                <button type="button" class="btn btn-sm btn-primary" data-action="add-ue"
+                                        data-target="#{{ blocUE.ues.vars.id }}">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="{{ blocUE.ues.vars.id }}" class="card-body"
+                         data-original-prototype="{{ formMacros.printUE(blocUE.ues.vars.prototype)|e('html_attr') }}"
+                         data-no-ue="{{ formMacros.printNoUE()|e('html_attr') }}">
+                        {% for ue in blocUE.ues %}
+                            {{ form_row(ue) }}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
 
  {% macro printNoBlocUE() %}
      <div id="no-bloc-ue" class="col-12">

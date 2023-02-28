@@ -1,11 +1,8 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\Parcours;
 
-use App\Entity\BlocUE;
-use App\Entity\Etudiant;
 use App\Entity\Parcours;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
