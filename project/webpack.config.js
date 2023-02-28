@@ -27,9 +27,9 @@ Encore
     .addEntry('bloc_ue_form', './assets/bloc_ue/form.js')
     .addEntry('campagne_choix_form', './assets/campagne_choix/form.js')
     .addEntry('campagne_choix_show', './assets/campagne_choix/show.js')
-
     .addEntry('passage_annee_index', './assets/passage_annee/index.js')
     .addEntry('passage_annee_form', './assets/passage_annee/form.js')
+    .addEntry('etudiant_choix_edit', './assets/etudiant_choix/edit.js')
 
     .addStyleEntry('login', './assets/styles/login.css')
 
