@@ -30,13 +30,6 @@ class ParcoursType extends AbstractType
                 'allow_delete' => true,
                 'by_reference' => false,
             ])
-//            ->add('etudiants', EntityType::class, [
-//                'class' => Etudiant::class,
-//                'label' => 'Etudiants',
-//                'multiple' => true,
-//                'expanded' => true,
-//                'by_reference' => false,
-//            ])
         ;
     }
 

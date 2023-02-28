@@ -15,7 +15,7 @@ class UE
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 45)]
+    #[ORM\Column(length: 255)]
     private ?string $label = null;
 
     #[ORM\Column(type: 'boolean', options: ['default' => true])]
@@ -39,9 +39,6 @@ class UE
     #[ORM\OneToMany(mappedBy: 'UE', targetEntity: EtudiantUE::class)]
     private Collection $etudiantUEs;
 
-    #[ORM\OneToMany(mappedBy: 'ue', targetEntity: BlocUeUe::class)]
-    private Collection $blocUeUes;
-
     public function __construct()
     {
         $this->blocUEs = new ArrayCollection();
@@ -50,7 +47,6 @@ class UE
         $this->blocUECategories = new ArrayCollection();
         $this->groupes = new ArrayCollection();
         $this->etudiantUEs = new ArrayCollection();
-        $this->blocUeUes = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -249,36 +245,6 @@ class UE
             // set the owning side to null (unless already changed)
             if ($etudiantUE->getUE() === $this) {
                 $etudiantUE->setUE(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, BlocUeUe>
-     */
-    public function getBlocUeUes(): Collection
-    {
-        return $this->blocUeUes;
-    }
-
-    public function addBlocUeUe(BlocUeUe $blocUeUe): self
-    {
-        if (!$this->blocUeUes->contains($blocUeUe)) {
-            $this->blocUeUes->add($blocUeUe);
-            $blocUeUe->setUe($this);
-        }
-
-        return $this;
-    }
-
-    public function removeBlocUeUe(BlocUeUe $blocUeUe): self
-    {
-        if ($this->blocUeUes->removeElement($blocUeUe)) {
-            // set the owning side to null (unless already changed)
-            if ($blocUeUe->getUe() === $this) {
-                $blocUeUe->setUe(null);
             }
         }
 

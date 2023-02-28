@@ -23,9 +23,6 @@ class BlocOption
     #[ORM\ManyToOne(targetEntity: CampagneChoix::class, inversedBy: 'blocOptions')]
     private ?CampagneChoix $campagneChoix = null;
 
-    #[ORM\ManyToOne(inversedBy: 'blocOptions')]
-    private ?BlocUE $blocUE = null;
-
     #[ORM\ManyToMany(targetEntity: UE::class, inversedBy: 'blocOptions')]
     private Collection $UEs;
 
@@ -86,18 +83,6 @@ class BlocOption
     public function setCampagneChoix(?CampagneChoix $campagneChoix): self
     {
         $this->campagneChoix = $campagneChoix;
-
-        return $this;
-    }
-
-    public function getBlocUE(): ?BlocUE
-    {
-        return $this->blocUE;
-    }
-
-    public function setBlocUE(?BlocUE $blocUE): self
-    {
-        $this->blocUE = $blocUE;
 
         return $this;
     }

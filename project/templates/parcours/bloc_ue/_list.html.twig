@@ -11,9 +11,9 @@
         <tr>
             {% for bloc_ue in bloc_ues %}
                 <td>
-                    {% for ue in bloc_ue.ues %}
+                    {% for blocUeUes in bloc_ue.blocUeUes %}
                         <div>
-                            <a href="{{ path('app_ue_show', {'id': ue.id}) }}">{{ ue.label }}</a>
+                            <a href="{{ path('app_ue_show', {'id': blocUeUes.ue.id}) }}">{{ blocUeUes.ue.label }}</a>
                         </div>
                     {% endfor %}
                 </td>
