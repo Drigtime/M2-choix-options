@@ -5,55 +5,54 @@
 	- Choix des options
 {% endblock %}
 
+{% block javascripts %}
+  {{ parent() }}
+  {{ encore_entry_script_tags('etudiant_choix_edit') }}
+{% endblock %}
+
 {% block body %}
-  {# <div class="card"> #}
-    {# <div class="card-header">
-      <h4>Ordre de choix de l'UE</h4>
-    </div> #}
-    {# <div class="card-body"> #}
-    <div class="row">
+<div class="container-fluid">
+  <div class="row mt-4">
     <div class="col-md-6">
-      <p style="text-align: center; font-weight: bold; margin-top: 2em">Début de la campagne : {{ campagne.dateDebut|date("m/d/Y") }}</p>
+      <h4>Début de la campagne :</h4>
+      <p class="font-weight-bold">{{ campagne.dateDebut|date("m/d/Y") }}</p>
     </div>
     <div class="col-md-6">
-      <p style="text-align: center; font-weight: bold; margin-top: 2em">Fin de la campagne : {{ campagne.dateFin|date("m/d/Y") }}</p>
+      <h4>Fin de la campagne :</h4>
+      <p class="font-weight-bold">{{ campagne.dateFin|date("m/d/Y") }}</p>
     </div>
-    </div>
-      {{ form_start(form) }}
-        {% for blocOption in form.blocOptions %}
-          <div class="card my-3">
-            <div class="card-header">
-              {{ blocOption.vars.value.blocUE.blocUECategory.label }}
-            </div>
-            <div class="card-body">
-              {% for choixes in blocOption %}
-                  {% for choix in choixes %}                  
-                    <div class="card my-3">
-                      <div class="form-group">
-                        <div class="card-header">
-                          {{ choix.vars.data.UE.label }}
-                        </div>
-                        <div class="card-body"> 
-                          {{ form_row(choix) }}
-                            <button class="btn btn-sm btn-primary">
-                              <i class="fas fa-save"></i>
-                              {{ button_label|default('Enregistrer') }}
-                            </button>
-                        </div>
-                      </div>
-                    </div>
-                  {% endfor %}
-              {% endfor %}
-            </div>
+  </div>
+  <div id="campagneId" data-campagne-id="{{ campagne.id }}" class="container-fluid">
+  <div class="row">
+    {% for blocOption in form.blocOptions %}
+      <div class="col-md-6 mt-4">
+        <div class="card">
+          <div class="card-header">
+            <h5>{{ blocOption.vars.value.blocUE.blocUECategory.label }}</h5>
           </div>
-        {% endfor %}
-      {{ form_end(form) }}
-    {# </div> #}
-    <div class="card-footer">
+          <div id="{{ blocOption.vars.value.id }}" data-id="{{ blocOption.vars.value.id }}" class="list-group choices">
+            {% for choixes in blocOption %}
+              {% for choix in choixes %}
+                <div class="list-group-item d-flex choix" data-blocOptionId="{{ blocOption.vars.value.id }}" data-id="{{choix.vars.data.UE.id}}" data-ordre="{{choix.vars.data.ordre}}">
+                  <span class="me-2">Choix n°{{ choix.vars.value.ordre }}</span>
+                  <p class="flex-grow-1 m-0">{{ choix.vars.data.UE.label }}</p>
+                  <i class="bi bi-arrows-move me-0"></i>
+                </div>
+              {% endfor %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  <div class="row mt-4">
+    <div class="col-md-12">
       <a href="{{ path('app_etudiant_choix_options') }}" class="btn btn-primary">
         <i class="fas fa-arrow-left"></i>
         {{ 'utils.back_to_list'|trans }} des campagnes
       </a>
     </div>
-  {# </div> #}
+  </div>
+</div>
 {% endblock %}
+

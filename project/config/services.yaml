@@ -27,3 +27,6 @@ services:
         tags: [kernel.event_listener]
         arguments:
             $maintenance: '%env(bool:MAINTENANCE_MODE)%'
+
+    App\Form\DataTransformer\ChoixCollectionTransformer:
+        tags: ['form.type']
