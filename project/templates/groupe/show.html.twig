@@ -17,6 +17,25 @@
             </tr>
         </tbody>
     </table>
+    <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Nom</th>
+                                        <th scope="col">Prénom</th>
+                                        <th scope="col"></th>
+                                    </thead>
+                                    <tbody data-check-all-container>
+
+                            {% for etudiant in groupe.etudiants %}
+                            <tr>
+                                            <td>{{ etudiant.id }}</td>
+                                            <td>{{ etudiant.nom }}</td>
+                                            <td>{{ etudiant.prenom }}</td>
+                                        </tr>
+                            {% endfor %}
+                                    </tbody>
+                                </table>
 
     <a href="{{ path('app_groupe_index') }}">back to list</a>
 

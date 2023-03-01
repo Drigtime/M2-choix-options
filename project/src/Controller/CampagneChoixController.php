@@ -14,6 +14,7 @@ use App\Form\GroupeType;
 use App\Repository\BlocOptionRepository;
 use App\Repository\BlocUERepository;
 use App\Repository\CampagneChoixRepository;
+use App\Repository\ParcoursRepository;
 use App\Repository\GroupeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -89,60 +90,107 @@ class CampagneChoixController extends AbstractController
 
     //Crée les groupes une fois la campagne termine 
     #[Route('/{id}/choix/{choix}', name: 'app_campagne_groupe_choix', methods: ['GET', 'POST'])]
-    public function choix_groupe(Request $request, GroupeRepository $groupeRep,CampagneChoix $campagneChoix, CampagneChoixRepository $campagneChoixRepository): Response
+    public function choix_groupe(Request $request, $id, $choix, GroupeRepository $groupeRep,CampagneChoix $campagneChoix, CampagneChoixRepository $campagneChoixRepository, ParcoursRepository $parcoursRepository): Response
     {
         $groupe = new Groupe();
         $indice=1;
         $UE = null;
         $effectif=25;
         $parcours = $campagneChoix->getParcours();
-        $choixes = $campagneChoix->getChoixes();
+        $parcours_id = $parcours->getId();
+        $parcours = $parcoursRepository->findOneBy(['id' => $parcours_id]);
+        dump($parcours);
+        foreach ($parcours->getEtudiants() as $etudiant) {
+            $result[] = $etudiant;
+        }
+        $choixes = $campagneChoix->getResponseCampagnes();
         $BlocUEs =  $campagneChoix->getBlocOptions();
+        dump($result);
+        dump("test");
         //Pour chaque ue du blocUE 
-        foreach($BlocUEs as $BlocUE)
+        for($g = 0; $g < count($BlocUEs); $g++)
         {
-            foreach($BlocUE as $UE)
+            $BlocUE = $BlocUEs[$g];
+            dump("test12");
+            dump($BlocUE);
+            $UEs = $BlocUE->getUEs();
+            for($i = 0; $i < count($UEs); $i++)
             {
-                $result = array_keys(array_filter($choix, function($v){
-                    if($v.getUE() == $UE){
-                        return $v->getEtudiant();
-                    }
-                }));
+                $UE=$UEs[$i];
+                dump("test123");
+                // $result = array_keys(array_filter($choixes, function($v){
+                //     if($v.getUE() == $UE){
+                //         return $v->getEtudiant();
+                //     }
+                // }));
+                dump("etudiants");
+                $indice = 1;
                 switch($choix) {
                     //groupe par ordre alphabetique
                     case 1:
-                        sort($result);
-                        foreach($result as $etudiant)
+                        $j=0;
+                        while($j < count($result))
                         {
-                            if($groupe->getEtudiants().count >= effectif)
+                            $j++;
+                            if(count($groupe->getEtudiants()) >= $effectif)
                             {
-                                $groupe->setLabel($UE->getLabel() + str(indice));
+                                $groupe->setLabel($UE->getLabel() . "-Groupe-" . strval($indice));
                                 $UE->addGroupe($groupe);
+                                $groupeRep->save($groupe, true);
+                                dump($groupe);
                                 $indice = $indice+1;
                                 $groupe = new Groupe();
                             }
-                            $groupe->addEtudiant($etudiant);
-                            $groupeRep->save($groupe);
+                            else if($j == count($result))
+                            {
+                                $groupe->setLabel($UE->getLabel() . "-Groupe-" . strval($indice));
+                                $UE->addGroupe($groupe);
+                                $groupeRep->save($groupe, true);
+                                dump($groupe);
+                                $indice = $indice+1;
+                                $groupe = new Groupe();
+                            } 
+                            else
+                            {
+                                $groupe->addEtudiant($result[$j]);
+                            }
 
                         }
-                        $UE->addGroupe($groupe);
+                        dump($groupe);
+                        $groupeRep->save($groupe);
                         break;
                     //aleatoire
                     case 2:
                         shuffle($result);
-                        foreach($result as $etudiant)
+                        $j=0;
+                        while($j < count($result))
                         {
-                            if($groupe->getEtudiants().count >= effectif)
+                            $j++;
+                            if(count($groupe->getEtudiants()) >= $effectif )
                             {
-                                $groupe->setLabel($UE->getLabel() + str(indice));
+                                $groupe->setLabel($UE->getLabel() . "-Groupe-" . strval($indice));
                                 $UE->addGroupe($groupe);
                                 $indice = $indice+1;
+                                dump($groupe);
                                 $groupe = new Groupe();
+                                $groupe->addEtudiant($result[$j]);
                             }
-                            $groupe->addEtudiant($etudiant);
+                            else if($j == count($result))
+                            {
+                                $groupe->setLabel($UE->getLabel() . "-Groupe-" . strval($indice));
+                                $UE->addGroupe($groupe);
+                                dump($groupe);
+                                $indice = $indice+1;
+                                $groupe = new Groupe();
+                            } 
+                            else
+                            {
+                                $groupe->addEtudiant($result[$j]);
+                            }
                         }
+                        dump($groupe);
                         $UE->addGroupe($groupe);
-                        $groupeRep->save($groupe);
+                        $groupeRep->save($groupe, true);
                         break;
                     //manuel
                     case 3:
@@ -155,9 +203,6 @@ class CampagneChoixController extends AbstractController
                 
             }
         }
-        
-        
-        $campagneChoixRepository->save($campagneChoix, true);
         $form = $this->createForm(GroupeType::class, $groupe);
         $form->handleRequest($request);
 
@@ -167,11 +212,12 @@ class CampagneChoixController extends AbstractController
             return $this->redirectToRoute('app_campagne_choix_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('campagne_choix/_groupe_choix.html.twig', [
+        return $this->render('campagne_choix/groupe_choix/_groupe_choix.html.twig', [
             'campagne_choix' => $campagneChoix,
             'form' => $form,
         ]);
     }
+
     // add bloc ue, with ajax
     #[Route('/{id}/bloc_option/add', name: 'app_campagnechoix_add_bloc_option', methods: ['GET', 'POST'])]
     public function addBlocOption(Request $request, CampagneChoix $campagneChoix, BlocOptionRepository $blocOptionRepository): Response

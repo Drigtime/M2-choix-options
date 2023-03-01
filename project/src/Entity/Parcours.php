@@ -21,9 +21,6 @@ class Parcours
     #[ORM\Column]
     private ?string $label;
 
-    #[ORM\OneToMany(mappedBy: 'parcours', targetEntity: Groupe::class)]
-    private Collection $groupes;
-
     #[ORM\OneToMany(mappedBy: 'parcours', targetEntity: BlocUE::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $blocUEs; 
 
@@ -31,6 +28,7 @@ class Parcours
     private Collection $campagneChoixes; 
 
     #[ORM\OneToMany(mappedBy: 'parcours', targetEntity: Etudiant::class)]
+    #[OrderBy(["nom" => "DESC"])]
     private Collection $etudiants;
 
     public function __construct()

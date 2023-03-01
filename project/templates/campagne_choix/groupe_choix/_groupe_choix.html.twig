@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Choix groupes 
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex">
+        <h4>Validation des groupes</h4>
+    </div>
+    <div id="list-groupe">
+        {{ include('campagne_choix/groupe_choix/_list_groupe.html.twig') }}
+    </div>
+{% endblock %}
+
+
+
+{% block javascripts %}
+{{parent()}}
+    {{ encore_entry_script_tags('campagne_choix_tab') }}
+{% endblock %}

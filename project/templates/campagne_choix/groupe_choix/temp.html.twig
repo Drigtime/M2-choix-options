@@ -1,0 +1,31 @@
+<nav>
+  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+    {% for bloc_ue in campagne_choix.blocOptions %}
+    <button class="nav-link" id="nav-bloc-{{bloc_ue.id}}-tab" data-bs-toggle="tab" data-bs-target="#nav-bloc-{{bloc_ue.id}}" type="button" role="tab" aria-controls="nav-bloc-{{bloc_ue.id}} nav-tab-bloc-{{bloc_ue.id}}" aria-selected="false">
+    {{ bloc_ue.blocUE.blocUECategory.label }}
+    </button>
+    {% endfor %}
+  </div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+    {% for bloc_ue in campagne_choix.blocOptions %}
+    <div class="fade" id="nav-bloc-{{bloc_ue.id}}" role="tabpanel" aria-labelledby="nav-bloc-{{bloc_ue.id}}-tab">
+
+    <nav>
+    <div class="nav nav-tabs" id="nav-tab-bloc-{{bloc_ue.id}}" role="tab">
+    {% for ue in bloc_ue.ues %}    
+        <button class="nav-link" id="nav-ue-{{ue.id}}-tab" data-bs-toggle="tab" data-bs-target="#nav-ue-{{ue.id}}" type="button" role="tab" aria-controls="nav-ue-{{ue.id}}" aria-selected="false" style="background-color:transparent!important;border:none!important">
+        {{ue.label}}
+        </button>
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade" id="nav-bloc-{{ue.id}}" role="tabpanel" aria-labelledby="nav-bloc-{{ue.id}}-tab">
+            {{ue.label}}
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+    </nav>
+    </div>
+  {% endfor %}
+</div>
+
