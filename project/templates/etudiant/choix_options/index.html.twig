@@ -12,20 +12,20 @@
             <h5>Campagne du {{ campagne.dateDebut|date("m/d/Y") }} au {{ campagne.dateFin|date("m/d/Y") }}</h5>
           </div>
           <div class="card-body">
-            {% for blocOption in campagne.blocOptions %}
-              <div class="card sub-card my-3">
-                <div class="card-header">
-                  <h6>{{ blocOption.blocUE.blocUECategory.label }}</h6>
-                  Nombre d'UE à choisir : {{ blocOption.nbUEChoix }}
+            {% for blocUE in campagne.parcours.blocUEs %}
+                <div class="card sub-card my-3">
+                    <div class="card-header">
+                        <h6>{{ blocUE.blocUECategory.label }}</h6>
+                        Nombre d'UE à choisir : {{ blocUE.blocOption.nbUEChoix }}
+                    </div>
+                    <div class="card-body">
+                        {% for ue in blocUE.blocOption.UEs %}
+                            {{ ue.label }}</br>
+                        {% else %}
+                            <p>Pas encore d'UE à choisir</p>
+                        {% endfor %}
+                    </div>
                 </div>
-                <div class="card-body">
-                  {% for ue in blocOption.UEs %}
-                    {{ ue.label }}</br>
-                  {% else %}
-                    <p>Pas encore d'UE à choisir</p>
-                  {% endfor %}
-                </div>
-              </div>
             {% endfor %}
           </div>
           <div class="card-footer">

@@ -1,58 +1,62 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	{{ parent() }}
-	- Choix des options
+    {{ parent() }}
+    - Choix des options
 {% endblock %}
 
 {% block javascripts %}
-  {{ parent() }}
-  {{ encore_entry_script_tags('etudiant_choix_edit') }}
+    {{ parent() }}
+    {{ encore_entry_script_tags('etudiant_choix_edit') }}
 {% endblock %}
 
 {% block body %}
-<div class="container-fluid">
-  <div class="row mt-4">
-    <div class="col-md-6">
-      <h4>Début de la campagne :</h4>
-      <p class="font-weight-bold">{{ campagne.dateDebut|date("m/d/Y") }}</p>
-    </div>
-    <div class="col-md-6">
-      <h4>Fin de la campagne :</h4>
-      <p class="font-weight-bold">{{ campagne.dateFin|date("m/d/Y") }}</p>
-    </div>
-  </div>
-  <div id="campagneId" data-campagne-id="{{ campagne.id }}" class="container-fluid">
-  <div class="row">
-    {% for blocOption in form.blocOptions %}
-      <div class="col-md-6 mt-4">
-        <div class="card">
-          <div class="card-header">
-            <h5>{{ blocOption.vars.value.blocUE.blocUECategory.label }}</h5>
-          </div>
-          <div id="{{ blocOption.vars.value.id }}" data-id="{{ blocOption.vars.value.id }}" class="list-group choices">
-            {% for choixes in blocOption %}
-              {% for choix in choixes %}
-                <div class="list-group-item d-flex choix" data-blocOptionId="{{ blocOption.vars.value.id }}" data-id="{{choix.vars.data.UE.id}}" data-ordre="{{choix.vars.data.ordre}}">
-                  <span class="me-2">Choix n°{{ choix.vars.value.ordre }}</span>
-                  <p class="flex-grow-1 m-0">{{ choix.vars.data.UE.label }}</p>
-                  <i class="bi bi-arrows-move me-0"></i>
-                </div>
-              {% endfor %}
-            {% endfor %}
-          </div>
+    <div class="container-fluid">
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <h4>Début de la campagne :</h4>
+                <p class="font-weight-bold">{{ campagne.dateDebut|date("m/d/Y") }}</p>
+            </div>
+            <div class="col-md-6">
+                <h4>Fin de la campagne :</h4>
+                <p class="font-weight-bold">{{ campagne.dateFin|date("m/d/Y") }}</p>
+            </div>
         </div>
-      </div>
-    {% endfor %}
-  </div>
-  <div class="row mt-4">
-    <div class="col-md-12">
-      <a href="{{ path('app_etudiant_choix_options') }}" class="btn btn-primary">
-        <i class="fas fa-arrow-left"></i>
-        {{ 'utils.back_to_list'|trans }} des campagnes
-      </a>
+        <div id="campagneId" data-campagne-id="{{ campagne.id }}" class="container-fluid">
+            <div class="row">
+                {% for blocUE in form.parcours.blocUEs %}
+                    <div class="col-md-6 mt-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>{{ blocUE.vars.value.blocUECategory.label }}</h5>
+                            </div>
+                            <div id="{{ blocUE.blocOption.vars.value.id }}"
+                                 data-id="{{ blocUE.blocOption.vars.value.id }}"
+                                 class="list-group choices">
+                                {% for choix in blocUE.blocOption.choixes %}
+                                    <div class="list-group-item d-flex choix"
+                                         data-blocOptionId="{{ blocUE.blocOption.vars.value.id }}"
+                                         data-id="{{ choix.vars.data.UE.id }}"
+                                         data-ordre="{{ choix.vars.data.ordre }}">
+                                        <span class="me-2">Choix n°{{ choix.vars.value.ordre }}</span>
+                                        <p class="flex-grow-1 m-0">{{ choix.vars.data.UE.label }}</p>
+                                        <i class="bi bi-arrows-move me-0"></i>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <a href="{{ path('app_etudiant_choix_options') }}" class="btn btn-primary">
+                        <i class="fas fa-arrow-left"></i>
+                        {{ 'utils.back_to_list'|trans }} des campagnes
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
 {% endblock %}
 
