@@ -7,7 +7,7 @@ use App\Entity\CampagneChoix;
 use App\Entity\Parcours;
 use App\Form\BlocUEType;
 use App\Form\CampagneChoixType;
-use App\Form\ParcoursType;
+use App\Form\Parcours\ParcoursType;
 use App\Repository\BlocUERepository;
 use App\Repository\CampagneChoixRepository;
 use App\Repository\EtudiantRepository;

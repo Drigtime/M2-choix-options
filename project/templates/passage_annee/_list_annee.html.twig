@@ -1,12 +1,11 @@
 {% for annee in anneeFormation %}
-    {% set currentTab = app.request.cookies.get('anneeTab' ~ annee.id) ?: '#parcours-1' %}
+    {% set currentTab = app.request.cookies.get('anneeTab' ~ annee.id) ?: (annee.parcours|length > 0 ? '#parcours-' ~ annee.parcours[0].id : '') %}
     <div class="card mb-4">
         <div class="card-header">
             {{ annee.label }}
         </div>
         <div class="card-body p-2">
             {% if annee.parcours|length > 0 %}
-
                 <ul class="nav nav-tabs" id="anneeTab{{ annee.id }}" role="tablist">
                     {% for parcours in annee.parcours %}
                         <li class="nav-item" role="presentation">

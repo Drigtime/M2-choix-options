@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Etudiant;
+use App\Entity\EtudiantUE;
+use App\Entity\Parcours;
 use App\Form\MoveEtudiantType;
 use App\Form\PassageAnnee\Step_1\AnneeFormationType as Step1AnneeFormationType;
 use App\Form\PassageAnnee\Step_2\AnneeFormationType as Step2AnneeFormationType;
@@ -149,10 +151,20 @@ class PassageAnneeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Parcours $parcours */
             $parcours = $form->get('parcours')->getData();
 
             foreach ($etudiants as $etudiant) {
+                // remove all EtudiantUE
+                foreach ($etudiant->getEtudiantUEs() as $etudiantUE) {
+                    $etudiant->removeEtudiantUE($etudiantUE);
+                }
                 $etudiant->setParcours($parcours);
+                foreach ($parcours->getBlocUEs() as $blocUE) {
+                    foreach ($blocUE->getUes() as $ue) {
+                        $etudiant->addEtudiantUE(new EtudiantUE($etudiant, $ue));
+                    }
+                }
                 $etudiantRepository->save($etudiant);
             }
             $entityManager->flush();

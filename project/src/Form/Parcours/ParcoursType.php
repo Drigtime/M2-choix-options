@@ -1,11 +1,8 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\Parcours;
 
-use App\Entity\BlocUE;
-use App\Entity\Etudiant;
 use App\Entity\Parcours;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -33,13 +30,6 @@ class ParcoursType extends AbstractType
                 'allow_delete' => true,
                 'by_reference' => false,
             ])
-//            ->add('etudiants', EntityType::class, [
-//                'class' => Etudiant::class,
-//                'label' => 'Etudiants',
-//                'multiple' => true,
-//                'expanded' => true,
-//                'by_reference' => false,
-//            ])
         ;
     }
 

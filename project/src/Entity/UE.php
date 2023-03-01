@@ -15,7 +15,7 @@ class UE
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 45)]
+    #[ORM\Column(length: 255)]
     private ?string $label = null;
 
     #[ORM\Column(type: 'boolean', options: ['default' => true])]
@@ -250,5 +250,4 @@ class UE
 
         return $this;
     }
-
 }

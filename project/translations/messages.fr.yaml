@@ -27,6 +27,12 @@ form:
         ues: 'UEs du bloc'
         nbUEChoix: "Nombre d'UEs à choisir"
     campagneChoix:
-        dateDebut: 'Date de début'
-        dateFin: 'Date de fin'
-        parcours: 'Parcours'
+        dateDebut:
+            label: 'Date de début'
+            errorRelatedToDateFin: 'La date de début doit être antérieure à la date de fin'
+        dateFin:
+            label: 'Date de fin'
+            errorRelatedToDateDebut: 'La date de fin doit être postérieure à la date de début'
+        parcours:
+            label: 'Parcours'
+            placeholder: 'Choisissez un parcours'

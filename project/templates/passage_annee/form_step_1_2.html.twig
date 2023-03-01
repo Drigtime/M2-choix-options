@@ -36,44 +36,21 @@
                         </div>
                         <div class="card-body p-2">
                             {% set groupedUes = {} %}
-                            {% for pacroursBlocUe in etudiant.vars.value.parcours.getBlocUEs %}
-                                {% for etudiantUe in etudiant.etudiantUEs %}
-                                    {% if etudiantUe.vars.value.ue in pacroursBlocUe.ues %}
-                                        {% if pacroursBlocUe.id not in groupedUes %}
-                                            {# Obliger de mettre '_' devant l'id, sinon par exemple l'id 47 est juste transformé en index 0, la ca devient _47 #}
-                                            {% set groupedUes = groupedUes|merge({('_' ~ pacroursBlocUe.id): [etudiantUe]}) %}
-                                        {% else %}
-                                            {% set groupedUes = groupedUes|merge({(pacroursBlocUe.id): groupedUes[pacroursBlocUe.id]|merge([etudiantUe])}) %}
-                                        {% endif %}
+                            {% for blocUE in etudiant.vars.value.parcours.blocUEs %}
+                                {% set groupedUes = groupedUes|merge({(blocUE.blocUECategory.label): []}) %}
+                                {% for ue in blocUE.ues %}
+                                    {% set groupedUes = groupedUes|merge({(blocUE.blocUECategory.label): groupedUes[blocUE.blocUECategory.label]|merge([ue])}) %}
+                                {% endfor %}
+                            {% endfor %}
+
+                            {% for key in groupedUes|keys %}
+                                <h5>{{ key }}</h5>
+                                {% for etudiantUE in etudiant.etudiantUEs %}
+                                    {% if etudiantUE.vars.value.ue in groupedUes[key] %}
+                                        {{ form_row(etudiantUE.acquis, {'label': etudiantUE.vars.value.ue.label}) }}
                                     {% endif %}
                                 {% endfor %}
                             {% endfor %}
-                            <div class="accordion" id="accordionExample{{ etudiantId }}">
-                                {% for id, etudiantUes in groupedUes %}
-                                    {% set trueId = id|split('_')[1] %}
-                                    {% set groupeUE = etudiant.vars.value.parcours.getBlocUEs|filter((blocUE) => blocUE.id == trueId)|first %}
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header"
-                                            id="accordion-heading-{{ etudiantId }}-{{ trueId }}">
-                                            <button class="accordion-button p-2" type="button" data-bs-toggle="collapse"
-                                                    data-bs-target="#accordion-collapse-{{ etudiantId }}-{{ trueId }}"
-                                                    aria-expanded="true"
-                                                    aria-controls="accordion-collapse-{{ etudiantId }}-{{ trueId }}">
-                                                {{ groupeUE.blocUECategory.label }}
-                                            </button>
-                                        </h2>
-                                        <div id="accordion-collapse-{{ etudiantId }}-{{ trueId }}"
-                                             class="accordion-collapse collapse show"
-                                             aria-labelledby="accordion-heading-{{ etudiantId }}-{{ trueId }}">
-                                            <div class="accordion-body p-2">
-                                                {% for etudiantUe in etudiantUes %}
-                                                    {{ form_row(etudiantUe.acquis, {'label': etudiantUe.vars.value.ue.label}) }}
-                                                {% endfor %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                {% endfor %}
-                            </div>
                         </div>
                     </div>
                 </div>
