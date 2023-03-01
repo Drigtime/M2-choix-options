@@ -30,7 +30,7 @@ class Etudiant
     #[ORM\ManyToMany(targetEntity: Groupe::class, mappedBy: 'etudiants')]
     private Collection $groupes;
 
-    #[ORM\OneToMany(mappedBy: 'etudiant', targetEntity: EtudiantUE::class)]
+    #[ORM\OneToMany(mappedBy: 'etudiant', targetEntity: EtudiantUE::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $etudiantUEs;
 
     #[ORM\OneToMany(mappedBy: 'etudiant', targetEntity: ResponseCampagne::class, orphanRemoval: true)]

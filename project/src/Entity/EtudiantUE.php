@@ -23,6 +23,13 @@ class EtudiantUE
     #[ORM\Column]
     private ?bool $acquis = null;
 
+    public function __construct(Etudiant $etudiant, UE $UE)
+    {
+        $this->etudiant = $etudiant;
+        $this->UE = $UE;
+        $this->acquis = false;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
