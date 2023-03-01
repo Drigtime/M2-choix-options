@@ -40,7 +40,6 @@
                 {% endif %}
             </td>
         </tr>
-        </tr>
         <tr>
             <th>Date de debut</th>
             <td>{{ campagne_choix.dateDebut ? campagne_choix.dateDebut|date('Y-m-d H:i:s') : '' }}</td>
@@ -49,31 +48,56 @@
             <th>Date de fin</th>
             <td>{{ campagne_choix.dateFin ? campagne_choix.dateFin|date('Y-m-d H:i:s') : '' }}</td>
         </tr>
-        {% if campagne_choix.dateFin < date("now") %}
-        <tr>
-            <th> Choix des groupes UE </th>
-            <td> <a href="{{ path('app_campagne_groupe_choix', {'id': campagne_choix.id, 'choix': 1}) }}"
-                   class="btn btn-sm btn-primary"><i class="bi-box-arrow-right"></i>
-                    Ordre alphabétique
-                </a>
-                 <a href="{{ path('app_campagne_groupe_choix', {'id': campagne_choix.id, 'choix': 2}) }}"
-                   class="btn btn-sm btn-primary"><i class="bi-box-arrow-right"></i>
-                    Aleatoire
-                </a>
-            <a href="{{ path('app_campagne_groupe_choix', {'id': campagne_choix.id, 'choix': 3}) }}"
-                   class="btn btn-sm btn-primary"><i class="bi-box-arrow-right"></i>
-                    Manuel
-                </a>
-            </td>
-        </tr>
-    {% endif %}
+        {% if campagne_choix.dateFin < date("now", "Europe/Paris") %}
+            <tr>
+                <th> Choix des groupes UE</th>
+                <td>
+                    <a href="{{ path('app_campagne_groupe_choix', {'id': campagne_choix.id, 'choix': 1}) }}"
+                       class="btn btn-sm btn-primary"><i class="bi-box-arrow-right"></i>
+                        Ordre alphabétique
+                    </a>
+                    <a href="{{ path('app_campagne_groupe_choix', {'id': campagne_choix.id, 'choix': 2}) }}"
+                       class="btn btn-sm btn-primary"><i class="bi-box-arrow-right"></i>
+                        Aleatoire
+                    </a>
+                    <a href="{{ path('app_campagne_groupe_choix', {'id': campagne_choix.id, 'choix': 3}) }}"
+                       class="btn btn-sm btn-primary"><i class="bi-box-arrow-right"></i>
+                        Manuel
+                    </a>
+                </td>
+            </tr>
+        {% endif %}
         </tbody>
     </table>
 
-
-    <h5>Liste des blocs options</h5>
-    {{ include('campagne_choix/bloc_option/_list.html.twig', {'bloc_options': campagne_choix.blocOptions, 'campagne': campagne_choix}) }}
-
+    {% set blocUEs = campagne_choix.parcours.blocUEs|filter((blocUE) => blocUE.blocOption) %}
+    {% if blocUEs|length > 0 %}
+        <h5>Liste des blocs UE</h5>
+        <div class="row">
+            {% for blocUE in blocUEs %}
+                <div class="col-12 col-md-6 col-lg-4 col-xl-4">
+                    <div class="card">
+                        <div class="card-header">
+                            {{ blocUE.blocUECategory.label }} - {{ blocUE.blocOption.nbUEChoix }} UE optionnelle(s)
+                        </div>
+                        <div class="card-body">
+                            <ul>
+                                {% for ue in blocUE.blocOption.ues %}
+                                    <li>
+                                        <a href="{{ path('app_ue_show', {'id': ue.id}) }}">{{ ue.label }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            Aucun bloc d'UE n'a été créé pour ce parcours.
+        </div>
+    {% endif %}
     {#    </div> #}
 {% endblock %}
 
