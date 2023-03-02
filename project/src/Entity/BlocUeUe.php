@@ -22,7 +22,7 @@ class BlocUeUe
     private ?UE $UE = null;
 
     #[ORM\Column(nullable: true)]
-    private ?bool $isOptional = false;
+    private ?bool $optional = false;
 
     public function getId(): ?int
     {
@@ -53,14 +53,14 @@ class BlocUeUe
         return $this;
     }
 
-    public function isIsOptional(): ?bool
+    public function isOptional(): ?bool
     {
-        return $this->isOptional;
+        return $this->optional;
     }
 
-    public function setIsOptional(?bool $isOptional): self
+    public function setOptional(?bool $optional): self
     {
-        $this->isOptional = $isOptional;
+        $this->optional = $optional;
 
         return $this;
     }

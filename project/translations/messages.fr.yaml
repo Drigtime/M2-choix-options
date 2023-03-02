@@ -25,6 +25,7 @@ form:
     blocOption:
         blocUE: 'Bloc UE'
         ues: 'UEs du bloc'
+        optionals.ues: 'UEs optionnelles'
         nbUEChoix: "Nombre d'UEs à choisir"
     campagneChoix:
         dateDebut:

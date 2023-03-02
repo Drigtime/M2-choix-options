@@ -2,20 +2,13 @@
 
 namespace App\Controller;
 
-use App\Entity\BlocOption;
-use App\Entity\Groupe;
-use App\Entity\BlocUE;
 use App\Entity\CampagneChoix;
-use App\Entity\Parcours;
-use App\Form\BlocOptionType;
-use App\Form\BlocUEType;
+use App\Entity\Groupe;
 use App\Form\CampagneChoixType;
 use App\Form\GroupeType;
-use App\Repository\BlocOptionRepository;
-use App\Repository\BlocUERepository;
 use App\Repository\CampagneChoixRepository;
-use App\Repository\ParcoursRepository;
 use App\Repository\GroupeRepository;
+use App\Repository\ParcoursRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,6 +33,17 @@ class CampagneChoixController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            foreach ($campagneChoix->getBlocOptions() as $blocOption) {
+                /* @var $blocOption BlocOption */
+                $parcours = $blocOption->getBlocUE();
+                $blocUeUes = $parcours->getBlocUeUes()->filter(function ($blocUeUe) {
+                    return $blocUeUe->isOptional();
+                });
+                foreach ($blocUeUes as $blocUeUe) {
+                    $blocOption->addUE($blocUeUe->getUE());
+                }
+            }
+
             $campagneChoixRepository->save($campagneChoix, true);
 
             return $this->redirectToRoute('app_campagne_choix_index', [], Response::HTTP_SEE_OTHER);
@@ -66,6 +70,18 @@ class CampagneChoixController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // same as in new action but we must remove all UEs from blocOptions
+            foreach ($campagneChoix->getBlocOptions() as $blocOption) {
+                /* @var $blocOption BlocOption */
+                $blocOption->getUEs()->clear();
+                $parcours = $blocOption->getBlocUE();
+                $blocUeUes = $parcours->getBlocUeUes()->filter(function ($blocUeUe) {
+                    return $blocUeUe->isOptional();
+                });
+                foreach ($blocUeUes as $blocUeUe) {
+                    $blocOption->addUE($blocUeUe->getUE());
+                }
+            }
             $campagneChoixRepository->save($campagneChoix, true);
 
             return $this->redirectToRoute('app_campagne_choix_index', [], Response::HTTP_SEE_OTHER);
@@ -215,71 +231,6 @@ class CampagneChoixController extends AbstractController
         return $this->render('campagne_choix/groupe_choix/_groupe_choix.html.twig', [
             'campagne_choix' => $campagneChoix,
             'form' => $form,
-        ]);
-    }
-
-    // add bloc ue, with ajax
-    #[Route('/{id}/bloc_option/add', name: 'app_campagnechoix_add_bloc_option', methods: ['GET', 'POST'])]
-    public function addBlocOption(Request $request, CampagneChoix $campagneChoix, BlocOptionRepository $blocOptionRepository): Response
-    {
-        $blocOption = new BlocOption();
-        $blocOption->setCampagneChoix($campagneChoix);
-        $form = $this->createForm(BlocOptionType::class, $blocOption);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $blocOptionRepository->save($blocOption, true);
-
-            return $this->render('campagne_choix/bloc_option/_list.html.twig', [
-                'campagne' => $campagneChoix,
-                'bloc_options' => $campagneChoix->getBlocOptions(),
-            ]);
-        }
-
-        return $this->render('campagne_choix/bloc_option/_form.html.twig', [
-            'bloc_option' => $blocOption,
-            'form' => $form,
-        ]);
-    }
-
-    // edit bloc ue, with ajax
-    #[Route('/{id}/bloc_option/edit/{blocOption}', name: 'app_campagnechoix_edit_bloc_option', methods: ['GET', 'POST'])]
-    public function editBlocOption(Request $request, CampagneChoix $campagneChoix, BlocOptionRepository $blocOptionRepository, BlocOption $blocOption): Response
-    {
-        $form = $this->createForm(BlocOptionType::class, $blocOption);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $blocOptionRepository->save($blocOption, true);
-
-            return $this->render('campagne_choix/bloc_option/_list.html.twig', [
-                'campagne' => $campagneChoix,
-                'bloc_options' => $campagneChoix->getBlocOptions(),
-            ]);
-        }
-
-        return $this->render('campagne_choix/bloc_option/_form.html.twig', [
-            'bloc_option' => $blocOption,
-            'form' => $form,
-        ]);
-    }
-
-    // delete bloc ue, with ajax
-    #[Route('/{id}/bloc_option/delete/{blocOption}', name: 'app_campagnechoix_delete_bloc_option', methods: ['GET', 'POST'])]
-    public function deleteBlocOption(Request $request, CampagneChoix $campagneChoix, BlocOptionRepository $blocOptionRepository, BlocOption $blocOption): Response
-    {
-        if ($this->isCsrfTokenValid('delete' . $blocOption->getId(), $request->request->get('_token'))) {
-            $blocOptionRepository->remove($blocOption, true);
-
-            return $this->render('campagne_choix/bloc_option/_list.html.twig', [
-                'campagne' => $campagneChoix,
-                'bloc_options' => $campagneChoix->getBlocOptions(),
-            ]);
-        }
-
-        return $this->render('campagne_choix/bloc_option/_delete_form.html.twig', [
-            'campagne' => $campagneChoix,
-            'bloc_option' => $blocOption,
         ]);
     }
 }

@@ -23,9 +23,6 @@ class BlocUE
     #[ORM\JoinColumn(name: 'parcours_id', referencedColumnName: 'id', nullable: false)]
     private Parcours $parcours;
 
-    #[ORM\OneToMany(mappedBy: 'blocUE', targetEntity: UE::class)]
-    private Collection $UEs;
-
     #[ORM\OneToMany(mappedBy: 'blocUE', targetEntity: BlocOption::class)]
     private Collection $blocOptions;
 
@@ -69,33 +66,6 @@ class BlocUE
     public function setParcours(Parcours $parcours): self
     {
         $this->parcours = $parcours;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, UE>
-     */
-    public function getUEs(): Collection
-    {
-        return $this->UEs;
-    }
-
-    public function addUE(UE $UE): self
-    {
-        if (!$this->UEs->contains($UE)) {
-            $this->UEs[] = $UE;
-            $UE->addBlocUE($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUE(UE $UE): self
-    {
-        if ($this->UEs->removeElement($UE)) {
-            $UE->removeBlocUE($this);
-        }
 
         return $this;
     }

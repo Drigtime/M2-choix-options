@@ -97,10 +97,7 @@ $(document).on('change', '#list-bloc-ue select[id$="_blocUE"]', function () {
     } else if (ues.length > 0) {
         $uesContainer.empty();
         ues.forEach(function (ue) {
-            $uesContainer.append(`<div class="form-check">
-                                <input type="checkbox" id="campagne_choix_blocOptions_${index}_UEs_${ue.id}" name="campagne_choix[blocOptions][${index}][UEs][]" class="form-check-input" value="${ue.id}">
-                                <label class="form-check-label" for="campagne_choix_blocOptions_${index}_UEs_${ue.id}">${ue.label}</label>
-                            </div>`);
+            $uesContainer.append(`<div class="text-muted">${ue.label}</div>`);
         });
     } else {
         $uesContainer.empty();
@@ -109,3 +106,6 @@ $(document).on('change', '#list-bloc-ue select[id$="_blocUE"]', function () {
                             </div>`);
     }
 });
+
+// trigger change event on the select inside the new widget
+$('#list-bloc-ue select[id$="_blocUE"]').trigger('change');

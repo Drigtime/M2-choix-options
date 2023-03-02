@@ -16,15 +16,15 @@ class CampagneChoixType extends AbstractType
     {
         $builder
             ->add('dateDebut', null, [
-                'label' => 'form.campagneChoix.dateDebut',
+                'label' => 'form.campagneChoix.dateDebut.label',
                 'widget' => 'single_text',
             ])
             ->add('dateFin', null, [
-                'label' => 'form.campagneChoix.dateFin',
+                'label' => 'form.campagneChoix.dateFin.label',
                 'widget' => 'single_text',
             ])
             ->add('parcours', null, [
-                'label' => 'form.campagneChoix.parcours',
+                'label' => 'form.campagneChoix.parcours.label',
                 'choice_label' => function ($parcours) {
                     return $parcours->getAnneeFormation()->getLabel() . ' - ' . $parcours->getLabel();
                 },
@@ -34,12 +34,18 @@ class CampagneChoixType extends AbstractType
                             return [
                                 'id' => $bloc->getId(),
                                 'label' => $bloc->__toString(),
-                                'ues' => $bloc->getBlocUeUes()->map(function ($blocUeUe) {
-                                    return [
-                                        'id' => $blocUeUe->getUE()->getId(),
-                                        'label' => $blocUeUe->getUE()->getLabel(),
-                                    ];
-                                })->toArray(),
+                                'ues' => $bloc->getBlocUeUes()
+                                    ->filter(function ($blocUeUe) {
+                                        return $blocUeUe->isOptional();
+                                    })
+                                    ->map(function ($blocUeUe) {
+                                        $ue = $blocUeUe->getUE();
+                                        return [
+                                            'id' => $ue->getId(),
+                                            'label' => $ue->getLabel(),
+                                        ];
+                                    })
+                                    ->getValues(),
                             ];
                         })->toArray())
                     ];
@@ -65,7 +71,7 @@ class CampagneChoixType extends AbstractType
                     $form->remove('parcours');
                 }
                 $form->add('parcours', null, [
-                    'label' => 'form.campagneChoix.parcours',
+                    'label' => 'form.campagneChoix.parcours.label',
                     'choice_label' => function ($parcours) {
                         return $parcours->getAnneeFormation()->getLabel() . ' - ' . $parcours->getLabel();
                     },
@@ -75,12 +81,18 @@ class CampagneChoixType extends AbstractType
                                 return [
                                     'id' => $bloc->getId(),
                                     'label' => $bloc->__toString(),
-                                    'ues' => $bloc->getBlocUeUes()->map(function ($blocUeUe) {
-                                        return [
-                                            'id' => $blocUeUe->getUE()->getId(),
-                                            'label' => $blocUeUe->getUE()->getLabel(),
-                                        ];
-                                    })->toArray(),
+                                    'ues' => $bloc->getBlocUeUes()
+                                        ->filter(function ($blocUeUe) {
+                                            return $blocUeUe->isOptional();
+                                        })
+                                        ->map(function ($blocUeUe) {
+                                            $ue = $blocUeUe->getUE();
+                                            return [
+                                                'id' => $ue->getId(),
+                                                'label' => $ue->getLabel(),
+                                            ];
+                                        })
+                                        ->getValues(),
                                 ];
                             })->toArray())
                         ];

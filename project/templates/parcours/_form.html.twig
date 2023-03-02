@@ -3,7 +3,7 @@
 {% macro printUE(blocUeUe) %}
     <div class="mb-2 d-flex gap-2">
         {{ form_widget(blocUeUe.ue) }}
-        {{ form_widget(blocUeUe.isOptional) }}
+        {{ form_widget(blocUeUe.optional) }}
         <button type="button" class="btn btn-sm btn-danger align-self-center" data-action="delete-ue">
             <i class="fas fa-trash"></i>
         </button>

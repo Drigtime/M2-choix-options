@@ -28,7 +28,7 @@ class BlocUeUeType extends AbstractType
                         ->orderBy('ue.label', 'ASC');
                 },
             ])
-            ->add('isOptional', HiddenType::class, [
+            ->add('optional', HiddenType::class, [
                 'label' => false,
             ]);
     }

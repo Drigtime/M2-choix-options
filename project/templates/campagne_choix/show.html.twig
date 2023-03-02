@@ -71,19 +71,18 @@
         </tbody>
     </table>
 
-    {% set blocUEs = campagne_choix.parcours.blocUEs|filter((blocUE) => blocUE.blocOption) %}
-    {% if blocUEs|length > 0 %}
+    {% if campagne_choix.blocOptions|length > 0 %}
         <h5>Liste des blocs UE</h5>
         <div class="row">
-            {% for blocUE in blocUEs %}
+            {% for blocOption in campagne_choix.blocOptions %}
                 <div class="col-12 col-md-6 col-lg-4 col-xl-4">
                     <div class="card">
                         <div class="card-header">
-                            {{ blocUE.blocUECategory.label }} - {{ blocUE.blocOption.nbUEChoix }} UE optionnelle(s)
+                            {{ blocOption.blocUE.blocUECategory.label }} - {{ blocOption.nbUEChoix }} UE optionnelle(s)
                         </div>
                         <div class="card-body">
                             <ul>
-                                {% for ue in blocUE.blocOption.ues %}
+                                {% for ue in blocOption.ues %}
                                     <li>
                                         <a href="{{ path('app_ue_show', {'id': ue.id}) }}">{{ ue.label }}</a>
                                     </li>
