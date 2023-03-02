@@ -1,4 +1,4 @@
--- MariaDB dump 10.19  Distrib 10.9.4-MariaDB, for debian-linux-gnu (aarch64)
+-- MariaDB dump 10.19  Distrib 10.9.4-MariaDB, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: choix_option
 -- ------------------------------------------------------
@@ -26,7 +26,7 @@ CREATE TABLE `annee_formation` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `label` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -37,7 +37,7 @@ LOCK TABLES `annee_formation` WRITE;
 /*!40000 ALTER TABLE `annee_formation` DISABLE KEYS */;
 INSERT INTO `annee_formation` VALUES
 (1,'M1'),
-(3,'M2');
+(2,'M2');
 /*!40000 ALTER TABLE `annee_formation` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -51,14 +51,14 @@ DROP TABLE IF EXISTS `bloc_option`;
 CREATE TABLE `bloc_option` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `campagne_choix_id` int(11) DEFAULT NULL,
-  `bloc_ue_id` int(11) DEFAULT NULL,
   `nb_uechoix` int(11) NOT NULL,
+  `bloc_ue_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_4B83AB8B81F88642` (`campagne_choix_id`),
   KEY `IDX_4B83AB8B6648E46A` (`bloc_ue_id`),
   CONSTRAINT `FK_4B83AB8B6648E46A` FOREIGN KEY (`bloc_ue_id`) REFERENCES `bloc_ue` (`id`),
   CONSTRAINT `FK_4B83AB8B81F88642` FOREIGN KEY (`campagne_choix_id`) REFERENCES `campagne_choix` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -68,13 +68,8 @@ CREATE TABLE `bloc_option` (
 LOCK TABLES `bloc_option` WRITE;
 /*!40000 ALTER TABLE `bloc_option` DISABLE KEYS */;
 INSERT INTO `bloc_option` VALUES
-(21,8,44,4),
-(22,8,43,1),
-(24,9,43,1),
-(26,10,44,1),
-(27,10,43,1),
-(28,7,43,1),
-(29,7,47,1);
+(1,NULL,1,NULL),
+(2,NULL,3,NULL);
 /*!40000 ALTER TABLE `bloc_option` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -103,16 +98,11 @@ CREATE TABLE `bloc_option_ue` (
 LOCK TABLES `bloc_option_ue` WRITE;
 /*!40000 ALTER TABLE `bloc_option_ue` DISABLE KEYS */;
 INSERT INTO `bloc_option_ue` VALUES
-(21,8),
-(21,9),
-(22,4),
-(22,5),
-(26,9),
-(26,10),
-(27,5),
-(28,4),
-(29,8),
-(29,9);
+(1,9),
+(1,10),
+(2,4),
+(2,6),
+(2,7);
 /*!40000 ALTER TABLE `bloc_option_ue` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -132,7 +122,7 @@ CREATE TABLE `bloc_ue` (
   KEY `IDX_C4F2840B6E38C0DB` (`parcours_id`),
   CONSTRAINT `FK_C4F2840B6E38C0DB` FOREIGN KEY (`parcours_id`) REFERENCES `parcours` (`id`),
   CONSTRAINT `FK_C4F2840B9865110C` FOREIGN KEY (`bloc_uecategory_id`) REFERENCES `bloc_ue_category` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -142,10 +132,15 @@ CREATE TABLE `bloc_ue` (
 LOCK TABLES `bloc_ue` WRITE;
 /*!40000 ALTER TABLE `bloc_ue` DISABLE KEYS */;
 INSERT INTO `bloc_ue` VALUES
-(43,2,4),
-(44,1,4),
-(46,2,11),
-(47,1,11);
+(1,1,1),
+(2,2,1),
+(3,1,2),
+(6,1,4),
+(7,2,4),
+(9,2,6),
+(10,1,6),
+(12,1,8),
+(13,2,8);
 /*!40000 ALTER TABLE `bloc_ue` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -188,12 +183,14 @@ DROP TABLE IF EXISTS `bloc_ue_ue`;
 CREATE TABLE `bloc_ue_ue` (
   `bloc_ue_id` int(11) NOT NULL,
   `ue_id` int(11) NOT NULL,
-  PRIMARY KEY (`bloc_ue_id`,`ue_id`),
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `optional` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`id`),
   KEY `IDX_F73889A16648E46A` (`bloc_ue_id`),
   KEY `IDX_F73889A162E883B1` (`ue_id`),
-  CONSTRAINT `FK_F73889A162E883B1` FOREIGN KEY (`ue_id`) REFERENCES `ue` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `FK_F73889A16648E46A` FOREIGN KEY (`bloc_ue_id`) REFERENCES `bloc_ue` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  CONSTRAINT `FK_F73889A162E883B1` FOREIGN KEY (`ue_id`) REFERENCES `ue` (`id`),
+  CONSTRAINT `FK_F73889A16648E46A` FOREIGN KEY (`bloc_ue_id`) REFERENCES `bloc_ue` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -203,16 +200,15 @@ CREATE TABLE `bloc_ue_ue` (
 LOCK TABLES `bloc_ue_ue` WRITE;
 /*!40000 ALTER TABLE `bloc_ue_ue` DISABLE KEYS */;
 INSERT INTO `bloc_ue_ue` VALUES
-(43,4),
-(43,5),
-(44,8),
-(44,9),
-(44,10),
-(46,4),
-(46,5),
-(47,8),
-(47,9),
-(47,10);
+(12,8,13,NULL),
+(12,8,14,NULL),
+(12,9,15,NULL),
+(12,11,18,1),
+(12,12,19,1),
+(13,5,20,NULL),
+(13,7,21,1),
+(13,4,22,1),
+(13,6,23,1);
 /*!40000 ALTER TABLE `bloc_ue_ue` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -231,7 +227,7 @@ CREATE TABLE `campagne_choix` (
   PRIMARY KEY (`id`),
   KEY `IDX_D4C770BD6E38C0DB` (`parcours_id`),
   CONSTRAINT `FK_D4C770BD6E38C0DB` FOREIGN KEY (`parcours_id`) REFERENCES `parcours` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -240,11 +236,6 @@ CREATE TABLE `campagne_choix` (
 
 LOCK TABLES `campagne_choix` WRITE;
 /*!40000 ALTER TABLE `campagne_choix` DISABLE KEYS */;
-INSERT INTO `campagne_choix` VALUES
-(7,11,'2023-01-14 00:35:00','2023-01-14 00:35:00'),
-(8,4,'2023-01-14 00:47:00','2023-01-14 00:47:00'),
-(9,4,'2023-01-14 03:05:00','2023-01-14 03:05:00'),
-(10,4,'2023-01-14 03:07:00','2023-01-14 03:07:00');
 /*!40000 ALTER TABLE `campagne_choix` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -258,9 +249,9 @@ DROP TABLE IF EXISTS `choix`;
 CREATE TABLE `choix` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ue_id` int(11) DEFAULT NULL,
-  `ordre` int(11) NOT NULL,
   `response_campagne_id` int(11) DEFAULT NULL,
   `bloc_option_id` int(11) DEFAULT NULL,
+  `ordre` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_4F48809162E883B1` (`ue_id`),
   KEY `IDX_4F488091B6FB69FB` (`response_campagne_id`),
@@ -268,7 +259,7 @@ CREATE TABLE `choix` (
   CONSTRAINT `FK_4F48809162E883B1` FOREIGN KEY (`ue_id`) REFERENCES `ue` (`id`),
   CONSTRAINT `FK_4F488091B26386A2` FOREIGN KEY (`bloc_option_id`) REFERENCES `bloc_option` (`id`),
   CONSTRAINT `FK_4F488091B6FB69FB` FOREIGN KEY (`response_campagne_id`) REFERENCES `response_campagne` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -277,6 +268,12 @@ CREATE TABLE `choix` (
 
 LOCK TABLES `choix` WRITE;
 /*!40000 ALTER TABLE `choix` DISABLE KEYS */;
+INSERT INTO `choix` VALUES
+(1,9,1,1,1),
+(2,10,1,1,2),
+(3,4,1,2,3),
+(4,6,1,2,2),
+(5,7,1,2,1);
 /*!40000 ALTER TABLE `choix` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -302,25 +299,9 @@ CREATE TABLE `doctrine_migration_versions` (
 LOCK TABLES `doctrine_migration_versions` WRITE;
 /*!40000 ALTER TABLE `doctrine_migration_versions` DISABLE KEYS */;
 INSERT INTO `doctrine_migration_versions` VALUES
-('DoctrineMigrations\\Version20221221173516','2022-12-21 17:35:33',578),
-('DoctrineMigrations\\Version20221223165248','2022-12-23 16:52:55',34),
-('DoctrineMigrations\\Version20221223165943','2022-12-23 16:59:52',36),
-('DoctrineMigrations\\Version20221224121241','2022-12-24 12:12:49',60),
-('DoctrineMigrations\\Version20221225210815','2022-12-26 12:03:27',122),
-('DoctrineMigrations\\Version20221225211108','2022-12-26 12:03:27',33),
-('DoctrineMigrations\\Version20221228025851','2022-12-28 15:54:02',81),
-('DoctrineMigrations\\Version20221230171139','2022-12-30 17:11:42',125),
-('DoctrineMigrations\\Version20221230193304','2022-12-30 19:33:07',177),
-('DoctrineMigrations\\Version20221230194728','2022-12-30 19:49:16',57),
-('DoctrineMigrations\\Version20230111223913','2023-01-11 22:39:56',169),
-('DoctrineMigrations\\Version20230111225008','2023-01-11 22:51:15',113),
-('DoctrineMigrations\\Version20230111235211','2023-01-11 23:52:53',119),
-('DoctrineMigrations\\Version20230113202026','2023-01-13 20:21:03',142),
-('DoctrineMigrations\\Version20230113202341','2023-01-13 20:24:07',89),
-('DoctrineMigrations\\Version20230113202623','2023-01-13 20:26:48',71),
-('DoctrineMigrations\\Version20230114010125','2023-01-14 01:04:28',57),
-('DoctrineMigrations\\Version20230114153954','2023-01-14 15:40:25',148),
-('DoctrineMigrations\\Version20230207100329','2023-02-07 10:04:25',200);
+('DoctrineMigrations\\Version20230301090803','2023-03-01 09:10:43',356),
+('DoctrineMigrations\\Version20230301151053','2023-03-01 15:10:59',72),
+('DoctrineMigrations\\Version20230301200155','2023-03-01 20:02:02',99);
 /*!40000 ALTER TABLE `doctrine_migration_versions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -340,7 +321,7 @@ CREATE TABLE `etudiant` (
   PRIMARY KEY (`id`),
   KEY `IDX_717E22E36E38C0DB` (`parcours_id`),
   CONSTRAINT `FK_717E22E36E38C0DB` FOREIGN KEY (`parcours_id`) REFERENCES `parcours` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -350,48 +331,7 @@ CREATE TABLE `etudiant` (
 LOCK TABLES `etudiant` WRITE;
 /*!40000 ALTER TABLE `etudiant` DISABLE KEYS */;
 INSERT INTO `etudiant` VALUES
-(2,5,'Varlet','William','etudiant@gmail.com'),
-(3,5,'Leturgez','Felix',''),
-(4,5,'Ingleton','Amara','aingleton0@salon.com'),
-(5,5,'Clutram','Gunther','gclutram1@mozilla.org'),
-(6,5,'Philippeaux','Cortie','cphilippeaux2@theguardian.com'),
-(7,5,'Mycroft','Carlin','cmycroft3@ycombinator.com'),
-(8,5,'Raspison','Dasya','draspison4@theglobeandmail.com'),
-(9,4,'Colleymore','Hall','hcolleymore5@intel.com'),
-(10,4,'Baudesson','Andras','abaudesson6@timesonline.co.uk'),
-(11,4,'Cartlidge','Colette','ccartlidge7@cnbc.com'),
-(12,4,'Fawloe','Wrennie','wfawloe8@sphinn.com'),
-(13,4,'Fairy','Sallyann','sfairy9@ycombinator.com'),
-(14,4,'Bratten','Jeannie','jbrattena@amazon.co.jp'),
-(15,5,'Mewrcik','Winnah','wmewrcikb@phpbb.com'),
-(16,11,'Peealess','Ashlin','apeealessc@google.com.au'),
-(17,11,'Dunseith','Garv','gdunseithd@ow.ly'),
-(18,11,'McDuall','Huntlee','hmcdualle@answers.com'),
-(19,11,'Pimme','Alayne','apimmef@bigcartel.com'),
-(20,11,'Hufton','Ruddy','rhuftong@nymag.com'),
-(21,5,'Elmer','Rosalynd','relmerh@uiuc.edu'),
-(22,5,'Winterton','Whitney','wwintertoni@xing.com'),
-(23,5,'Carson','Shay','scarsonj@wufoo.com'),
-(24,5,'Treherne','Luke','ltrehernek@behance.net'),
-(25,5,'Mieville','Alexandro','amievillel@seattletimes.com'),
-(26,5,'Labbett','Amalie','alabbettm@oracle.com'),
-(27,5,'Sogg','Daphne','dsoggn@washington.edu'),
-(28,11,'Collip','Adelheid','acollipo@twitpic.com'),
-(29,11,'Fausch','Georgianna','gfauschp@cafepress.com'),
-(30,11,'Deackes','Maggie','mdeackesq@apple.com'),
-(31,11,'Whal','Scarface','swhalr@wired.com'),
-(32,11,'Stronack','Dulci','dstronacks@dion.ne.jp'),
-(33,11,'Izac','Wilone','wizact@github.com'),
-(34,11,'Phateplace','Hasty','hphateplaceu@columbia.edu'),
-(35,4,'McLaughlan','Winston','wmclaughlanv@home.pl'),
-(36,4,'Goodlett','Karlens','kgoodlettw@army.mil'),
-(37,1,'Lebourn','Karoly','klebournx@vimeo.com'),
-(38,1,'Kerins','Jacqui','jkerinsy@yellowpages.com'),
-(39,1,'Teggin','Lynett','ltegginz@360.cn'),
-(40,1,'Lewry','Bond','blewry10@gmpg.org'),
-(41,1,'Fallanche','Jillayne','jfallanche11@discuz.net'),
-(42,1,'Pear','Morten','mpear12@blogger.com'),
-(43,1,'Goade','Alberta','agoade13@latimes.com');
+(1,1,'Mix','Mariel','etudiant@gmail.com');
 /*!40000 ALTER TABLE `etudiant` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -433,8 +373,8 @@ DROP TABLE IF EXISTS `groupe`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `groupe` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `label` varchar(45) NOT NULL,
   `ue_id` int(11) DEFAULT NULL,
+  `label` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_4B98C2162E883B1` (`ue_id`),
   CONSTRAINT `FK_4B98C2162E883B1` FOREIGN KEY (`ue_id`) REFERENCES `ue` (`id`)
@@ -522,7 +462,7 @@ CREATE TABLE `parcours` (
   PRIMARY KEY (`id`),
   KEY `IDX_99B1DEE33A687361` (`annee_formation_id`),
   CONSTRAINT `FK_99B1DEE33A687361` FOREIGN KEY (`annee_formation_id`) REFERENCES `annee_formation` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -532,10 +472,7 @@ CREATE TABLE `parcours` (
 LOCK TABLES `parcours` WRITE;
 /*!40000 ALTER TABLE `parcours` DISABLE KEYS */;
 INSERT INTO `parcours` VALUES
-(1,1,'S1'),
-(4,1,'S2_Alternants'),
-(5,1,'S2_Stagiaires'),
-(11,3,'SIO');
+(8,1,'test');
 /*!40000 ALTER TABLE `parcours` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -606,7 +543,7 @@ CREATE TABLE `response_campagne` (
   KEY `IDX_E48DBB6B16227374` (`campagne_id`),
   CONSTRAINT `FK_E48DBB6B16227374` FOREIGN KEY (`campagne_id`) REFERENCES `campagne_choix` (`id`),
   CONSTRAINT `FK_E48DBB6BDDEAB1A3` FOREIGN KEY (`etudiant_id`) REFERENCES `etudiant` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -615,6 +552,8 @@ CREATE TABLE `response_campagne` (
 
 LOCK TABLES `response_campagne` WRITE;
 /*!40000 ALTER TABLE `response_campagne` DISABLE KEYS */;
+INSERT INTO `response_campagne` VALUES
+(1,1,1);
 /*!40000 ALTER TABLE `response_campagne` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -627,10 +566,11 @@ DROP TABLE IF EXISTS `ue`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `ue` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `label` varchar(45) NOT NULL,
+  `label` varchar(255) NOT NULL,
   `active` tinyint(1) NOT NULL DEFAULT 1,
+  `is_optional` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -640,15 +580,15 @@ CREATE TABLE `ue` (
 LOCK TABLES `ue` WRITE;
 /*!40000 ALTER TABLE `ue` DISABLE KEYS */;
 INSERT INTO `ue` VALUES
-(4,'ISI_02 Conduite de projet',1),
-(5,'ISI_05 Ingénierie du logiciel',1),
-(6,'ISI_01 Architecture client-serveur',1),
-(7,'ISI_04 Contrôle qualité et green IT',1),
-(8,'INFO_02 Analyse et décision en entreprise',1),
-(9,'INFO_04 Architecture des SI',1),
-(10,'INFO_03 Architecture Web des SI',1),
-(11,'INFO_06 BD avancées',1),
-(12,'INFO_09 UX Design',1);
+(4,'ISI_02 Conduite de projet',1,NULL),
+(5,'ISI_05 Ingénierie du logiciel',1,NULL),
+(6,'ISI_01 Architecture client-serveur',1,NULL),
+(7,'ISI_04 Contrôle qualité et green IT',1,NULL),
+(8,'INFO_02 Analyse et décision en entreprise',1,NULL),
+(9,'INFO_04 Architecture des SI',1,NULL),
+(10,'INFO_03 Architecture Web des SI',1,NULL),
+(11,'INFO_06 BD avancées',1,NULL),
+(12,'INFO_09 UX Design',1,NULL);
 /*!40000 ALTER TABLE `ue` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -678,7 +618,6 @@ LOCK TABLES `ue_bloc_uecategory` WRITE;
 /*!40000 ALTER TABLE `ue_bloc_uecategory` DISABLE KEYS */;
 INSERT INTO `ue_bloc_uecategory` VALUES
 (4,2),
-(4,3),
 (5,2),
 (6,2),
 (7,2),
@@ -715,8 +654,8 @@ CREATE TABLE `user` (
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT INTO `user` VALUES
-(1,'admin@gmail.com','[\"ROLE_ADMIN\"]','$2y$13$nQZgD2X6K6/1SkgVvlbZMeZWlG2qX1Mo9bQDdgYqoZL0HWXE.zCUe',1),
-(2,'etudiant@gmail.com','[]','$2y$13$nQZgD2X6K6/1SkgVvlbZMeZWlG2qX1Mo9bQDdgYqoZL0HWXE.zCUe',1);
+(1,'etudiant@gmail.com','[]','$2y$13$kxYBsHAa03PvV2zKxGSm..RMPX1OY77nRPCPA8lq6Z2qsCyOY7bbK',0),
+(2,'admin@gmail.com','[\"ROLE_ADMIN\"]','$2y$13$uQ6YWj4H3BRMStphrYx6z.1oPpBDJyEmcJu8b.PwvJnx/9UYPRK4K',0);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -855,4 +794,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-02-28 15:19:35
+-- Dump completed on 2023-03-02 22:07:59
