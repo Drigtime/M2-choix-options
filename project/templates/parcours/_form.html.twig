@@ -1,9 +1,10 @@
 {% import _self as formMacros %}
 
-{% macro printUE(ue) %}
+{% macro printUE(blocUeUe) %}
     <div class="mb-2 d-flex gap-2">
-        {{ form_widget(ue) }}
-        <button type="button" class="btn btn-sm btn-danger" data-action="delete-ue">
+        {{ form_widget(blocUeUe.ue) }}
+        {{ form_widget(blocUeUe.isOptional) }}
+        <button type="button" class="btn btn-sm btn-danger align-self-center" data-action="delete-ue">
             <i class="fas fa-trash"></i>
         </button>
     </div>
@@ -18,9 +19,9 @@
 {% macro printBlocUE(blocUE) %}
     <div class="col-12 col-xl-6" data-bloc-ue data-index="{{ blocUE.vars.name }}">
         <div class="card">
-            <div class="card-header">
+            <div class="card-header ps-3 pe-1 py-1">
                 <div class="d-flex">
-                    <div class="flex-grow-1">
+                    <div class="flex-grow-1 align-self-center">
                         Bloc UE n°{{ blocUE.vars.name == "__name__" ? "__name__" : blocUE.vars.name|number_format + 1 }}
                     </div>
                     <div class="flex-shrink-0">
@@ -31,50 +32,58 @@
                 </div>
             </div>
             <div class="card-body p-2">
-                {{ form_row(blocUE.blocUECategory, { 'attr': { 'data-ues-container': [blocUE.ues.vars.id, blocUE.blocOption.vars.id]|json_encode, 'data-previous-value': blocUE.blocUECategory.vars.value } }) }}
-                {{ form_row(blocUE.blocOption.nbUEChoix) }}
-                <div class="card">
-                    <div class="card-header">
-                        <div class="d-flex">
-                            <div class="flex-grow-1">
-                                UEs obligatoires
-                            </div>
-                            <div class="flex-shrink-0">
-                                <button type="button" class="btn btn-sm btn-primary" data-action="add-ue"
-                                        data-target="#{{ blocUE.ues.vars.id }}">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="{{ blocUE.ues.vars.id }}" class="card-body"
-                         data-original-prototype="{{ formMacros.printUE(blocUE.ues.vars.prototype)|e('html_attr') }}"
-                         data-no-ue="{{ formMacros.printNoUE()|e('html_attr') }}">
-                        {% for ue in blocUE.ues %}
-                            {{ formMacros.printUE(ue) }}
-                        {% endfor %}
-                    </div>
-                </div>
-                <div class="card mt-3">
-                    <div class="card-header">
-                        <div class="d-flex">
-                            <div class="flex-grow-1">
-                                UEs optionnelles
-                            </div>
-                            <div class="flex-shrink-0">
-                                <button type="button" class="btn btn-sm btn-primary" data-action="add-ue"
-                                        data-target="#{{ blocUE.blocOption.vars.id }}">
-                                    <i class="fas fa-plus"></i>
-                                </button>
+                {{ form_row(blocUE.blocUECategory, { 'attr': {'data-previous-value': blocUE.blocUECategory.vars.value } }) }}
+                <div class="ues-container d-grid gap-3"
+                     data-block-ue-ues-count="{{ blocUE.blocUeUes|length }}"
+                     data-original-prototype="{{ formMacros.printUE(blocUE.blocUeUes.vars.prototype)|e('html_attr') }}"
+                     data-no-ue="{{ formMacros.printNoUE()|e('html_attr') }}"
+                >
+                    {% for label in ['UEs obligatoires', 'UEs optionnelles'] %}
+
+                    {% endfor %}
+
+                    <div class="card ues-container-child">
+                        <div class="card-header ps-3 pe-1 py-1">
+                            <div class="d-flex">
+                                <div class="flex-grow-1 align-self-center">
+                                    UEs obligatoires
+                                </div>
+                                <div class="flex-shrink-0">
+                                    <button type="button" class="btn btn-sm btn-primary" data-action="add-ue">
+                                        <i class="fas fa-plus"></i>
+                                        Ajouter une UE
+                                    </button>
+                                </div>
                             </div>
                         </div>
+                        <div class="card-body p-2">
+                            {% for blocUeUe in blocUE.blocUeUes|filter((blocUeUe) => blocUeUe.vars.value.isOptional != true) %}
+                                {{ formMacros.printUE(blocUeUe) }}
+                            {% endfor %}
+                        </div>
                     </div>
-                    <div id="{{ blocUE.blocOption.vars.id }}" class="card-body"
-                         data-original-prototype="{{ formMacros.printUE(blocUE.blocOption.ues.vars.prototype)|e('html_attr') }}"
-                         data-no-ue="{{ formMacros.printNoUE()|e('html_attr') }}">
-                        {% for ue in blocUE.blocOption.ues %}
-                            {{ formMacros.printUE(ue) }}
-                        {% endfor %}
+
+                    <div class="card ues-container-child">
+                        <div class="card-header ps-3 pe-1 py-1">
+                            <div class="d-flex">
+                                <div class="flex-grow-1 align-self-center">
+                                    UEs optionnelles
+                                </div>
+                                <div class="flex-shrink-0">
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                            data-action="add-ue"
+                                            data-optional="1">
+                                        <i class="fas fa-plus"></i>
+                                        Ajouter une UE
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-2">
+                            {% for blocUeUe in blocUE.blocUeUes|filter((blocUeUe) => blocUeUe.vars.value.isOptional) %}
+                                {{ formMacros.printUE(blocUeUe) }}
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -101,9 +110,9 @@
 </div>
 
 <div class="card mb-3">
-    <div class="card-header p-2">
+    <div class="card-header ps-3 pe-1 py-1">
         <div class="d-flex">
-            <div class="flex-grow-1">
+            <div class="flex-grow-1 align-self-center">
                 Liste des blocs d'UE
             </div>
             <div class="flex-shrink-0">
@@ -114,7 +123,7 @@
             </div>
         </div>
     </div>
-    <div class="card-body">
+    <div class="card-body p-2">
         <div id="list-bloc-ue" class="row g-4"
              data-prototype="{{ formMacros.printBlocUE(form.blocUEs.vars.prototype)|e('html_attr') }}"
              data-no-bloc-ue="{{ formMacros.printNoBlocUE()|e('html_attr') }}"

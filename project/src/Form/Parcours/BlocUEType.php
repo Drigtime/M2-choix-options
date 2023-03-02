@@ -29,29 +29,18 @@ class BlocUEType extends AbstractType
                     ];
                 }
             ])
-            ->add('ues', CollectionType::class, [
+            ->add('blocUeUes', CollectionType::class, [
                 'label' => false,
-                'entry_type' => EntityType::class,
-                'entry_options' => [
-                    'label' => false,
-                    'class' => UE::class,
-                    'choice_label' => 'label',
-                    'choice_value' => 'id',
-                    'query_builder' => function (UERepository $ueRepository) {
-                        return $ueRepository->createQueryBuilder('ue')
-                            ->orderBy('ue.label', 'ASC');
-                    },
-                ],
+                'entry_type' => BlocUeUeType::class,
                 'allow_add' => true,
                 'allow_delete' => true,
                 'by_reference' => false,
                 'prototype' => true,
                 'prototype_name' => '__ues__',
                 'mapped' => true,
-            ])
-            ->add('blocOption', BlocOptionType::class, [
-                'label' => false,
             ]);
+
+        // add event listener to check if all blocUeUes->ue are unique
 
     }
 

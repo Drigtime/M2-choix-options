@@ -43,66 +43,61 @@
     </table>
 
     <h5>Liste des blocs UE</h5>
-    <nav>
-        <div class="nav nav-tabs" id="nav-tab" role="tablist">
-            {% for blocUE in parcour.blocUEs %}
-                <button class="nav-link {{ loop.first ? 'active' }}" id="nav-home-tab" data-bs-toggle="tab"
-                        data-bs-target="#nav-home"
-                        type="button" role="tab" aria-controls="nav-home" aria-selected="true">
-                    {{ blocUE.blocUECategory.label }}
-                </button>
-            {% endfor %}
-        </div>
-    </nav>
-    <div class="tab-content" id="nav-tabContent">
+    <div class="row">
         {% for blocUE in parcour.blocUEs %}
-            <div class="tab-pane fade {{ loop.first ? 'show active' }}" id="nav-home" role="tabpanel"
-                 aria-labelledby="nav-home-tab"
-                 tabindex="0">
-                <div class="accordion p-2 border border-top-0" id="accordionPanelsStayOpenExample">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-                            <button class="accordion-button p-2" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
-                                    aria-controls="panelsStayOpen-collapseOne">
-                                {{ blocUE.ues|length }} UEs obligatoires
-                            </button>
-                        </h2>
-                        <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show"
-                             aria-labelledby="panelsStayOpen-headingOne">
-                            <div class="accordion-body">
-                                <ul>
-                                    {% for ue in blocUE.ues %}
-                                        <li>
-                                            <a href="{{ path('app_ue_show', {'id': ue.id}) }}">
-                                                {{ ue.label }}
-                                            </a>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </div>
+            <div class="col-12 col-md-6 col-xxl-4">
+                <div class="card">
+                    <div class="card-header">
+                        {{ blocUE.blocUECategory.label }}
                     </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
-                            <button class="accordion-button p-2" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true"
-                                    aria-controls="panelsStayOpen-collapseTwo">
-                                {{ blocUE.blocOption.nbUEChoix }} UE optionnelle parmi
-                            </button>
-                        </h2>
-                        <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show"
-                             aria-labelledby="panelsStayOpen-headingTwo">
-                            <div class="accordion-body">
-                                <ul>
-                                    {% for ue in blocUE.blocOption.ues %}
-                                        <li>
-                                            <a href="{{ path('app_ue_show', {'id': ue.id}) }}">
-                                                {{ ue.label }}
-                                            </a>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
+                    <div class="card-body p-2">
+                        <div class="tab-pane {{ loop.first ? 'show active' }}" id="nav-ue-{{ loop.index }}"
+                             role="tabpanel"
+                             aria-labelledby="nav-ue-{{ loop.index }}-tab"
+                             tabindex="0">
+                            <div class="accordion p-2" id="accordionPanelsStayOpenExample">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="panelsStayOpen-heading1">
+                                        <button class="accordion-button p-2" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#panelsStayOpen-collapse1" aria-expanded="true"
+                                                aria-controls="panelsStayOpen-collapse1">
+                                            UEs obligatoires
+                                        </button>
+                                    </h2>
+                                    <div id="panelsStayOpen-collapse1" class="accordion-collapse collapse show"
+                                         aria-labelledby="panelsStayOpen-heading1">
+                                        <div class="accordion-body p-2">
+                                            {% for blocUeUe in blocUE.blocUeUes|filter((blocUeUe) => blocUeUe.isOptional != true) %}
+                                                <div>
+                                                    <a href="{{ path('app_ue_show', {'id': blocUeUe.ue.id}) }}">
+                                                        {{ blocUeUe.ue.label }}
+                                                    </a>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="panelsStayOpen-heading2">
+                                        <button class="accordion-button p-2" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#panelsStayOpen-collapse2" aria-expanded="true"
+                                                aria-controls="panelsStayOpen-collapse2">
+                                            UEs optionnelles
+                                        </button>
+                                    </h2>
+                                    <div id="panelsStayOpen-collapse2" class="accordion-collapse collapse show"
+                                         aria-labelledby="panelsStayOpen-heading2">
+                                        <div class="accordion-body p-2">
+                                            {% for blocUeUe in blocUE.blocUeUes|filter((blocUeUe) => blocUeUe.isOptional) %}
+                                                <div>
+                                                    <a href="{{ path('app_ue_show', {'id': blocUeUe.ue.id}) }}">
+                                                        {{ blocUeUe.ue.label }}
+                                                    </a>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -110,6 +105,7 @@
             </div>
         {% endfor %}
     </div>
+
 {% endblock %}
 
 {% block javascripts %}

@@ -22,11 +22,11 @@ init: ## Init the project
 	docker-compose up -d --build
 	docker-compose exec php composer install
 	docker-compose exec php yarn install
+	docker-compose exec php bin/console fos:js-routing:dump
 	docker-compose exec php yarn build
 	docker-compose exec php bin/console d:d:c --if-not-exists --no-interaction
-	docker-compose exec php bin/console d:m:m --no-interaction
-	docker-compose exec php bin/console d:s:u --force --no-interaction
-	docker-compose exec php bin/console fos:js-routing:dump
+# docker-compose exec php bin/console d:m:m --no-interaction
+# docker-compose exec php bin/console d:s:u --force --no-interaction
 
 php: start ## Enter in the php container
 	docker-compose exec php bash
@@ -52,6 +52,7 @@ controller: start ## Create a controller
 
 entity: start ## Create an entity
 	docker-compose exec php bin/console make:entity
+	sudo chown -R $(id -u):$(id -g) project/src/Entity
 
 crud: start ## Create a crud
 	docker-compose exec php bin/console make:crud

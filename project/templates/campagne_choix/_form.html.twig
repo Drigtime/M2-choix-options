@@ -1,5 +1,58 @@
+{% import _self as formMacros %}
+
+{# {% macro printBlocOption(blocOption) %} #}
+{#    <div class="card mb-3" data-bloc-option="true"> #}
+{#        <div class="card-header"> #}
+{#            <div class="d-flex"> #}
+{#                <div class="flex-grow-1 fs-5">Bloc option</div> #}
+{#                <button type="button" class="btn btn-sm btn-danger" data-action="delete-bloc-option"> #}
+{#                    <i class="fas fa-trash"></i> #}
+{#                </button> #}
+{#            </div> #}
+{#        </div> #}
+{#        <div class="card-body"> #}
+{#            {{ form_row(blocOption.blocUE) }} #}
+{#            {{ form_row(blocOption.UE) }} #}
+{#            {{ form_row(blocOption.nbUEChoix) }} #}
+{#        </div> #}
+{#    </div> #}
+{# {% endmacro %} #}
+
+
+ {% macro printBlocOption(blocOption) %}
+     <div class="col-12 col-md-6" data-bloc-ue data-index="{{ blocOption.vars.name }}">
+         <div class="card">
+             <div class="card-header">
+                 <div class="d-flex">
+                     <div class="flex-grow-1">
+                         Bloc Option
+                         n°{{ blocOption.vars.name == "__name__" ? "__name__" : blocOption.vars.name|number_format + 1 }}
+                     </div>
+                     <div class="flex-shrink-0">
+                         <button type="button" class="btn btn-sm btn-danger" data-action="delete-bloc-ue">
+                             <i class="fas fa-trash"></i>
+                         </button>
+                     </div>
+                 </div>
+             </div>
+             <div class="card-body p-2">
+                 {{ form_row(blocOption.blocUE, { 'attr': { 'data-ues-container': blocOption.UEs.vars.id, 'data-previous-value': blocOption.blocUE.vars.value } }) }}
+                 {{ form_row(blocOption.UEs) }}
+                 {{ form_row(blocOption.nbUEChoix) }}
+             </div>
+         </div>
+     </div>
+ {% endmacro %}
+
+ {% macro printNoBlocOption() %}
+     <div id="no-bloc-ue" class="col-12">
+         <div class="alert alert-info m-0 p-2">
+             Aucun bloc option n'a encore été ajouté.
+         </div>
+     </div>
+ {% endmacro %}
+
 {{ form_start(form) }}
-{{ form_errors(form) }}
 <div class="row">
     <div class="col-md-6">
         {{ form_row(form.dateDebut) }}
@@ -9,6 +62,36 @@
     </div>
 </div>
 {{ form_row(form.parcours, { 'attr': { 'data-previous-value': form.parcours.vars.value ? form.parcours.vars.value : (form.parcours.vars.choices|length > 0 ? (form.parcours.vars.choices|first).value : '') } }) }}
+
+<div id="bloc-option-container" class="card mb-3" style="display: none">
+    <div class="card-header p-2">
+        <div class="d-flex">
+            <div class="flex-grow-1">
+                Liste des blocs options
+            </div>
+            <div class="flex-shrink-0">
+                <a id="add-bloc-ue" class="btn btn-sm btn-primary">
+                    <i class="fas fa-plus"></i>
+                    Ajouter un bloc option
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div id="list-bloc-ue" class="row g-4"
+             data-prototype="{{ formMacros.printBlocOption(form.blocOptions.vars.prototype)|e('html_attr') }}"
+             data-no-bloc-ue="{{ formMacros.printNoBlocOption()|e('html_attr') }}"
+        >
+            {% if form.blocOptions.children is not empty %}
+                {% for blocOption in form.blocOptions %}
+                    {{ formMacros.printBlocOption(blocOption) }}
+                {% endfor %}
+            {% else %}
+                {{ formMacros.printNoBlocOption() }}
+            {% endif %}
+        </div>
+    </div>
+</div>
 
 <div class="text-end mb-3">
     <button class="btn btn-sm btn-primary">

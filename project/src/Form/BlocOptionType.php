@@ -21,12 +21,12 @@ class BlocOptionType extends AbstractType
 //            ->add('campagneChoix')
             ->add('blocUE', null, [
                 'label' => 'form.blocOption.blocUE',
-                'choice_attr' => function ($choice, $key, $value) {
+                'choice_attr' => function ($bloc, $key, $value) {
                     return [
-                        'data-ues' => json_encode($choice->getUEs()->map(function ($ue) {
+                        'data-ues' => json_encode($bloc->getBlocUeUes()->map(function ($blocUeUe) {
                             return [
-                                'id' => $ue->getId(),
-                                'label' => $ue->getLabel(),
+                                'id' => $blocUeUe->getUE()->getId(),
+                                'label' => $blocUeUe->getUE()->getLabel(),
                             ];
                         })->toArray())
                     ];
@@ -84,12 +84,12 @@ class BlocOptionType extends AbstractType
                                 ->orderBy('b.blocUECategory', 'ASC');
                         },
                         'placeholder' => false,
-                        'choice_attr' => function ($choice, $key, $value) {
+                        'choice_attr' => function ($bloc, $key, $value) {
                             return [
-                                'data-ues' => json_encode($choice->getUEs()->map(function ($ue) {
+                                'data-ues' => json_encode($bloc->getBlocUeUes()->map(function ($blocUeUe) {
                                     return [
-                                        'id' => $ue->getId(),
-                                        'label' => $ue->getLabel(),
+                                        'id' => $blocUeUe->getUE()->getId(),
+                                        'label' => $blocUeUe->getUE()->getLabel(),
                                     ];
                                 })->toArray())
                             ];

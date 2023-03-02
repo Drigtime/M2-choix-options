@@ -21,9 +21,6 @@ class UE
     #[ORM\Column(type: 'boolean', options: ['default' => true])]
     private ?bool $active = true;
 
-    #[ORM\ManyToMany(targetEntity: BlocUE::class, mappedBy: 'UEs')]
-    private Collection $blocUEs;
-
     #[ORM\ManyToMany(targetEntity: BlocOption::class, mappedBy: 'UEs')]
     private Collection $blocOptions;
 
@@ -39,14 +36,20 @@ class UE
     #[ORM\OneToMany(mappedBy: 'UE', targetEntity: EtudiantUE::class)]
     private Collection $etudiantUEs;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $isOptional = null;
+
+    #[ORM\OneToMany(mappedBy: 'UE', targetEntity: BlocUeUe::class)]
+    private Collection $blocUeUes;
+
     public function __construct()
     {
-        $this->blocUEs = new ArrayCollection();
         $this->blocOptions = new ArrayCollection();
         $this->choixes = new ArrayCollection();
         $this->blocUECategories = new ArrayCollection();
         $this->groupes = new ArrayCollection();
         $this->etudiantUEs = new ArrayCollection();
+        $this->blocUeUes = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -79,33 +82,6 @@ class UE
     public function setActive(bool $active): self
     {
         $this->active = $active;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|BlocUE[]
-     */
-    public function getBlocUEs(): Collection
-    {
-        return $this->blocUEs;
-    }
-
-    public function addBlocUE(BlocUE $blocUE): self
-    {
-        if (!$this->blocUEs->contains($blocUE)) {
-            $this->blocUEs[] = $blocUE;
-            $blocUE->addUE($this);
-        }
-
-        return $this;
-    }
-
-    public function removeBlocUE(BlocUE $blocUE): self
-    {
-        if ($this->blocUEs->removeElement($blocUE)) {
-            $blocUE->removeUE($this);
-        }
 
         return $this;
     }
@@ -245,6 +221,48 @@ class UE
             // set the owning side to null (unless already changed)
             if ($etudiantUE->getUE() === $this) {
                 $etudiantUE->setUE(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function isIsOptional(): ?bool
+    {
+        return $this->isOptional;
+    }
+
+    public function setIsOptional(?bool $isOptional): self
+    {
+        $this->isOptional = $isOptional;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, BlocUeUe>
+     */
+    public function getBlocUeUes(): Collection
+    {
+        return $this->blocUeUes;
+    }
+
+    public function addBlocUeUe(BlocUeUe $blocUeUe): self
+    {
+        if (!$this->blocUeUes->contains($blocUeUe)) {
+            $this->blocUeUes->add($blocUeUe);
+            $blocUeUe->setUE($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBlocUeUe(BlocUeUe $blocUeUe): self
+    {
+        if ($this->blocUeUes->removeElement($blocUeUe)) {
+            // set the owning side to null (unless already changed)
+            if ($blocUeUe->getUE() === $this) {
+                $blocUeUe->setUE(null);
             }
         }
 

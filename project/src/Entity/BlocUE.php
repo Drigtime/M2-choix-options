@@ -23,15 +23,20 @@ class BlocUE
     #[ORM\JoinColumn(name: 'parcours_id', referencedColumnName: 'id', nullable: false)]
     private Parcours $parcours;
 
-    #[ORM\ManyToMany(targetEntity: UE::class, inversedBy: 'blocUEs')]
+    #[ORM\OneToMany(mappedBy: 'blocUE', targetEntity: UE::class)]
     private Collection $UEs;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?BlocOption $blocOption = null;
+    #[ORM\OneToMany(mappedBy: 'blocUE', targetEntity: BlocOption::class)]
+    private Collection $blocOptions;
+
+    #[ORM\OneToMany(mappedBy: 'blocUE', targetEntity: BlocUeUe::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $blocUeUes;
 
     public function __construct()
     {
         $this->UEs = new ArrayCollection();
+        $this->blocOptions = new ArrayCollection();
+        $this->blocUeUes = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -95,17 +100,63 @@ class BlocUE
         return $this;
     }
 
-    public function getBlocOption(): ?BlocOption
+    /**
+     * @return Collection<int, BlocOption>
+     */
+    public function getBlocOptions(): Collection
     {
-        return $this->blocOption;
+        return $this->blocOptions;
     }
 
-    public function setBlocOption(?BlocOption $blocOption): self
+    public function addBlocOption(BlocOption $blocOption): self
     {
-        $this->blocOption = $blocOption;
+        if (!$this->blocOptions->contains($blocOption)) {
+            $this->blocOptions->add($blocOption);
+            $blocOption->setBlocUE($this);
+        }
 
         return $this;
     }
 
+    public function removeBlocOption(BlocOption $blocOption): self
+    {
+        if ($this->blocOptions->removeElement($blocOption)) {
+            // set the owning side to null (unless already changed)
+            if ($blocOption->getBlocUE() === $this) {
+                $blocOption->setBlocUE(null);
+            }
+        }
 
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, BlocUeUe>
+     */
+    public function getBlocUeUes(): Collection
+    {
+        return $this->blocUeUes;
+    }
+
+    public function addBlocUeUe(BlocUeUe $blocUeUe): self
+    {
+        if (!$this->blocUeUes->contains($blocUeUe)) {
+            $this->blocUeUes->add($blocUeUe);
+            $blocUeUe->setBlocUE($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBlocUeUe(BlocUeUe $blocUeUe): self
+    {
+        if ($this->blocUeUes->removeElement($blocUeUe)) {
+            // set the owning side to null (unless already changed)
+            if ($blocUeUe->getBlocUE() === $this) {
+                $blocUeUe->setBlocUE(null);
+            }
+        }
+
+        return $this;
+    }
 }
