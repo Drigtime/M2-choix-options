@@ -25,7 +25,7 @@ class ChoixOptionsController extends AbstractController
     {
         $etudiant = $etudiantRepository->findOneBy(['mail' => $this->getUser()->getUserIdentifier()]);
         $campagnes = $etudiant->getParcours()->getCampagneChoixes();
-        
+
         return $this->render('etudiant/choix_options/index.html.twig', [
             'campagnes' => $campagnes,
         ]);
@@ -40,7 +40,7 @@ class ChoixOptionsController extends AbstractController
         if ($request->isXmlHttpRequest()) {
             $jsonData = $request->getContent();
             $data = json_decode($jsonData, true);
-            foreach($data['ordre'] as $i => $ueId) {
+            foreach ($data['ordre'] as $i => $ueId) {
                 $choix = $choixRepository->findOneBy(['responseCampagne' => $responseCampagne, 'UE' => $ueRepository->findOneBy(['id' => $ueId]), 'blocOption' => $blocOptionRepository->findOneBy(['id' => $data['blocOptionsId']])]);
                 $choix->setOrdre($i + 1);
                 $choixRepository->save($choix, true);
@@ -62,14 +62,14 @@ class ChoixOptionsController extends AbstractController
             $responseCampagneRepository->save($responseCampagne, true);
         }
 
-        foreach ($campagne->getParcours()->getBlocUEs() as $blocUE) {
-            foreach ($blocUE->getBlocOption()->getUEs() as $index => $ue) {
-                $choix = $choixRepository->findOneBy(['responseCampagne' => $responseCampagne, 'UE' => $ueRepository->findOneBy(['id' => $ue]), 'blocOption' => $blocOptionRepository->findOneBy(['id' => $blocUE->getBlocOption()->getId()])]);
+        foreach ($campagne->getBlocOptions() as $blocOption) {
+            foreach ($blocOption->getUEs() as $index => $ue) {
+                $choix = $choixRepository->findOneBy(['responseCampagne' => $responseCampagne, 'UE' => $ueRepository->findOneBy(['id' => $ue]), 'blocOption' => $blocOptionRepository->findOneBy(['id' => $blocOption->getId()])]);
                 if ($choix == null) {
                     $choix = new Choix();
                     $choix->setUE($ue);
                     $choix->setOrdre($index + 1);
-                    $blocUE->getBlocOption()->addChoix($choix);
+                    $blocOption->addChoix($choix);
                     $choix->setResponseCampagne($responseCampagne);
                     $choixRepository->save($choix, true);
                 }

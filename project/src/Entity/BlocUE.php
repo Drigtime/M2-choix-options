@@ -31,7 +31,6 @@ class BlocUE
 
     public function __construct()
     {
-        $this->UEs = new ArrayCollection();
         $this->blocOptions = new ArrayCollection();
         $this->blocUeUes = new ArrayCollection();
     }
