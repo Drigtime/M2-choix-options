@@ -20,19 +20,19 @@ stop: ## Stop the project
 		echo "Project is already stopped"; \
 	fi
 
-check-dependencies:
+check-dependencies: ## Check the dependencies
 	docker-compose exec php sh -c "yarn check --integrity"
 
-install:
-	@if [ ! -d "project/vendor" ] || [ ! -s "project/composer.lock" ]; then \
+install: start # Install the dependencies
+	@if [ ! -d "project/vendor" ] || [ ! -s "project/composer.lock" ] || [ "project/composer.json" -nt "project/vendor" ] || [ "project/composer.json" -nt "project/composer.lock" ]; then \
 		docker-compose exec php composer install; \
 	else \
 		echo "Composer dependencies are already installed"; \
 	fi
-	@if [ ! -d "project/node_modules" ] || [ ! -s "project/yarn.lock" ]; then \
+	@if [ ! -d "project/node_modules" ] || [ ! -s "project/yarn.lock" ] || [ "project/package.json" -nt "project/node_modules" ] || [ "project/package.json" -nt "project/yarn.lock" ]; then \
 		docker-compose exec php yarn install; \
 	else \
-		make check-dependencies || (docker-compose exec php yarn install && make check-dependencies); \
+		echo "Yarn dependencies are already installed"; \
 	fi
 
 init: ## Init the project
