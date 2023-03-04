@@ -36,9 +36,6 @@ class UE
     #[ORM\OneToMany(mappedBy: 'UE', targetEntity: EtudiantUE::class)]
     private Collection $etudiantUEs;
 
-    #[ORM\Column(nullable: true)]
-    private ?bool $isOptional = null;
-
     #[ORM\OneToMany(mappedBy: 'UE', targetEntity: BlocUeUe::class)]
     private Collection $blocUeUes;
 
@@ -226,19 +223,7 @@ class UE
 
         return $this;
     }
-
-    public function isIsOptional(): ?bool
-    {
-        return $this->isOptional;
-    }
-
-    public function setIsOptional(?bool $isOptional): self
-    {
-        $this->isOptional = $isOptional;
-
-        return $this;
-    }
-
+    
     /**
      * @return Collection<int, BlocUeUe>
      */
