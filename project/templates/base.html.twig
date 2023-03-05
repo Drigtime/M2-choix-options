@@ -1,69 +1,72 @@
 <!DOCTYPE html>
 <html lang="fr" class="h-100" data-lt-installed="true">
-	<head>
-		<meta charset="UTF-8">
-		<title>
-			{% block title %}
-				{{ 'title.base'|trans }}
-			{% endblock %}
-		</title>
-		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
-		{% block stylesheets %}
-			{{ encore_entry_link_tags('app') }}
-		{% endblock %}
+<head>
+    <meta charset="UTF-8">
+    <title>
+        {% block title %}
+            {{ 'title.base'|trans }}
+        {% endblock %}
+    </title>
+    <link rel="icon"
+          href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+    {% endblock %}
 
-		{% block javascripts %}
-			{{ encore_entry_script_tags('app') }}
-		{% endblock %}
-	</head>
-	<body>
+    {% block javascripts %}
+        {{ encore_entry_script_tags('app') }}
+    {% endblock %}
+</head>
+<body>
 
-		<nav
-			class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-			<!-- Navbar Brand-->
-			<a class="navbar-brand ps-3" href="{{ path('app_default') }}">Choix options</a>
-			<!-- Sidebar Toggle-->
-			{% if app.user %}
-				<button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!">
-					<i class="fa-solid fa-bars"></i>
-				</button>
-			{% endif %}
-			<!-- Navbar Search-->
-			{% if is_granted('ROLE_ADMIN') %}
-				<form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
-					<div class="input-group">
-						<input class="form-control" type="text" name="_switch_user" placeholder="Impersonate..." aria-label="Impersonate..." aria-describedby="btnNavbarImpersonate"/>
-						<button class="btn btn-primary" id="btnNavbarImpersonate" type="button">
-							<i class="fa-solid fa-user-secret"></i>
-						</button>
-					</div>
-				</form>
-			{% endif %}
-			<!-- Navbar-->
-			{% if app.user %}
-				<ul class="navbar-nav ms-auto {{ is_granted('ROLE_ADMIN') ? 'ms-md-0' : '' }} me-3 me-lg-4">
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							<i class="fas fa-user fa-fw"></i>
-						</a>
-						<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-							<li>
-								<a class="dropdown-item" href="{{ path('app_user_profile') }}">Profil</a>
-							</li>
-							{#                        <li><a class="dropdown-item" href="#!">Activity Log</a></li> #}
-							<li>
-								<hr class="dropdown-divider"/>
-							</li>
-							<li>
-								<a class="dropdown-item" href="{{ path('app_logout') }}">Deconnexion</a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-			{% else %}
-				<a class="btn btn-outline-secondary ms-auto me-3" href="{{ path('app_login') }}">Login</a>
-			{% endif %}
-		</nav>
+<nav
+        class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+    <!-- Navbar Brand-->
+    <a class="navbar-brand ps-3" href="{{ path('app_default') }}">Choix options</a>
+    <!-- Sidebar Toggle-->
+    {% if app.user %}
+        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+    {% endif %}
+    <!-- Navbar Search-->
+    {% if is_granted('ROLE_ADMIN') %}
+        <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+            <div class="input-group">
+                <input class="form-control" type="text" name="_switch_user" placeholder="Impersonate..."
+                       aria-label="Impersonate..." aria-describedby="btnNavbarImpersonate"/>
+                <button class="btn btn-primary" id="btnNavbarImpersonate" type="button">
+                    <i class="fa-solid fa-user-secret"></i>
+                </button>
+            </div>
+        </form>
+    {% endif %}
+    <!-- Navbar-->
+    {% if app.user %}
+        <ul class="navbar-nav ms-auto {{ is_granted('ROLE_ADMIN') ? 'ms-md-0' : '' }} me-3 me-lg-4">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown"
+                   aria-expanded="false">
+                    <i class="fas fa-user fa-fw"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <li>
+                        <a class="dropdown-item" href="{{ path('app_user_profile') }}">Profil</a>
+                    </li>
+                    {#                        <li><a class="dropdown-item" href="#!">Activity Log</a></li> #}
+                    <li>
+                        <hr class="dropdown-divider"/>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="{{ path('app_logout') }}">Deconnexion</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    {% else %}
+        <a class="btn btn-outline-secondary ms-auto me-3" href="{{ path('app_login') }}">Login</a>
+    {% endif %}
+</nav>
 
 <div id="layoutSidenav">
     {% if app.user %}
@@ -71,21 +74,25 @@
             <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                 <div class="sb-sidenav-menu">
                     <div class="nav">
-                        <a class="nav-link" href="{{ path('app_default') }}">
+                        <a class="nav-link{% if app.request.attributes.get('_route') == 'app_default' %} active{% endif %}"
+                           href="{{ path('app_default') }}">
                             <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                             Accueil
                         </a>
                         {% if is_granted("ROLE_ADMIN") %}
-                            <a class="nav-link" href="{{ path('app_passage_annee') }}">
+                            <a class="nav-link{% if app.request.attributes.get('_route') == 'app_passage_annee' %} active{% endif %}"
+                               href="{{ path('app_passage_annee') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Passage d'année
                             </a>
                             <div class="sb-sidenav-menu-heading">Configuration</div>
-                            <a class="nav-link" href="{{ path('app_parcours_index') }}">
+                            <a class="nav-link{% if app.request.attributes.get('_route') == 'app_parcours_index' %} active{% endif %}"
+                               href="{{ path('app_parcours_index') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Parcours
                             </a>
-                            <a class="nav-link" href="{{ path('app_campagne_choix_index') }}">
+                            <a class="nav-link{% if app.request.attributes.get('_route') == 'app_campagne_choix_index' %} active{% endif %}"
+                               href="{{ path('app_campagne_choix_index') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Campagne de choix
                             </a>
@@ -93,30 +100,36 @@
                             {#                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div> #}
                             {#                                Bloc UE #}
                             {#                            </a> #}
-                            <a class="nav-link" href="{{ path('app_bloc_ue_category_index') }}">
+                            <a class="nav-link{% if app.request.attributes.get('_route') == 'app_bloc_ue_category_index' %} active{% endif %}"
+                               href="{{ path('app_bloc_ue_category_index') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Categorie de bloc UE
                             </a>
-                            <a class="nav-link" href="{{ path('app_ue_index') }}">
+                            <a class="nav-link{% if app.request.attributes.get('_route') == 'app_ue_index' %} active{% endif %}"
+                               href="{{ path('app_ue_index') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 UE
                             </a>
-                            <a class="nav-link" href="{{ path('app_annee_formation_index') }}">
+                            <a class="nav-link{% if app.request.attributes.get('_route') == 'app_annee_formation_index' %} active{% endif %}"
+                               href="{{ path('app_annee_formation_index') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Annee formation
                             </a>
                             <div class="sb-sidenav-menu-heading">Gestion des utilisateurs</div>
-                            <a class="nav-link" href="{{ path('app_user_gestion_index') }}">
+                            <a class="nav-link{% if app.request.attributes.get('_route') == 'app_user_gestion_index' %} active{% endif %}"
+                               href="{{ path('app_user_gestion_index') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Import/export des étudiants
                             </a>
                         {% endif %}
                         {% if is_granted("ROLE_ADMIN") == false %}
-                            <a class="nav-link" href="{{ path('app_etudiant_parcours') }}">
+                            <a class="nav-link{% if app.request.attributes.get('_route') == 'app_etudiant_parcours' %} active{% endif %}"
+                               href="{{ path('app_etudiant_parcours') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Parcours
                             </a>
-                            <a class="nav-link" href="{{ path('app_etudiant_choix_options') }}">
+                            <a class="nav-link{% if app.request.attributes.get('_route') == 'app_etudiant_choix_options' %} active{% endif %}"
+                               href="{{ path('app_etudiant_choix_options') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Campagne de choix
                             </a>
@@ -137,7 +150,13 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 {% endfor %}
-                {% block body %}{% endblock %}
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            {% block body %}{% endblock %}
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
     </div>

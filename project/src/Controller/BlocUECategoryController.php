@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\BlocUECategory;
 use App\Form\BlocUECategoryType;
 use App\Repository\BlocUECategoryRepository;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,10 +15,18 @@ use Symfony\Component\Routing\Annotation\Route;
 class BlocUECategoryController extends AbstractController
 {
     #[Route('/', name: 'app_bloc_ue_category_index', methods: ['GET'])]
-    public function index(BlocUECategoryRepository $blocUETypeRepository): Response
+    public function index(BlocUECategoryRepository $blocUETypeRepository, Request $request, PaginatorInterface $paginator): Response
     {
+        $queryBuilder = $blocUETypeRepository->createQueryBuilder('b');
+
+        $bloc_ue_categories = $paginator->paginate(
+            $queryBuilder->getQuery(),
+            $request->query->getInt('page', 1),
+            10
+        );
+
         return $this->render('bloc_ue_category/index.html.twig', [
-            'bloc_u_e_categories' => $blocUETypeRepository->findAll(),
+            'bloc_ue_categories' => $bloc_ue_categories,
         ]);
     }
 
@@ -69,7 +78,7 @@ class BlocUECategoryController extends AbstractController
     #[Route('/{id}', name: 'app_bloc_ue_category_delete', methods: ['POST'])]
     public function delete(Request $request, BlocUECategory $blocUECategory, BlocUECategoryRepository $blocUETypeRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$blocUECategory->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $blocUECategory->getId(), $request->request->get('_token'))) {
             $blocUETypeRepository->remove($blocUECategory, true);
         }
 

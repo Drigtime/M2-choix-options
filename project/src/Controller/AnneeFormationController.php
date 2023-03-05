@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\AnneeFormation;
 use App\Form\AnneeFormationType;
 use App\Repository\AnneeFormationRepository;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,10 +15,18 @@ use Symfony\Component\Routing\Annotation\Route;
 class AnneeFormationController extends AbstractController
 {
     #[Route('/', name: 'app_annee_formation_index', methods: ['GET'])]
-    public function index(AnneeFormationRepository $anneeFormationRepository): Response
+    public function index(AnneeFormationRepository $anneeFormationRepository, Request $request, PaginatorInterface $paginator): Response
     {
+        $queryBuilder = $anneeFormationRepository->createQueryBuilder('a');
+
+        $annee_formations = $paginator->paginate(
+            $queryBuilder->getQuery(),
+            $request->query->getInt('page', 1),
+            10
+        );
+
         return $this->render('annee_formation/index.html.twig', [
-            'annee_formations' => $anneeFormationRepository->findAll(),
+            'annee_formations' => $annee_formations,
         ]);
     }
 

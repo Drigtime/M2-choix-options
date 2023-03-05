@@ -10,22 +10,31 @@
         <div class="flex-shrink-0">
             <a href="{{ path('app_annee_formation_new') }}" class="btn btn-sm btn-primary">
                 <i class="fas fa-plus"></i>
-                Ajouter une annee formation
+                Créer une annee formation
             </a>
         </div>
     </div>
 
+
+    {{ knp_pagination_filter(annee_formations, {
+        'a.id': 'ID',
+        'a.label': 'Nom',
+    }) }}
+
+    <div class="badge bg-primary">
+        {{ annee_formations.getTotalItemCount }} année(s) de formation
+    </div>
     <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nom</th>
-                <th></th>
-            </tr>
+        <thead class="table-light">
+        <tr>
+            <th>{{ knp_pagination_sortable(annee_formations, 'ID', 'a.id') }}</th>
+            <th>{{ knp_pagination_sortable(annee_formations, 'Nom', 'a.label') }}</th>
+            <th></th>
+        </tr>
         </thead>
         <tbody>
         {% for annee_formation in annee_formations %}
-            <tr>
+            <tr {% if loop.index is odd %}class="color"{% endif %}>
                 <td>{{ annee_formation.id }}</td>
                 <td>{{ annee_formation.label }}</td>
                 <td class="text-end">
@@ -41,11 +50,12 @@
                     </div>
                 </td>
             </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">Aucune annee formation</td>
-            </tr>
         {% endfor %}
         </tbody>
     </table>
+
+    {# display navigation #}
+    <div class="navigation d-flex justify-content-center">
+        {{ knp_pagination_render(annee_formations) }}
+    </div>
 {% endblock %}

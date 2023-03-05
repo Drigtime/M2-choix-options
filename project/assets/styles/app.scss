@@ -1,6 +1,28 @@
-@import "bootstrap/dist/css/bootstrap.css";
+//@import "bootstrap/scss/bootstrap";
+
+// Override Bootstrap's default color scheme
+$primary: #257b88;
+$secondary: #404040;
+
+// Override Bootstrap's default link color
+$link-color: #ff3366;
+
+//$component-active-color:      #ff3366;
+//$component-active-bg: rgba(37, 123, 136, 0.2);
+
+// Override Bootstrap's default radius
+$border-radius: 0rem;
+$border-radius-lg: 0rem;
+$border-radius-sm: 0rem;
+
+// Override Bootstrap's default input focus width
+$input-btn-focus-width: 0rem;
+
+$card-cap-bg: #e5ece9;
+$alert-bg-scale: -70%;
+
 @import "bootstrap-icons/font/bootstrap-icons.css";
-@import "startbootstrap-sb-admin/dist/css/styles.css";
+@import "startbootstrap-sb-admin/src/scss/styles";
 @import "@fortawesome/fontawesome-free/css/all.css";
 
 main > .container {
@@ -11,7 +33,3 @@ main > .container {
   height: calc(100vh - 56px);
   overflow-y: auto;
 }
-
-//body {
-//    background-color: lightgray;
-//}

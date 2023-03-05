@@ -10,24 +10,34 @@
         <div class="flex-shrink-0">
             <a href="{{ path('app_campagne_choix_new') }}" class="btn btn-sm btn-primary">
                 <i class="fas fa-plus"></i>
-                Ajouter une campagne de choix
+                Créer une campagne de choix
             </a>
         </div>
     </div>
 
+    {{ knp_pagination_filter(campagne_choixes, {
+        'p.id': 'ID',
+        'af.parcours': 'Parcours',
+        'p.dateDebut': 'Date de début',
+        'p.dateFin': 'Date de fin',
+    }) }}
+
+    <div class="badge bg-primary">
+        {{ campagne_choixes.getTotalItemCount }} campagne(s) de choix
+    </div>
     <table class="table">
-        <thead>
+        <thead class="table-light">
         <tr>
-            <th>Id</th>
-            <th>Parcours</th>
-            <th>Date de début</th>
-            <th>Date de fin</th>
+            <th>{{ knp_pagination_sortable(campagne_choixes, 'ID', 'cc.id') }}</th>
+            <th>{{ knp_pagination_sortable(campagne_choixes, 'Parcours', 'ccp.label') }}</th>
+            <th>{{ knp_pagination_sortable(campagne_choixes, 'Date de début', 'cc.dateDebut') }}</th>
+            <th>{{ knp_pagination_sortable(campagne_choixes, 'Date de fin', 'cc.dateFin') }}</th>
             <th></th>
         </tr>
         </thead>
         <tbody>
         {% for campagne_choix in campagne_choixes %}
-            <tr>
+            <tr {% if loop.index is odd %}class="color"{% endif %}>
                 <td>{{ campagne_choix.id }}</td>
                 <td>{{ campagne_choix.parcours }}</td>
                 <td>{{ campagne_choix.dateDebut ? campagne_choix.dateDebut|date('Y-m-d H:i:s') : '' }}</td>
@@ -45,12 +55,13 @@
                     </div>
                 </td>
             </tr>
-        {% else %}
-            <tr>
-                <td colspan="6">no records found</td>
-            </tr>
         {% endfor %}
         </tbody>
     </table>
+
+    {# display navigation #}
+    <div class="navigation d-flex justify-content-center">
+        {{ knp_pagination_render(campagne_choixes) }}
+    </div>
 
 {% endblock %}

@@ -22,7 +22,7 @@ $('#campagne_choix_parcours').on('change', function () {
     } else if (blocUEs.length > 0) {
         $listBlocUE.empty();
         $listBlocUE.html(`<div id="no-bloc-ue" class="col-12">
-                <div class="alert alert-info m-0 p-2">
+                <div class="alert alert-primary m-0 p-2">
                     Aucun bloc option n'a encore été ajouté.
                 </div>
             </div>`);
@@ -101,7 +101,7 @@ $(document).on('change', '#list-bloc-ue select[id$="_blocUE"]', function () {
         });
     } else {
         $uesContainer.empty();
-        $uesContainer.append(`<div class="alert alert-info" role="alert">
+        $uesContainer.append(`<div class="alert alert-primary" role="alert">
                                 Aucune UE n'est disponible pour cette catégorie
                             </div>`);
     }

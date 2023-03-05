@@ -12,6 +12,8 @@ use App\Repository\BlocUERepository;
 use App\Repository\CampagneChoixRepository;
 use App\Repository\EtudiantRepository;
 use App\Repository\ParcoursRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,10 +23,19 @@ use Symfony\Component\Routing\Annotation\Route;
 class ParcoursController extends AbstractController
 {
     #[Route('/', name: 'app_parcours_index', methods: ['GET'])]
-    public function index(ParcoursRepository $parcoursRepository): Response
+    public function index(ParcoursRepository $parcoursRepository, Request $request, PaginatorInterface $paginator): Response
     {
+        $queryBuilder = $parcoursRepository->createQueryBuilder('p');
+        $queryBuilder->leftJoin('p.anneeFormation', 'af');
+
+        $parcours = $paginator->paginate(
+            $queryBuilder->getQuery(),
+            $request->query->getInt('page', 1),
+            10
+        );
+
         return $this->render('parcours/index.html.twig', [
-            'parcours' => $parcoursRepository->findAll(),
+            'parcours' => $parcours,
         ]);
     }
 

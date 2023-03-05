@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\UE;
 use App\Form\UEType;
 use App\Repository\UERepository;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,10 +15,18 @@ use Symfony\Component\Routing\Annotation\Route;
 class UEController extends AbstractController
 {
     #[Route('/', name: 'app_ue_index', methods: ['GET'])]
-    public function index(UERepository $uERepository): Response
+    public function index(UERepository $uERepository, Request $request, PaginatorInterface $paginator): Response
     {
+        $queryBuilder = $uERepository->createQueryBuilder('u');
+
+        $ues = $paginator->paginate(
+            $queryBuilder->getQuery(),
+            $request->query->getInt('page', 1),
+            10
+        );
+
         return $this->render('ue/index.html.twig', [
-            'ues' => $uERepository->findAll(),
+            'ues' => $ues,
         ]);
     }
 

@@ -10,24 +10,33 @@
         <div class="flex-shrink-0">
             <a href="{{ path('app_ue_new') }}" class="btn btn-sm btn-primary">
                 <i class="fas fa-plus"></i>
-                Ajouter une UE
+                Créer une UE
             </a>
         </div>
     </div>
 
+    {{ knp_pagination_filter(ues, {
+        'u.id': 'ID',
+        'u.label': 'Nom',
+        'u.active': 'Actif'
+    }) }}
+
+    <div class="badge bg-primary">
+        {{ ues.getTotalItemCount }} UE(s)
+    </div>
     <table class="table">
-        <thead>
+        <thead class="table-light">
         <tr>
-            <th>Id</th>
-            <th>Nom</th>
-            <th>Categorie de bloc UE</th>
-            <th>Actif</th>
+            <th>{{ knp_pagination_sortable(ues, 'ID', 'u.id') }}</th>
+            <th>{{ knp_pagination_sortable(ues, 'Nom', 'u.label') }}</th>
+            <th>Categories de bloc UE</th>
+            <th>{{ knp_pagination_sortable(ues, 'Actif', 'u.active') }}</th>
             <th></th>
         </tr>
         </thead>
         <tbody>
         {% for ue in ues %}
-            <tr>
+            <tr {% if loop.index is odd %}class="color"{% endif %}>
                 <td>{{ ue.id }}</td>
                 <td>{{ ue.label }}</td>
                 <td>
@@ -53,11 +62,13 @@
                     </div>
                 </td>
             </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">Aucune UE</td>
-            </tr>
         {% endfor %}
         </tbody>
     </table>
+
+    {# display navigation #}
+    <div class="navigation d-flex justify-content-center">
+        {{ knp_pagination_render(ues) }}
+    </div>
+
 {% endblock %}

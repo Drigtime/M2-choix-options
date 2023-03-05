@@ -9,6 +9,7 @@ use App\Form\GroupeType;
 use App\Repository\CampagneChoixRepository;
 use App\Repository\GroupeRepository;
 use App\Repository\ParcoursRepository;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,10 +19,19 @@ use Symfony\Component\Routing\Annotation\Route;
 class CampagneChoixController extends AbstractController
 {
     #[Route('/', name: 'app_campagne_choix_index', methods: ['GET'])]
-    public function index(CampagneChoixRepository $campagneChoixRepository): Response
+    public function index(CampagneChoixRepository $campagneChoixRepository, Request $request, PaginatorInterface $paginator): Response
     {
+        $queryBuilder = $campagneChoixRepository->createQueryBuilder('cc');
+        $queryBuilder->leftJoin('cc.parcours', 'ccp');
+
+        $campagneChoix = $paginator->paginate(
+            $queryBuilder->getQuery(),
+            $request->query->getInt('page', 1),
+            10
+        );
+
         return $this->render('campagne_choix/index.html.twig', [
-            'campagne_choixes' => $campagneChoixRepository->findAll(),
+            'campagne_choixes' => $campagneChoix,
         ]);
     }
 
@@ -97,7 +107,7 @@ class CampagneChoixController extends AbstractController
     #[Route('/{id}', name: 'app_campagne_choix_delete', methods: ['POST'])]
     public function delete(Request $request, CampagneChoix $campagneChoix, CampagneChoixRepository $campagneChoixRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$campagneChoix->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $campagneChoix->getId(), $request->request->get('_token'))) {
             $campagneChoixRepository->remove($campagneChoix, true);
         }
 
@@ -106,12 +116,12 @@ class CampagneChoixController extends AbstractController
 
     //Crée les groupes une fois la campagne termine 
     #[Route('/{id}/choix/{choix}', name: 'app_campagne_groupe_choix', methods: ['GET', 'POST'])]
-    public function choix_groupe(Request $request, $id, $choix, GroupeRepository $groupeRep,CampagneChoix $campagneChoix, CampagneChoixRepository $campagneChoixRepository, ParcoursRepository $parcoursRepository): Response
+    public function choix_groupe(Request $request, $id, $choix, GroupeRepository $groupeRep, CampagneChoix $campagneChoix, CampagneChoixRepository $campagneChoixRepository, ParcoursRepository $parcoursRepository): Response
     {
         $groupe = new Groupe();
-        $indice=1;
+        $indice = 1;
         $UE = null;
-        $effectif=25;
+        $effectif = 25;
         $parcours = $campagneChoix->getParcours();
         $parcours_id = $parcours->getId();
         $parcours = $parcoursRepository->findOneBy(['id' => $parcours_id]);
@@ -120,19 +130,17 @@ class CampagneChoixController extends AbstractController
             $result[] = $etudiant;
         }
         $choixes = $campagneChoix->getResponseCampagnes();
-        $BlocUEs =  $campagneChoix->getBlocOptions();
+        $BlocUEs = $campagneChoix->getBlocOptions();
         dump($result);
         dump("test");
         //Pour chaque ue du blocUE 
-        for($g = 0; $g < count($BlocUEs); $g++)
-        {
+        for ($g = 0; $g < count($BlocUEs); $g++) {
             $BlocUE = $BlocUEs[$g];
             dump("test12");
             dump($BlocUE);
             $UEs = $BlocUE->getUEs();
-            for($i = 0; $i < count($UEs); $i++)
-            {
-                $UE=$UEs[$i];
+            for ($i = 0; $i < count($UEs); $i++) {
+                $UE = $UEs[$i];
                 dump("test123");
                 // $result = array_keys(array_filter($choixes, function($v){
                 //     if($v.getUE() == $UE){
@@ -141,33 +149,27 @@ class CampagneChoixController extends AbstractController
                 // }));
                 dump("etudiants");
                 $indice = 1;
-                switch($choix) {
+                switch ($choix) {
                     //groupe par ordre alphabetique
                     case 1:
-                        $j=0;
-                        while($j < count($result))
-                        {
+                        $j = 0;
+                        while ($j < count($result)) {
                             $j++;
-                            if(count($groupe->getEtudiants()) >= $effectif)
-                            {
+                            if (count($groupe->getEtudiants()) >= $effectif) {
                                 $groupe->setLabel($UE->getLabel() . "-Groupe-" . strval($indice));
                                 $UE->addGroupe($groupe);
                                 $groupeRep->save($groupe, true);
                                 dump($groupe);
-                                $indice = $indice+1;
+                                $indice = $indice + 1;
                                 $groupe = new Groupe();
-                            }
-                            else if($j == count($result))
-                            {
+                            } else if ($j == count($result)) {
                                 $groupe->setLabel($UE->getLabel() . "-Groupe-" . strval($indice));
                                 $UE->addGroupe($groupe);
                                 $groupeRep->save($groupe, true);
                                 dump($groupe);
-                                $indice = $indice+1;
+                                $indice = $indice + 1;
                                 $groupe = new Groupe();
-                            } 
-                            else
-                            {
+                            } else {
                                 $groupe->addEtudiant($result[$j]);
                             }
 
@@ -178,29 +180,23 @@ class CampagneChoixController extends AbstractController
                     //aleatoire
                     case 2:
                         shuffle($result);
-                        $j=0;
-                        while($j < count($result))
-                        {
+                        $j = 0;
+                        while ($j < count($result)) {
                             $j++;
-                            if(count($groupe->getEtudiants()) >= $effectif )
-                            {
+                            if (count($groupe->getEtudiants()) >= $effectif) {
                                 $groupe->setLabel($UE->getLabel() . "-Groupe-" . strval($indice));
                                 $UE->addGroupe($groupe);
-                                $indice = $indice+1;
+                                $indice = $indice + 1;
                                 dump($groupe);
                                 $groupe = new Groupe();
                                 $groupe->addEtudiant($result[$j]);
-                            }
-                            else if($j == count($result))
-                            {
+                            } else if ($j == count($result)) {
                                 $groupe->setLabel($UE->getLabel() . "-Groupe-" . strval($indice));
                                 $UE->addGroupe($groupe);
                                 dump($groupe);
-                                $indice = $indice+1;
+                                $indice = $indice + 1;
                                 $groupe = new Groupe();
-                            } 
-                            else
-                            {
+                            } else {
                                 $groupe->addEtudiant($result[$j]);
                             }
                         }
@@ -213,10 +209,8 @@ class CampagneChoixController extends AbstractController
                         //a implementer 
                         break;
                 }
-                
-                
-                
-                
+
+
             }
         }
         $form = $this->createForm(GroupeType::class, $groupe);
