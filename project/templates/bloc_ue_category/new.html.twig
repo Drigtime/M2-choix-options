@@ -3,9 +3,20 @@
 {% block title %}New BlocUECategory{% endblock %}
 
 {% block body %}
-    <h1>Create new BlocUECategory</h1>
+    <div class="d-flex">
+        <div class="flex-grow-1">
+            <h4>Création d'une categorie de bloc UE</h4>
+        </div>
+        <div class="flex-shrink-0">
+            <div class="d-flex gap-2">
+                <a href="{{ path('app_bloc_ue_category_index') }}" class="btn btn-sm btn-primary">
+                    <i class="fas fa-arrow-left"></i>
+                    {{ 'utils.back_to_list'|trans }}
+                </a>
+            </div>
+        </div>
+    </div>
+
 
     {{ include('bloc_ue_category/_form.html.twig') }}
-
-    <a href="{{ path('app_bloc_ue_category_index') }}">back to list</a>
 {% endblock %}

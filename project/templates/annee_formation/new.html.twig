@@ -3,9 +3,19 @@
 {% block title %}New AnneeFormation{% endblock %}
 
 {% block body %}
-    <h1>Create new AnneeFormation</h1>
+    <div class="d-flex">
+        <div class="flex-grow-1">
+            <h4>Création d'une année de formation</h4>
+        </div>
+        <div class="flex-shrink-0">
+            <div class="d-flex gap-2">
+                <a href="{{ path('app_annee_formation_index') }}" class="btn btn-sm btn-primary">
+                    <i class="fas fa-arrow-left"></i>
+                    {{ 'utils.back_to_list'|trans }}
+                </a>
+            </div>
+        </div>
+    </div>
 
     {{ include('annee_formation/_form.html.twig') }}
-
-    <a href="{{ path('app_annee_formation_index') }}">back to list</a>
 {% endblock %}

@@ -3,11 +3,23 @@
 {% block title %}Edit BlocUECategory{% endblock %}
 
 {% block body %}
-    <h1>Edit BlocUECategory</h1>
+    <div class="d-flex">
+        <div class="flex-grow-1">
+            <h4>Modification de categorie de bloc UE</h4>
+        </div>
+        <div class="flex-shrink-0">
+            <div class="d-flex gap-2">
+                {{ include('bloc_ue_category/_delete_form.html.twig') }}
 
-    {{ include('bloc_ue_category/_form.html.twig', {'button_label': 'Update'}) }}
+                <a href="{{ path('app_bloc_ue_category_index') }}" class="btn btn-sm btn-primary">
+                    <i class="fas fa-arrow-left"></i>
+                    {{ 'utils.back_to_list'|trans }}
+                </a>
+            </div>
+        </div>
+    </div>
 
-    <a href="{{ path('app_bloc_ue_category_index') }}">back to list</a>
 
-    {{ include('bloc_ue_category/_delete_form.html.twig') }}
+    {{ include('bloc_ue_category/_form.html.twig') }}
+
 {% endblock %}

@@ -39,9 +39,7 @@
                      data-no-ue="{{ formMacros.printNoUE()|e('html_attr') }}"
                 >
                     {% for label in ['UEs obligatoires', 'UEs optionnelles'] %}
-
                     {% endfor %}
-
                     <div class="card ues-container-child">
                         <div class="card-header ps-3 pe-1 py-1">
                             <div class="d-flex">
@@ -57,9 +55,13 @@
                             </div>
                         </div>
                         <div class="card-body p-2">
-                            {% for blocUeUe in blocUE.blocUeUes|filter((blocUeUe) => blocUeUe.vars.value.isOptional != true) %}
-                                {{ formMacros.printUE(blocUeUe) }}
-                            {% endfor %}
+                            {% if blocUE.blocUeUes|length > 0 %}
+                                {% for blocUeUe in blocUE.blocUeUes|filter((blocUeUe) => blocUeUe.vars.value.isOptional != true) %}
+                                    {{ formMacros.printUE(blocUeUe) }}
+                                {% endfor %}
+                            {% else %}
+                                {{ formMacros.printNoUE() }}
+                            {% endif %}
                         </div>
                     </div>
 
@@ -80,9 +82,13 @@
                             </div>
                         </div>
                         <div class="card-body p-2">
-                            {% for blocUeUe in blocUE.blocUeUes|filter((blocUeUe) => blocUeUe.vars.value.isOptional) %}
-                                {{ formMacros.printUE(blocUeUe) }}
-                            {% endfor %}
+                            {% if blocUE.blocUeUes|length > 0 %}
+                                {% for blocUeUe in blocUE.blocUeUes|filter((blocUeUe) => blocUeUe.vars.value.isOptional) %}
+                                    {{ formMacros.printUE(blocUeUe) }}
+                                {% endfor %}
+                            {% else %}
+                                {{ formMacros.printNoUE() }}
+                            {% endif %}
                         </div>
                     </div>
                 </div>

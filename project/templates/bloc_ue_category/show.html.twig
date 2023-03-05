@@ -3,24 +3,39 @@
 {% block title %}BlocUECategory{% endblock %}
 
 {% block body %}
-    <h1>BlocUECategory</h1>
+    <div class="d-flex">
+        <div class="flex-grow-1">
+            <h4>Categorie de bloc UE</h4>
+        </div>
+        <div class="flex-shrink-0">
+            <div class="d-flex gap-2">
+                {{ include('bloc_ue_category/_delete_form.html.twig') }}
+
+                <a href="{{ path('app_bloc_ue_category_edit', {'id': bloc_u_e_category.id}) }}"
+                   class="btn btn-sm btn-primary">
+                    <i class="fas fa-edit"></i>
+                    Modifier
+                </a>
+
+                <a href="{{ path('app_bloc_ue_category_index') }}" class="btn btn-sm btn-primary">
+                    <i class="fas fa-arrow-left"></i>
+                    {{ 'utils.back_to_list'|trans }}
+                </a>
+            </div>
+        </div>
+    </div>
 
     <table class="table">
         <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ bloc_u_e_category.id }}</td>
-            </tr>
-            <tr>
-                <th>Label</th>
-                <td>{{ bloc_u_e_category.label }}</td>
-            </tr>
+        <tr>
+            <th>Id</th>
+            <td>{{ bloc_u_e_category.id }}</td>
+        </tr>
+        <tr>
+            <th>Libellé</th>
+            <td>{{ bloc_u_e_category.label }}</td>
+        </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('app_bloc_ue_category_index') }}">back to list</a>
-
-    <a href="{{ path('app_bloc_ue_category_edit', {'id': bloc_u_e_category.id}) }}">edit</a>
-
-    {{ include('bloc_ue_category/_delete_form.html.twig') }}
 {% endblock %}

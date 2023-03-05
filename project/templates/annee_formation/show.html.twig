@@ -3,7 +3,27 @@
 {% block title %}AnneeFormation{% endblock %}
 
 {% block body %}
-    <h1>AnneeFormation</h1>
+    <div class="d-flex">
+        <div class="flex-grow-1">
+            <h4>Année de formation</h4>
+        </div>
+        <div class="flex-shrink-0">
+            <div class="d-flex gap-2">
+                {{ include('annee_formation/_delete_form.html.twig') }}
+
+                <a href="{{ path('app_annee_formation_edit', {'id': annee_formation.id}) }}"
+                   class="btn btn-sm btn-primary">
+                    <i class="fas fa-edit"></i>
+                    Modifier
+                </a>
+
+                <a href="{{ path('app_annee_formation_index') }}" class="btn btn-sm btn-primary">
+                    <i class="fas fa-arrow-left"></i>
+                    {{ 'utils.back_to_list'|trans }}
+                </a>
+            </div>
+        </div>
+    </div>
 
     <table class="table">
         <tbody>
@@ -12,15 +32,9 @@
                 <td>{{ annee_formation.id }}</td>
             </tr>
             <tr>
-                <th>Label</th>
+                <th>Nom de l'année</th>
                 <td>{{ annee_formation.label }}</td>
             </tr>
         </tbody>
     </table>
-
-    <a href="{{ path('app_annee_formation_index') }}">back to list</a>
-
-    <a href="{{ path('app_annee_formation_edit', {'id': annee_formation.id}) }}">edit</a>
-
-    {{ include('annee_formation/_delete_form.html.twig') }}
 {% endblock %}

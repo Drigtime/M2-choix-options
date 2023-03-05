@@ -8,7 +8,7 @@ $('#add-bloc-ue').on('click', function () {
     }
 
     newWidget = newWidget.replaceAll(/__name__/g, $container.children().length + 1);
-    $container.prepend(newWidget);
+    $container.append(newWidget);
     // trigger change event on the select inside the new widget
     const $newBlocUE = $container.children().first();
     $newBlocUE.find('select').trigger('change');
@@ -41,17 +41,30 @@ $(document).on('click', '[data-action="add-ue"]', function () {
     newWidget = newWidget.replaceAll(/__ues__/g, uesCount);
     const $newWidget = $(newWidget);
 
-
     if (optional) {
         $newWidget.find('input[type="hidden"]').val(true);
     }
 
+    // check if there is a div with alert class in the container, if yes remove it
+    const $alert = $container.find('.alert');
+    if ($alert.length > 0) {
+        $alert.remove();
+    }
 
-    $container.prepend($newWidget);
+    $container.append($newWidget);
 });
 
 $(document).on('click', '[data-action="delete-ue"]', function () {
+    const $container = $(this).closest('.ues-container-child').find('.card-body');
+    const $parentContainer = $(this).closest('.ues-container');
+
     $(this).parent().remove();
+
+    if ($container.children().length === 0) {
+        const $noUEPrototype = $parentContainer.data('no-ue');
+
+        $container.append($noUEPrototype);
+    }
 });
 
 function updateAvailableUE() {
