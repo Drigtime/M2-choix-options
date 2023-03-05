@@ -76,25 +76,29 @@
                     <div class="nav">
                         <a class="nav-link{% if app.request.attributes.get('_route') == 'app_default' %} active{% endif %}"
                            href="{{ path('app_default') }}">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            <div class="sb-nav-link-icon">
+                                <i class="fa-solid fa-home"></i>
+                            </div>
                             Accueil
                         </a>
                         {% if is_granted("ROLE_ADMIN") %}
                             <a class="nav-link{% if app.request.attributes.get('_route') == 'app_passage_annee' %} active{% endif %}"
                                href="{{ path('app_passage_annee') }}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                <div class="sb-nav-link-icon">
+                                    <i class="fa-solid fa-person-walking-dashed-line-arrow-right"></i>
+                                </div>
                                 Passage d'année
                             </a>
                             <div class="sb-sidenav-menu-heading">Configuration</div>
                             <a class="nav-link{% if app.request.attributes.get('_route') == 'app_parcours_index' %} active{% endif %}"
                                href="{{ path('app_parcours_index') }}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-road"></i></div>
                                 Parcours
                             </a>
                             <a class="nav-link{% if app.request.attributes.get('_route') == 'app_campagne_choix_index' %} active{% endif %}"
                                href="{{ path('app_campagne_choix_index') }}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                                Campagne de choix
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-list-ol"></i></div>
+                                Campagnes de choix
                             </a>
                             {#                            <a class="nav-link" href="{{ path('app_bloc_ue_index') }}"> #}
                             {#                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div> #}
@@ -102,35 +106,35 @@
                             {#                            </a> #}
                             <a class="nav-link{% if app.request.attributes.get('_route') == 'app_bloc_ue_category_index' %} active{% endif %}"
                                href="{{ path('app_bloc_ue_category_index') }}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                                Categorie de bloc UE
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-layer-group"></i></div>
+                                Catégories de bloc UE
                             </a>
                             <a class="nav-link{% if app.request.attributes.get('_route') == 'app_ue_index' %} active{% endif %}"
                                href="{{ path('app_ue_index') }}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                                UE
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-book"></i></div>
+                                Unités d'enseignement
                             </a>
                             <a class="nav-link{% if app.request.attributes.get('_route') == 'app_annee_formation_index' %} active{% endif %}"
                                href="{{ path('app_annee_formation_index') }}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                                Annee formation
+                                <div class="sb-nav-link-icon"><i class="fas fa-calendar-days"></i></div>
+                                Années de formation
                             </a>
                             <div class="sb-sidenav-menu-heading">Gestion des utilisateurs</div>
                             <a class="nav-link{% if app.request.attributes.get('_route') == 'app_user_gestion_index' %} active{% endif %}"
                                href="{{ path('app_user_gestion_index') }}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-users-gear"></i></div>
                                 Import/export des étudiants
                             </a>
                         {% endif %}
                         {% if is_granted("ROLE_ADMIN") == false %}
                             <a class="nav-link{% if app.request.attributes.get('_route') == 'app_etudiant_parcours' %} active{% endif %}"
                                href="{{ path('app_etudiant_parcours') }}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-road"></i></div>
                                 Parcours
                             </a>
                             <a class="nav-link{% if app.request.attributes.get('_route') == 'app_etudiant_choix_options' %} active{% endif %}"
                                href="{{ path('app_etudiant_choix_options') }}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-list-ol"></i></div>
                                 Campagne de choix
                             </a>
                         {% endif %}

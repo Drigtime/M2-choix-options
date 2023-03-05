@@ -5,12 +5,12 @@
 {% block body %}
     <div class="d-flex">
         <div class="flex-grow-1">
-            <h4>Liste des UE</h4>
+            <h4>Liste des unités d'enseignement</h4>
         </div>
         <div class="flex-shrink-0">
             <a href="{{ path('app_ue_new') }}" class="btn btn-sm btn-primary">
                 <i class="fas fa-plus"></i>
-                Créer une UE
+                Créer une unité d'enseignement
             </a>
         </div>
     </div>
@@ -22,7 +22,7 @@
     }) }}
 
     <div class="badge bg-primary">
-        {{ ues.getTotalItemCount }} UE(s)
+        {{ ues.getTotalItemCount }} unité(s) d'enseignement
     </div>
     <table class="table">
         <thead class="table-light">
