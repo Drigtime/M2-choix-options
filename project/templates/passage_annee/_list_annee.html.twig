@@ -32,14 +32,13 @@
                              role="tabpanel"
                              aria-labelledby="parcours-{{ parcours.id }}-tab">
                             {% if parcours.etudiants|length > 0 %}
-                                <div class="d-flex">
+                                <div class="d-flex mb-3">
                                     <div class="flex-grow-1">
-                                        <h6>Liste des étudiants</h6>
+                                        <h5>Liste des étudiants</h5>
                                     </div>
                                     <div class="flex-shrink-0">
                                         <a data-move-selected
                                            class="btn btn-sm btn-primary disabled"
-                                           id="add-bloc-ue"
                                            data-modal-title="Déplacer les étudiants vers un autre parcours"
                                            data-url="{{ path('app_passage_annee_move_students') }}"
                                            data-ajax-target="#list-annee">
@@ -48,7 +47,7 @@
                                         </a>
                                     </div>
                                 </div>
-                                <table class="table">
+                                <table class="table dt">
                                     <thead>
                                     <tr>
                                         <th scope="col">
@@ -72,8 +71,7 @@
                                             <td>{{ etudiant.prenom }}</td>
                                             <td class="text-end">
                                                 <div class="btn-group">
-                                                    <a id="add-bloc-ue"
-                                                       data-action="load-form"
+                                                    <a data-move
                                                        data-modal-title="Déplacer l'étudiant vers un autre parcours"
                                                        data-url="{{ path('app_passage_annee_move_student', {id: etudiant.id}) }}"
                                                        data-ajax-target="#list-annee"

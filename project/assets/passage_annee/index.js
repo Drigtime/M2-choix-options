@@ -1,5 +1,7 @@
 import {Modal} from "bootstrap";
 import $ from "jquery";
+import DataTable from 'datatables.net-bs5';
+import languageFR from 'datatables.net-plugins/i18n/fr-FR.json';
 
 // for every checkbox in the document that have data-check-all attribute, add a click event listener to check or uncheck all checkboxes in the container
 $(document).on('click', '[data-check-all]', function () {
@@ -42,6 +44,89 @@ $(document).on('click', 'tbody :checkbox', function(e) {
         checkboxes.trigger('change');
     }
     lastChecked = this;
+});
+
+$(document).on('click', '[data-move]', function (e) {
+    e.preventDefault();
+    const url = $(this).data('url');
+    const title = $(this).data('modal-title');
+    const custom = $(this).data('custom');
+    // Create a div with that will be used as a modal window
+    let modalDiv = document.getElementById('modalTemp');
+
+    if (modalDiv) {
+        modalDiv.remove();
+    }
+
+    modalDiv = document.createElement('div');
+    modalDiv.classList.add('modal');
+    modalDiv.classList.add('fade');
+    modalDiv.setAttribute('id', 'modalTemp');
+    modalDiv.setAttribute('tabindex', '-1');
+    modalDiv.setAttribute('role', 'dialog');
+    modalDiv.setAttribute('aria-labelledby', 'modalLabel');
+    modalDiv.setAttribute('aria-hidden', 'true');
+    modalDiv.innerHTML = `
+            <div class="modal-dialog" role="document" >
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalLabel">${title}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    document.body.appendChild(modalDiv);
+
+    if (custom) {
+        modalDiv.setAttribute('data-custom', custom);
+    }
+
+    const modal = new Modal(modalDiv, {
+        keyboard: false,
+        backdrop: 'static',
+        focus: true,
+    });
+
+    $.ajax({
+        url: url,
+        method: 'GET',
+        success: function (data) {
+            modalDiv.querySelector('.modal-body').innerHTML = data;
+            modal.show();
+            modalDiv.querySelector('form').addEventListener('submit', function (formEvent) {
+                formEvent.preventDefault();
+                $.ajax({
+                    url: url,
+                    method: $(this).attr('method'),
+                    data: $(this).serialize(),
+                    success: function (data) {
+                        // if element that open the modal has a data-ajax-target attribute with a value that is a valid css selector then
+                        // the data is inserted in the element that match the selector
+                        const target = $(e.currentTarget).data('ajax-target');
+                        if (target) {
+                            $(target).html(data);
+
+                            // reinitialize the datatable
+                            $('.dt').DataTable({
+                                "language": languageFR
+                            });
+                        }
+                        modal.hide();
+                    },
+                    error: function (data) {
+                        modal._element.innerHTML = data.responseText;
+                    },
+                });
+            });
+        },
+    });
 });
 
 $(document).on('click', '[data-move-selected]', function (e) {
@@ -115,6 +200,11 @@ $(document).on('click', '[data-move-selected]', function (e) {
                         const target = $(e.currentTarget).data('ajax-target');
                         if (target) {
                             $(target).html(data);
+
+                            // reinitialize the datatable
+                            $('.dt').DataTable({
+                                "language": languageFR
+                            });
                         }
                         modal.hide();
                     },
@@ -133,3 +223,9 @@ $(document).on('show.bs.tab', function (event) {
     const containerId = $container.attr('id');
     document.cookie = `${containerId}=${$tab.data('bs-target')}`;
 })
+
+$(document).ready(function () {
+    $('.dt').DataTable({
+        "language": languageFR
+    });
+});

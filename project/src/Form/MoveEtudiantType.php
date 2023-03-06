@@ -16,15 +16,16 @@ class MoveEtudiantType extends AbstractType
         $builder
             ->add('parcours', EntityType::class, [
                 'class' => Parcours::class,
-                'choice_label' => 'label',
+                'choice_label' => function (Parcours $parcours) {
+                    return $parcours->getAnneeFormation()->getLabel() . ' - ' . $parcours->getLabel();
+                },
                 'label' => 'Parcours',
                 'placeholder' => 'Choisissez un parcours',
                 'required' => true,
                 'attr' => [
                     'class' => 'form-control',
                 ],
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

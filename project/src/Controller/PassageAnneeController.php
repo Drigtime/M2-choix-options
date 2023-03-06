@@ -161,8 +161,8 @@ class PassageAnneeController extends AbstractController
                 }
                 $etudiant->setParcours($parcours);
                 foreach ($parcours->getBlocUEs() as $blocUE) {
-                    foreach ($blocUE->getUes() as $ue) {
-                        $etudiant->addEtudiantUE(new EtudiantUE($etudiant, $ue));
+                    foreach ($blocUE->getBlocUeUes() as $blocUeUe) {
+                        $etudiant->addEtudiantUE(new EtudiantUE($etudiant, $blocUeUe->getUe()));
                     }
                 }
                 $etudiantRepository->save($etudiant);
