@@ -38,9 +38,48 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        {% else %}
-            <p>Aucune campagne de choix</p>
-        {% endfor %}
+                <div class="card-body">
+                  <p>UE disponibles :</p>
+                  {% for ue in blocOption.UEs %}
+                    {{ ue.label }}</br>
+                  {% else %}
+                    <p>Pas encore d'UE à choisir</p>
+                  {% endfor %}
+                </div>
+              </div>
+          {% endfor %}
     </div>
+    {% for responseCampagne in responsesCampagnes %}
+      <div class="col-sm-12 col-md-12 col-lg-6 col-xl-4">
+        <div class="card my-3">
+          <div class="card-header">
+            <h5>Campagne du {{ responseCampagne.campagne.dateDebut|date("m/d/Y") }} au {{ responseCampagne.campagne.dateFin|date("m/d/Y") }}</h5>
+          </div>
+          <div class="card-body">
+          {% for blocOption in responseCampagne.campagne.blocOptions %}
+            <div class="card sub-card my-3">
+              <div class="card-header">
+                <h6>{{ blocOption.blocUE.blocUECategory.label }}</h6>
+                Nombre d'UE à choisir : {{ blocOption.nbUEChoix }}
+              </div>
+              <div class="card-body">
+                <p>Mes choix :</p>
+                {% for choixes in responseCampagne %}
+                  {% for choix in choixes %}
+                  {{ choix.ue.label }}</br>
+                  {% endfor %}
+                {% endfor %}
+              </div>
+            </div>
+          {% endfor %}
+          </div>
+          <div class="card-footer">
+            <div class="btn-group">
+              <a href="{{ path('app_etudiant_choix_options_edit', {'id': responseCampagne.campagne.id}) }}" class="btn btn-primary"><i class="fa fa-eye"></i> Modifier mes choix </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
 {% endblock %}
