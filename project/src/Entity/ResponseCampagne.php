@@ -63,7 +63,7 @@ class ResponseCampagne
     /**
      * @return Collection<int, Choix>
      */
-    public function getChoix(): Collection
+    public function getChoixes(): Collection
     {
         return $this->choixes;
     }
