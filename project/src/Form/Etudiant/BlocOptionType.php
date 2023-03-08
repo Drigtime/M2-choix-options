@@ -6,9 +6,9 @@ use App\Entity\BlocOption;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class BlocOptionType extends AbstractType
 {
@@ -26,7 +26,7 @@ class BlocOptionType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $blocOption = $event->getData();
             $form = $event->getForm();
-            
+
             if ($blocOption && $form->has('choixes')) {
                 $choixes = $blocOption->getChoixes()->toArray();
                 usort($choixes, function ($a, $b) {
