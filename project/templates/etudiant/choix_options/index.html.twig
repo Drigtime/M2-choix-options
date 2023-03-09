@@ -33,21 +33,13 @@
                         <div class="btn-group">
                             <a href="{{ path('app_etudiant_choix_options_edit', {'id': campagne.id}) }}"
                                class="btn btn-primary">
-                                <i class="fa fa-edit"></i> Modifier mes choix
+                                <i class="fa fa-edit"></i> Faire mes choix
                             </a>
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
-                  <p>UE disponibles :</p>
-                  {% for ue in blocOption.UEs %}
-                    {{ ue.label }}</br>
-                  {% else %}
-                    <p>Pas encore d'UE à choisir</p>
-                  {% endfor %}
-                </div>
-              </div>
-          {% endfor %}
+             </div>
+        {% endfor %}
     </div>
     {% for responseCampagne in responsesCampagnes %}
       <div class="col-sm-12 col-md-12 col-lg-6 col-xl-4">
