@@ -38,19 +38,30 @@
                             {% set groupedUes = {} %}
                             {% for blocUE in etudiant.vars.value.parcours.blocUEs %}
                                 {% set groupedUes = groupedUes|merge({(blocUE.blocUECategory.label): []}) %}
-                                {% for ue in blocUE.ues %}
-                                    {% set groupedUes = groupedUes|merge({(blocUE.blocUECategory.label): groupedUes[blocUE.blocUECategory.label]|merge([ue])}) %}
+                                {% for blocUeUe in blocUE.blocUeUes %}
+                                    {% set groupedUes = groupedUes|merge({(blocUE.blocUECategory.label): groupedUes[blocUE.blocUECategory.label]|merge([blocUeUe.ue])}) %}
                                 {% endfor %}
                             {% endfor %}
 
                             {% for key in groupedUes|keys %}
-                                <h5>{{ key }}</h5>
+                                <h6>{{ key }}</h6>
                                 {% for etudiantUE in etudiant.etudiantUEs %}
                                     {% if etudiantUE.vars.value.ue in groupedUes[key] %}
                                         {{ form_row(etudiantUE.acquis, {'label': etudiantUE.vars.value.ue.label}) }}
                                     {% endif %}
                                 {% endfor %}
                             {% endfor %}
+{#                            {% for blocUe in etudiant.vars.value.parcours.blocUEs %}#}
+{#                                <h6>{{ blocUe.blocUECategory.label }}</h6>#}
+{#                                {% for blocUeUe in blocUe.blocUeUes %}#}
+{#                                    <div class="form-check">#}
+{#                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">#}
+{#                                        <label class="form-check-label" for="flexCheckDefault">#}
+{#                                            {{ blocUeUe.ue.label }}#}
+{#                                        </label>#}
+{#                                    </div>#}
+{#                                {% endfor %}#}
+{#                            {% endfor %}#}
                         </div>
                     </div>
                 </div>
