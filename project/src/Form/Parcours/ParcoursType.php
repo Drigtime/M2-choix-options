@@ -15,7 +15,8 @@ class ParcoursType extends AbstractType
         $builder
             ->add('anneeFormation', null, [
                 'label' => 'form.parcours.anneeFormation',
-                'placeholder' => false
+                'placeholder' => false,
+                'required' => true,
             ])
             ->add('label', null, [
                 'label' => 'form.parcours.label',

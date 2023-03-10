@@ -31,10 +31,10 @@
     {% endif %}
     <!-- Navbar Search-->
     {% if is_granted('ROLE_ADMIN') %}
-        <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+        <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0" action="{{ path('app_default') }}">
             <div class="input-group">
                 <input class="form-control" type="text" name="_switch_user" placeholder="Impersonate..."
-                       aria-label="Impersonate..." aria-describedby="btnNavbarImpersonate"/>
+                       aria-label="Usurper..." aria-describedby="btnNavbarImpersonate"/>
                 <button class="btn btn-primary" id="btnNavbarImpersonate" type="submit">
                     <i class="fa-solid fa-user-secret"></i>
                 </button>
@@ -57,6 +57,11 @@
                     <li>
                         <hr class="dropdown-divider"/>
                     </li>
+                    {% if is_granted('IS_IMPERSONATOR') %}
+                        <li>
+                            <a class="dropdown-item" href="{{ impersonation_exit_path(path('app_default') ) }}">Annuler l'impersonation</a>
+                        </li>
+                    {% endif %}
                     <li>
                         <a class="dropdown-item" href="{{ path('app_logout') }}">Deconnexion</a>
                     </li>
