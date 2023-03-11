@@ -23,7 +23,7 @@ $(document).on('change', ':checkbox', function () {
     }
 })
 
-$(document).on('change', 'tbody :checkbox', function() {
+$(document).on('change', 'tbody :checkbox', function () {
     // if checked, row turn green and if unchecked, row return to normal
     if ($(this).prop('checked')) {
         $(this).closest('tr').addClass('table-info');
@@ -34,7 +34,7 @@ $(document).on('change', 'tbody :checkbox', function() {
 
 let lastChecked = null;
 
-$(document).on('click', 'tbody :checkbox', function(e) {
+$(document).on('click', 'tbody :checkbox', function (e) {
     if (e.shiftKey) {
         const checkboxesElements = $('tbody :checkbox');
         const start = checkboxesElements.index(this);
@@ -115,6 +115,16 @@ $(document).on('click', '[data-move]', function (e) {
 
                             // reinitialize the datatable
                             $('.dt').DataTable({
+                                "columnDefs": [
+                                    {"orderable": false, "targets": 0},
+                                    {"searchable": false, "targets": 0},
+                                    {"width": "0%", "targets": 0},
+                                    {"width": "0%", "targets": 1},
+                                    {"orderable": false, "targets": 4},
+                                    {"searchable": false, "targets": 4},
+                                    {"width": "0%", "targets": 4},
+                                ],
+                                "order": [[2, "asc"]],
                                 "language": languageFR
                             });
                         }
@@ -203,6 +213,16 @@ $(document).on('click', '[data-move-selected]', function (e) {
 
                             // reinitialize the datatable
                             $('.dt').DataTable({
+                                "columnDefs": [
+                                    {"orderable": false, "targets": 0},
+                                    {"searchable": false, "targets": 0},
+                                    {"width": "0%", "targets": 0},
+                                    {"width": "0%", "targets": 1},
+                                    {"orderable": false, "targets": 4},
+                                    {"searchable": false, "targets": 4},
+                                    {"width": "0%", "targets": 4},
+                                ],
+                                "order": [[2, "asc"]],
                                 "language": languageFR
                             });
                         }
@@ -226,6 +246,17 @@ $(document).on('show.bs.tab', function (event) {
 
 $(document).ready(function () {
     $('.dt').DataTable({
+        "autoWidth": false,
+        "columnDefs": [
+            {"orderable": false, "targets": 0},
+            {"searchable": false, "targets": 0},
+            {"width": "0%", "targets": 0},
+            {"width": "0%", "targets": 1},
+            {"orderable": false, "targets": 4},
+            {"searchable": false, "targets": 4},
+            {"width": "0%", "targets": 4},
+        ],
+        "order": [[2, "asc"]],
         "language": languageFR
     });
 });
