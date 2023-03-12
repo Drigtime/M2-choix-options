@@ -123,6 +123,10 @@ class PassageAnneeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Parcours $parcours */
+            $parcours = $form->get('parcours')->getData();
+            $this->moveEtudiantToParcours($etudiant, $parcours);
+
             $etudiantRepository->save($etudiant, true);
 
             $anneeFormation = $anneeFormationRepository->findAll();
@@ -155,16 +159,7 @@ class PassageAnneeController extends AbstractController
             $parcours = $form->get('parcours')->getData();
 
             foreach ($etudiants as $etudiant) {
-                // remove all EtudiantUE
-                foreach ($etudiant->getEtudiantUEs() as $etudiantUE) {
-                    $etudiant->removeEtudiantUE($etudiantUE);
-                }
-                $etudiant->setParcours($parcours);
-                foreach ($parcours->getBlocUEs() as $blocUE) {
-                    foreach ($blocUE->getBlocUeUes() as $blocUeUe) {
-                        $etudiant->addEtudiantUE(new EtudiantUE($etudiant, $blocUeUe->getUe()));
-                    }
-                }
+                $this->moveEtudiantToParcours($etudiant, $parcours);
                 $etudiantRepository->save($etudiant);
             }
             $entityManager->flush();
@@ -179,5 +174,31 @@ class PassageAnneeController extends AbstractController
             'form' => $form->createView(),
             'students' => $students,
         ]);
+    }
+
+    /**
+     * @param mixed $etudiant
+     * @param Parcours $parcours
+     * @return void
+     */
+    public function moveEtudiantToParcours(Etudiant $etudiant, Parcours $parcours): void
+    {
+        foreach ($etudiant->getResponseCampagnes() as $responseCampagne) {
+            $etudiant->removeResponseCampagne($responseCampagne);
+        }
+
+        // remove all EtudiantUE
+        foreach ($etudiant->getEtudiantUEs() as $etudiantUE) {
+            $etudiant->removeEtudiantUE($etudiantUE);
+        }
+
+        $etudiant->setParcours($parcours);
+
+        // add new EtudiantUE
+        foreach ($parcours->getBlocUEs() as $blocUE) {
+            foreach ($blocUE->getBlocUeUes() as $blocUeUe) {
+                $etudiant->addEtudiantUE(new EtudiantUE($etudiant, $blocUeUe->getUe()));
+            }
+        }
     }
 }
