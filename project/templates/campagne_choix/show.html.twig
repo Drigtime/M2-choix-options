@@ -51,7 +51,7 @@
         {% if campagne_choix.dateFin < date("now") %}
             {% if campagne_choix.blocOptions[0].UEs[0].groupes[0] is not defined %}
                 <tr>
-                    <th> Choix des groupes UE</th>
+                    <th> Constitution des groupes </th>
                     <td><a href="{{ path('app_campagne_groupe_choix', {'id': campagne_choix.id, 'choix': 1}) }}"
                            class="btn btn-sm btn-primary"><i class="bi-box-arrow-right"></i>
                             Ordre alphabétique
