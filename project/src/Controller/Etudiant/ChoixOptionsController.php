@@ -11,6 +11,7 @@ use App\Repository\ChoixRepository;
 use App\Repository\EtudiantRepository;
 use App\Repository\ResponseCampagneRepository;
 use App\Repository\UERepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,7 +49,13 @@ class ChoixOptionsController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_etudiant_choix_options_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, CampagneChoix $campagne, ResponseCampagneRepository $responseCampagneRepository, EtudiantRepository $etudiantRepository, ChoixRepository $choixRepository, BlocOptionRepository $blocOptionRepository, UERepository $ueRepository): Response
+    public function edit(Request                    $request,
+                         CampagneChoix              $campagne,
+                         ResponseCampagneRepository $responseCampagneRepository,
+                         EtudiantRepository         $etudiantRepository,
+                         ChoixRepository            $choixRepository,
+                         BlocOptionRepository       $blocOptionRepository,
+                         UERepository               $ueRepository): Response
     {
         $etudiant = $etudiantRepository->findOneBy(['mail' => $this->getUser()->getUserIdentifier()]);
         $responseCampagne = $responseCampagneRepository->findOneBy(['etudiant' => $etudiant, 'campagne' => $campagne]);
@@ -62,9 +69,9 @@ class ChoixOptionsController extends AbstractController
             $jsonData = $request->getContent();
             $data = json_decode($jsonData, true);
 
-            foreach($data['ordre'] as $i => $ueId) {
+            foreach ($data['ordre'] as $i => $ueId) {
                 $choix = $choixRepository->findOneBy(['responseCampagne' => $responseCampagne, 'UE' => $ueRepository->findOneBy(['id' => $ueId]), 'blocOption' => $blocOptionRepository->findOneBy(['id' => $data['blocOptionsId']])]);
-                $choix->setOrdre($i+1);
+                $choix->setOrdre($i + 1);
 
                 $choixRepository->save($choix, true);
             }
@@ -93,12 +100,13 @@ class ChoixOptionsController extends AbstractController
                     $choix->setUE($ue);
                     $choix->setOrdre($index + 1);
                     $blocOption->addChoix($choix);
-                    $choixRepository->save($choix, true);
                     $responseCampagne->addChoix($choix);
                 }
             }
         }
-        
+
+        $responseCampagneRepository->save($responseCampagne, true);
+
         $form = $this->createForm(ResponseCampagneType::class, $campagne);
         $form->handleRequest($request);
 
