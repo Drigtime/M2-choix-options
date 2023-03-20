@@ -34,3 +34,17 @@ main > .container {
   height: calc(100vh - 56px);
   overflow-y: auto;
 }
+
+[draggable] {
+  user-select: none;
+  -webkit-user-drag: element;
+  cursor: move;
+}
+table.sortable {
+  i.fa.fa-arrows {
+    color: #999;
+  }
+  tr.over {
+    border: 1px dashed $primary-color;
+  }
+}

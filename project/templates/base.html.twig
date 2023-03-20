@@ -124,6 +124,11 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-calendar-days"></i></div>
                                 Années de formation
                             </a>
+                            <a class="nav-link{% if app.request.attributes.get('_route') == 'app_groupe_index' %} active{% endif %}"
+                               href="{{ path('app_groupe_index') }}">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-users-gear"></i></div>
+                                Gestion des groupes
+                            </a>
                             <div class="sb-sidenav-menu-heading">Gestion des utilisateurs</div>
                             <a class="nav-link{% if app.request.attributes.get('_route') == 'app_user_gestion_index' %} active{% endif %}"
                                href="{{ path('app_user_gestion_index') }}">

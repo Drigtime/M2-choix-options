@@ -1,35 +1,64 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Groupe index{% endblock %}
+{% block title %}Groupes{% endblock %}
 
 {% block body %}
-    <h1>Groupe index</h1>
+    <div class="d-flex">
+        <div class="flex-grow-1">
+            <h4>Liste des groupes</h4>
+        </div>
+        <div class="flex-shrink-0">
+            <a href="{{ path('app_groupe_new') }}" class="btn btn-sm btn-primary">
+                <i class="fas fa-plus"></i>
+                Créer un groupe
+            </a>
+        </div>
+    </div>
 
+    {{ knp_pagination_filter(groupes, {
+        'cc.id': 'ID',
+        'cc.label': 'Label',
+        'ccue.label': 'UE',
+    }) }}
+
+    <div class="badge bg-primary">
+        {{ groupes.getTotalItemCount }} Groupes
+    </div>
     <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Label</th>
-                <th>actions</th>
-            </tr>
+        <thead class="table-light">
+        <tr>
+            <th>{{ knp_pagination_sortable(groupes, 'ID', 'cc.id') }}</th>
+            <th>{{ knp_pagination_sortable(groupes, 'Label', 'cc.label') }}</th>
+            <th>{{ knp_pagination_sortable(groupes, 'UE', 'ccue.label') }}</th>
+            <th></th>
+        </tr>
         </thead>
         <tbody>
         {% for groupe in groupes %}
-            <tr>
+            <tr {% if loop.index is odd %}class="color"{% endif %}>
                 <td>{{ groupe.id }}</td>
                 <td>{{ groupe.label }}</td>
-                <td>
-                    <a href="{{ path('app_groupe_show', {'id': groupe.id}) }}">show</a>
-                    <a href="{{ path('app_groupe_edit', {'id': groupe.id}) }}">edit</a>
+                <td>{{ groupe.ue }}</td>
+                <td class="text-end">
+                    <div class="btn-group">
+                        <a href="{{ path('app_groupe_show', {'id': groupe.id}) }}"
+                           class="btn btn-sm btn-primary">
+                            <i class="fa fa-eye"></i>
+                        </a>
+                        <a href="{{ path('app_groupe_edit', {'id': groupe.id}) }}"
+                           class="btn btn-sm btn-primary">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                    </div>
                 </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('app_groupe_new') }}">Create new</a>
+    {# display navigation #}
+    <div class="navigation d-flex justify-content-center">
+        {{ knp_pagination_render(groupes) }}
+    </div>
+
 {% endblock %}

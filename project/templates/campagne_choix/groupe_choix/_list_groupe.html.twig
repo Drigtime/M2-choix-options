@@ -24,7 +24,6 @@
                                             <input type="checkbox" class="form-check-input" data-check-all
                                                    alt="Tout cocher">
                                         </th>
-                                        <th scope="col">#</th>
                                         <th scope="col">Nom</th>
                                         <th scope="col">Prénom</th>
                                         <th scope="col"></th>
@@ -37,20 +36,19 @@
                                                 <input type="checkbox" class="form-check-input" name="etudiant[]"
                                                        value="{{ etudiant.id }}">
                                             </td>
-                                            <td>{{ etudiant.id }}</td>
                                             <td>{{ etudiant.nom }}</td>
                                             <td>{{ etudiant.prenom }}</td>
                                             <td class="text-end">
                                                 <div class="btn-group">
-                                                    <a id="add-bloc-ue"
+                                                    <a id="add-groupe"
                                                        data-action="load-form"
-                                                       data-modal-title="Déplacer l'étudiant vers un autre parcours"
-                                                       data-url="{{ path('app_passage_annee_move_student', {id: etudiant.id}) }}"
-                                                       data-ajax-target="#list-annee"
+                                                       data-modal-title="Déplacer l'étudiant vers un autre groupe"
+                                                       data-url="{{ path('app_groupe_move_student', {id: etudiant.id}) }}"
+                                                       data-ajax-target="#groupe"
                                                        class="btn btn-primary btn-sm"
                                                        data-bs-popper="static" data-bs-toggle="tooltip"
                                                        data-bs-placement="left"
-                                                       title="Déplacer vers un autre parcours">
+                                                       title="Déplacer vers un autre groupe">
                                                         <i class="fa-solid fa-angles-right"></i>
                                                     </a>
                                                 </div>

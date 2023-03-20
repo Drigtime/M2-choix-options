@@ -141,6 +141,7 @@ class CampagneChoixController extends AbstractController
             $UEs = $BlocUE->getUEs();
             for ($i = 0; $i < count($UEs); $i++) {
                 $UE = $UEs[$i];
+                if(count($UE->getGroupes()) == 0){
                 dump("test123");
                 // $result = array_keys(array_filter($choixes, function($v){
                 //     if($v.getUE() == $UE){
@@ -209,8 +210,7 @@ class CampagneChoixController extends AbstractController
                         //a implementer 
                         break;
                 }
-
-
+            }
             }
         }
         $form = $this->createForm(GroupeType::class, $groupe);
@@ -227,4 +227,5 @@ class CampagneChoixController extends AbstractController
             'form' => $form,
         ]);
     }
+    
 }
