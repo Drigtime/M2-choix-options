@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Main;
 
 use App\Repository\BlocUERepository;
 use Doctrine\Common\Collections\ArrayCollection;
