@@ -3,22 +3,32 @@
 namespace App\Controller;
 
 use App\Entity\UserGestion;
+use App\Entity\User;
 use App\Form\UserGestionType;
 use App\Form\UserImportType;
 use App\Repository\UserGestionRepository;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Service\MailerService;
 
 #[Route('/user/gestion')]
 class UserGestionController extends AbstractController
 {
+    public function __construct(private readonly MailerService $mailerService)
+    {
+    }
+
     #[Route('/', name: 'app_user_gestion_index', methods: ['GET', 'POST'])]
-    public function index(Request $request,UserGestionRepository $userGestionRepository): Response
+    public function index(Request $request,UserGestionRepository $userGestionRepository,UserRepository $userRepository,UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(UserImportType::class);
         $form->handleRequest($request);
+        
 
         if ($form->isSubmitted() && $form->isValid()) {
             $fileImport = $form->get('fileImport')->getData();
@@ -26,12 +36,21 @@ class UserGestionController extends AbstractController
             $fileImport = fopen($fileImport, 'r');
 
             if($fileImport){
-                while (($data = fgetcsv($fileImport)) !== false) {
-                    $userGestion = new UserGestion();
-                    $userGestion->setNom($data[0]);
-                    $userGestion->setPrenom($data[1]);
-                    $userGestion->setEmail($data[2]);
-                    $userGestionRepository->save($userGestion, true);
+                while(($data = fgetcsv($fileImport)) !== false) {
+                    if($data[0] != 'nom'){
+                        $userGestion = new UserGestion();
+                        $userGestion->setNom($data[0]);
+                        $userGestion->setPrenom($data[1]);
+                        $userGestion->setEmail($data[2]);
+                        $userGestionRepository->save($userGestion, true);
+
+                        $user = new User();
+                        $user->setEmail($data[2]);
+                        $user->setPassword('default');
+                        $userRepository->save($user,true);
+                        // generate a signed url and email it to the user
+                        $this->mailerService->sendEmailConfirmation('app_verify_email', $user);
+                    }
                 }
             }
             return $this->redirectToRoute('app_user_gestion_index', [], Response::HTTP_SEE_OTHER);

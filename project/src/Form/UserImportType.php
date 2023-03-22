@@ -20,7 +20,7 @@ class UserImportType extends AbstractType
             ->add('fileImport',FileType::class ,[
             'label'=>'Import File(XLS OR CSV file)',
             'mapped'=>false,
-            'required'=>false,
+            'required'=>true,
             'constraints'=>[
                 new File([
                     'mimeTypes'=>[
