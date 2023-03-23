@@ -1,31 +1,46 @@
+import TomSelect from "tom-select";
+import 'tom-select/dist/css/tom-select.bootstrap5.min.css';
+
+new TomSelect("#campagne_choix_parcours", {});
+
 $('#campagne_choix_parcours').on('change', function () {
     const $blocOptionContainer = $('#bloc-option-container');
     const $listBlocUE = $('#list-bloc-ue');
 
-    // get the selected option
-    const selectedOption = $(this).find('option:selected');
-    // store the value of the selected option in a data attribute to later know what was the previous value
+    // get the selected options
+    const selectedOptions = $(this).val();
+    // store the value of the selected options in a data attribute to later know what was the previous value
     const previousValue = $(this).data('previousValue');
-    // get option with value "previousValue"
-    const previousOption = $(this).find(`option[value="${previousValue}"]`);
+    // get options with value "previousValue"
+    const previousOptions = $(this).find(`option[value="${previousValue}"]`);
 
-    // store $('#bloc-option-container') as a variable on the element previousOption to later load it back when the user select the previous option
-    previousOption.data('listBlocUE', $listBlocUE.clone(true));
+    // store $('#bloc-option-container') as a variable on the elements previousOptions to later load it back when the user select the previous option
+    previousOptions.each(function () {
+        $(this).data('listBlocUE', $listBlocUE.clone(true));
+    });
 
-    $(this).data('previousValue', selectedOption.val());
+    $(this).data('previousValue', selectedOptions);
 
-    const blocUEs = selectedOption.data('blocs-ue');
+    const parcours = selectedOptions.map((value) => $(`#campagne_choix_parcours option[value="${value}"]`).data('blocs-ue'));
+    const blocUEsByCategorie = parcours.map((parcour) => parcour.blocUEs).flat().reduce((acc, blocUE) => {
+        const {categorie_id, label} = blocUE;
+        const categorie = acc.find((c) => c.id === categorie_id);
+        if (categorie) {
+            categorie.blocUEs.push(blocUE);
+        } else {
+            acc.push({id: categorie_id, label, blocUEs: [blocUE]});
+        }
+        return acc;
+    }, []);
 
-    if (selectedOption.data('listBlocUE') && selectedOption.data('listBlocUE').find('.card').length > 0) {
-        $listBlocUE.replaceWith(selectedOption.data('listBlocUE'));
+    // check if selectedOptions and previousValue are the same to avoid reloading the blocUEs
+    if ((previousValue === undefined && selectedOptions.length > 0) || (previousValue !== undefined && selectedOptions.length === previousValue.length && selectedOptions.every((value, index) => value === previousValue[index]))) {
         $blocOptionContainer.show();
-    } else if (blocUEs.length > 0) {
+        return;
+    }
+
+    if (blocUEsByCategorie.length > 0) {
         $listBlocUE.empty();
-        $listBlocUE.html(`<div id="no-bloc-ue" class="col-12">
-                <div class="alert alert-primary m-0 p-2">
-                    Aucun bloc option n'a encore été ajouté.
-                </div>
-            </div>`);
         $blocOptionContainer.show();
     } else {
         $blocOptionContainer.hide();
@@ -43,18 +58,33 @@ $('#add-bloc-ue').on('click', function () {
     }
 
     newWidget = newWidget.replaceAll(/__name__/g, $container.children().length + 1);
-    $container.prepend(newWidget);
+    $container.append(newWidget);
     // trigger change event on the select inside the new widget
-    const $newBlocUE = $container.children().first();
+    const $newBlocUE = $container.children().last();
 
     const $selectBlocUE = $newBlocUE.find('select');
     // change option based on the selected parcours
-    const selectedParcours = $('#campagne_choix_parcours').find('option:selected');
-    const blocUEs = selectedParcours.data('blocs-ue');
+    const selectedParcours = $('#campagne_choix_parcours').val();
+    const parcours = selectedParcours.map((value) => $(`#campagne_choix_parcours option[value="${value}"]`).data('blocs-ue'));
+    const blocUEsByCategorie = parcours.map((parcour) => parcour.blocUEs).flat().reduce((acc, blocUE) => {
+        const {categorie_id, label} = blocUE;
+        const categorie = acc.find((c) => c.id === categorie_id);
+
+        // find in which parcours the blocUE is
+        const parcour = parcours.find((parcour) => parcour.blocUEs.find((bloc) => bloc.id === blocUE.id));
+
+        if (categorie) {
+            categorie.blocUEs.push({parcour_label: parcour.label, ues: blocUE.ues});
+        } else {
+            acc.push({id: categorie_id, label, blocUEs: [{parcour_label: parcour.label, ues: blocUE.ues}]});
+        }
+        return acc;
+    }, []);
+
     $selectBlocUE.empty();
-    blocUEs.forEach(blocUE => {
-        const option = $(`<option value="${blocUE.id}">${blocUE.label}</option>`);
-        option.data('ues', blocUE.ues);
+    blocUEsByCategorie.forEach(blocUECategorie => {
+        const option = $(`<option value="${blocUECategorie.id}">${blocUECategorie.label}</option>`);
+        option.data('BlocUEs', blocUECategorie.blocUEs);
         $selectBlocUE.append(option);
     });
 
@@ -71,9 +101,9 @@ $(document).on('click', '#list-bloc-ue [data-action="delete-bloc-ue"]', function
     }
 });
 
-$(document).on('change', '#list-bloc-ue select[id$="_blocUE"]', function () {
-    const $uesContainerId = $(this).data('ues-container');
-    const $uesContainer = $("#" + $uesContainerId);
+$(document).on('change', '#list-bloc-ue select[id$="_blocUECategory"]', function () {
+    const uesContainerId = $(this).data('ues-container');
+    const $uesContainer = $("#" + uesContainerId);
 
     // list of ue are in the attribute data-ues on the option selected
     const selectedBlocUECategory = $(this).find('option:selected');
@@ -88,24 +118,21 @@ $(document).on('change', '#list-bloc-ue select[id$="_blocUE"]', function () {
 
     $(this).data('previousValue', selectedBlocUECategory.val());
 
-    const ues = selectedBlocUECategory.data('ues');
+    const blocUEs = selectedBlocUECategory.data('BlocUEs');
 
-    const index = $(this).closest('[data-bloc-ue]').data('index');
-
-    if (selectedBlocUECategory.data('listUEs') && selectedBlocUECategory.data('listUEs').children().length > 0) {
-        $uesContainer.replaceWith(selectedBlocUECategory.data('listUEs'));
-    } else if (ues.length > 0) {
-        $uesContainer.empty();
-        ues.forEach(function (ue) {
-            $uesContainer.append(`<div class="text-muted">${ue.label}</div>`);
-        });
-    } else {
-        $uesContainer.empty();
-        $uesContainer.append(`<div class="alert alert-primary" role="alert">
-                                Aucune UE n'est disponible pour cette catégorie
-                            </div>`);
+    $uesContainer.empty();
+    for (const blocUE of blocUEs) {
+        const ues = blocUE.ues;
+        const $newBlocUE = $('<div></div>');
+        $newBlocUE.append(`<h5>${blocUE.parcour_label}</h5>`);
+        const $listUE = $('<ul></ul>');
+        for (const ue of ues) {
+            $listUE.append(`<li>${ue.label}</li>`);
+        }
+        $newBlocUE.append($listUE);
+        $uesContainer.append($newBlocUE);
     }
 });
 
 // trigger change event on the select inside the new widget
-$('#list-bloc-ue select[id$="_blocUE"]').trigger('change');
+// $('#list-bloc-ue select[id$="_blocUECategory"]').trigger('change');

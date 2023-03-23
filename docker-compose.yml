@@ -34,6 +34,12 @@ services:
     ports:
       - '${APP_DB_ADMIN_PORT}:80'
 
+  # adminer:
+  #   image: adminer
+  #   container_name: 'adminer'
+  #   ports:
+  #     - '8104:8080'
+
   mailhog:
     image: mailhog/mailhog
     container_name: 'mailhog'

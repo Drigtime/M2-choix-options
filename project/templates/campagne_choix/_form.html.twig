@@ -18,7 +18,7 @@
 {#    </div> #}
 {# {% endmacro %} #}
 
- {% macro printBlocOption(blocOption, index) %}
+ {% macro printBlocOption(blocOption, parcours, index) %}
      <div class="col-12 col-md-6" data-bloc-ue data-index="{{ blocOption.vars.name }}">
          <div class="card">
              <div class="card-header">
@@ -35,16 +35,22 @@
                  </div>
              </div>
              <div class="card-body p-2">
-                 {{ form_row(blocOption.blocUE, { 'attr': { 'data-ues-container': 'campagne_choix_blocOptions_'~ index ~'_UEs', 'data-previous-value': blocOption.blocUE.vars.value } }) }}
-                 {{ form_row(blocOption.nbUEChoix) }}
+                 {{ form_row(blocOption.blocUECategory, { 'attr': { 'data-ues-container': 'campagne_choix_blocOptions_'~ index ~'_UEs', 'data-previous-value': blocOption.blocUECategory.vars.value } }) }}
 
                  <div class="form-label">
                      Liste des UEs optionnelles pour ce bloc
                  </div>
                  <div id="{{ 'campagne_choix_blocOptions_'~ index ~'_UEs' }}">
-
+                     {% for parcour in parcours %}
+                         <h5>{{ parcour }}</h5>
+                         <ul>
+                             {% set blocUE = parcour.blocUEs|filter(b => b.blocUECategory.id == blocOption.vars.value.blocUECategory.id)|first %}
+                             {% for blocUeUe in blocUE.blocUeUes|filter(b => b.optional) %}
+                                 <li>{{ blocUeUe.ue.label }}</li>
+                             {% endfor %}
+                         </ul>
+                     {% endfor %}
                  </div>
-{#                 {{ form_row(blocOption.UEs) }}#}
              </div>
          </div>
      </div>
@@ -67,7 +73,8 @@
         {{ form_row(form.dateFin) }}
     </div>
 </div>
-{{ form_row(form.parcours, { 'attr': { 'data-previous-value': form.parcours.vars.value ? form.parcours.vars.value : (form.parcours.vars.choices|length > 0 ? (form.parcours.vars.choices|first).value : '') } }) }}
+{{ form_row(form.parcours) }}
+
 
 <div id="bloc-option-container" class="card mb-3" style="display: none">
     <div class="card-header p-2">
@@ -85,12 +92,12 @@
     </div>
     <div class="card-body">
         <div id="list-bloc-ue" class="row g-4"
-             data-prototype="{{ formMacros.printBlocOption(form.blocOptions.vars.prototype, '__name__')|e('html_attr') }}"
+             data-prototype="{{ formMacros.printBlocOption(form.blocOptions.vars.prototype, [], '__name__')|e('html_attr') }}"
              data-no-bloc-ue="{{ formMacros.printNoBlocOption()|e('html_attr') }}"
         >
             {% if form.blocOptions.children is not empty %}
                 {% for blocOption in form.blocOptions %}
-                    {{ formMacros.printBlocOption(blocOption, loop.index) }}
+                    {{ formMacros.printBlocOption(blocOption, form.parcours.vars.data, loop.index) }}
                 {% endfor %}
             {% else %}
                 {{ formMacros.printNoBlocOption() }}

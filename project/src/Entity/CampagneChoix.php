@@ -22,9 +22,6 @@ class CampagneChoix
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateFin = null;
 
-    #[ORM\ManyToOne(inversedBy: 'campagneChoixes')]
-    private ?Parcours $parcours = null;
-
     #[ORM\OneToMany(mappedBy: 'campagneChoix', targetEntity: BlocOption::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $blocOptions;
 
@@ -34,11 +31,15 @@ class CampagneChoix
     #[ORM\OneToMany(mappedBy: 'campagne', targetEntity: ResponseCampagne::class, orphanRemoval: true)]
     private Collection $responseCampagnes;
 
+    #[ORM\ManyToMany(targetEntity: Parcours::class, inversedBy: 'campagneChoixes')]
+    private Collection $parcours;
+
     public function __construct()
     {
         $this->blocOptions = new ArrayCollection();
         // $this->choixes = new ArrayCollection();
         $this->responseCampagnes = new ArrayCollection();
+        $this->parcours = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -66,18 +67,6 @@ class CampagneChoix
     public function setDateFin(\DateTimeInterface $dateFin): self
     {
         $this->dateFin = $dateFin;
-
-        return $this;
-    }
-
-    public function getParcours(): ?Parcours
-    {
-        return $this->parcours;
-    }
-
-    public function setParcours(?Parcours $parcours): self
-    {
-        $this->parcours = $parcours;
 
         return $this;
     }
@@ -169,6 +158,30 @@ class CampagneChoix
                 $responseCampagne->setCampagne(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Parcours>
+     */
+    public function getParcours(): Collection
+    {
+        return $this->parcours;
+    }
+
+    public function addParcour(Parcours $parcour): self
+    {
+        if (!$this->parcours->contains($parcour)) {
+            $this->parcours->add($parcour);
+        }
+
+        return $this;
+    }
+
+    public function removeParcour(Parcours $parcour): self
+    {
+        $this->parcours->removeElement($parcour);
 
         return $this;
     }

@@ -48,6 +48,7 @@ class ChoixOptionsController extends AbstractController
         $reponsesCampagnes = $etudiant->getResponseCampagnes();
 
         return $this->render('etudiant/choix_options/index.html.twig', [
+            'parcours' => $etudiant->getParcours(),
             'campagnes' => $campagnes,
             'reponsesCampagnes' => $reponsesCampagnes,
         ]);
@@ -104,6 +105,7 @@ class ChoixOptionsController extends AbstractController
         $form->handleRequest($request);
 
         return $this->render('etudiant/choix_options/edit.html.twig', [
+            'parcours' => $etudiant->getParcours(),
             'form' => $form,
             'campagne' => $campagne,
         ]);

@@ -36,7 +36,9 @@
             <th>Parcours</th>
             <td>
                 {% if campagne_choix.parcours %}
-                    <a href="{{ path('app_parcours_show', {'id': campagne_choix.parcours.id}) }}">{{ campagne_choix.parcours }}</a>
+                    {% for parcours in campagne_choix.parcours %}
+                        <a href="{{ path('app_parcours_show', {'id': parcours.id}) }}">{{ parcours }}</a>
+                    {% endfor %}
                 {% endif %}
             </td>
         </tr>
@@ -78,7 +80,7 @@
                 <div class="col-12 col-md-6 col-lg-4 col-xl-4">
                     <div class="card">
                         <div class="card-header">
-                            {{ blocOption.blocUE.blocUECategory.label }} - {{ blocOption.nbUEChoix }} UE optionnelle(s)
+                            {{ blocOption.blocUECategory.label }} - {# TODO Afficher le nombre d'UE optionnel #} UE optionnelle(s)
                         </div>
                         <div class="card-body">
                             <ul>
