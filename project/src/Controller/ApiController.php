@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
-use App\Entity\BlocUE;
-use App\Entity\BlocUECategory;
-use App\Entity\Parcours;
+use App\Entity\Main\BlocUE;
+use App\Entity\Main\BlocUECategory;
+use App\Entity\Main\Parcours;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

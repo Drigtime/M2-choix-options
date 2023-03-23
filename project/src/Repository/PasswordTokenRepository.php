@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\ResetPasswordToken;
+use App\Entity\User\ResetPasswordToken;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -23,19 +23,19 @@ class PasswordTokenRepository extends ServiceEntityRepository
 
     public function save(ResetPasswordToken $entity, bool $flush = false): void
     {
-        $this->getEntityManager()->persist($entity);
+        $this->getEntityManager('user')->persist($entity);
 
         if ($flush) {
-            $this->getEntityManager()->flush();
+            $this->getEntityManager('user')->flush();
         }
     }
 
     public function remove(ResetPasswordToken $entity, bool $flush = false): void
     {
-        $this->getEntityManager()->remove($entity);
+        $this->getEntityManager('user')->remove($entity);
 
         if ($flush) {
-            $this->getEntityManager()->flush();
+            $this->getEntityManager('user')->flush();
         }
     }
 

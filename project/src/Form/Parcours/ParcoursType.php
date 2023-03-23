@@ -2,7 +2,7 @@
 
 namespace App\Form\Parcours;
 
-use App\Entity\Parcours;
+use App\Entity\Main\Parcours;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;

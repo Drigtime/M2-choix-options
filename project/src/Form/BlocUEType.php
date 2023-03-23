@@ -2,12 +2,11 @@
 
 namespace App\Form;
 
-use App\Entity\BlocUE;
-use App\Entity\UE;
+use App\Entity\Main\BlocUE;
+use App\Entity\Main\UE;
 use App\Repository\UERepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;

@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\CampagneChoix;
-use App\Entity\Groupe;
+use App\Entity\Main\CampagneChoix;
+use App\Entity\Main\Groupe;
 use App\Form\CampagneChoixType;
 use App\Form\GroupeType;
 use App\Repository\CampagneChoixRepository;

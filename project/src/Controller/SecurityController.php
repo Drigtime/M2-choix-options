@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\ResetPasswordToken;
-use App\Entity\User;
+use App\Entity\User\ResetPasswordToken;
+use App\Entity\User\User;
 use App\Form\PasswordResetRequestType;
 use App\Form\PasswordResetType;
 use App\Form\RegistrationFormType;
@@ -53,7 +53,7 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserRepository $userRepository): Response
     {
         if ($this->getUser()) {
             return $this->redirectToRoute('app_default');
@@ -72,8 +72,7 @@ class SecurityController extends AbstractController
                 )
             );
 
-            $entityManager->persist($user);
-            $entityManager->flush();
+            $userRepository->save($user, true);
 
             // generate a signed url and email it to the user
             $this->mailerService->sendEmailConfirmation('app_verify_email', $user);

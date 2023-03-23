@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Groupe;
+use App\Entity\Main\Groupe;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;

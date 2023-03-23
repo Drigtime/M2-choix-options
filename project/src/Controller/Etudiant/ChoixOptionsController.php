@@ -2,9 +2,9 @@
 
 namespace App\Controller\Etudiant;
 
-use App\Entity\CampagneChoix;
-use App\Entity\Choix;
-use App\Entity\ResponseCampagne;
+use App\Entity\Main\CampagneChoix;
+use App\Entity\Main\Choix;
+use App\Entity\Main\ResponseCampagne;
 use App\Form\Etudiant\ResponseCampagneType;
 use App\Repository\BlocOptionRepository;
 use App\Repository\ChoixRepository;

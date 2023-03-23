@@ -2,11 +2,8 @@
 
 namespace App\Form;
 
-use App\Entity\BlocOption;
-use App\Entity\UE;
+use App\Entity\Main\BlocOption;
 use App\Repository\BlocUERepository;
-use App\Repository\UERepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;

@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
-use App\Entity\BlocUE;
-use App\Entity\CampagneChoix;
-use App\Entity\Parcours;
+use App\Entity\Main\BlocUE;
+use App\Entity\Main\CampagneChoix;
+use App\Entity\Main\Parcours;
 use App\Form\BlocUEType;
 use App\Form\CampagneChoixType;
 use App\Form\Parcours\ParcoursType;

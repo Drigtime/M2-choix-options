@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Groupe;
+use App\Entity\Main\Groupe;
 use App\Form\GroupeType;
 use App\Repository\GroupeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

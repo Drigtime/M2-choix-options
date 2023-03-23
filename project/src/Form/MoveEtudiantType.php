@@ -2,8 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Etudiant;
-use App\Entity\Parcours;
+use App\Entity\Main\Parcours;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;

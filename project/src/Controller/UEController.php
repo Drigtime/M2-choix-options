@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\UE;
+use App\Entity\Main\UE;
 use App\Form\UEType;
 use App\Repository\UERepository;
 use Knp\Component\Pager\PaginatorInterface;

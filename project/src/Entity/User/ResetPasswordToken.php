@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\Main;
+namespace App\Entity\User;
 
 use App\Repository\PasswordTokenRepository;
 use DateTimeInterface;

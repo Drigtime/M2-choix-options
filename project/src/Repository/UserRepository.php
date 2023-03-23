@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\User;
+use App\Entity\User\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
@@ -26,19 +26,19 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
     public function save(User $entity, bool $flush = false): void
     {
-        $this->getEntityManager('customer')->persist($entity);
+        $this->getEntityManager('user')->persist($entity);
 
         if ($flush) {
-            $this->getEntityManager('customer')->flush();
+            $this->getEntityManager('user')->flush();
         }
     }
 
     public function remove(User $entity, bool $flush = false): void
     {
-        $this->getEntityManager('customer')->remove($entity);
+        $this->getEntityManager('user')->remove($entity);
 
         if ($flush) {
-            $this->getEntityManager('customer')->flush();
+            $this->getEntityManager('user')->flush();
         }
     }
 

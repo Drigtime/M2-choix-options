@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\UserGestion;
+use App\Entity\Main\UserGestion;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -24,9 +24,9 @@ class UserImportType extends AbstractType
             'constraints'=>[
                 new File([
                     'mimeTypes'=>[
-                        'text/csv',
-                        'application/vnd.ms-excel',
-                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                        // 'text/csv',
+                        // 'application/vnd.ms-excel',
+                        // 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                     ],
                     'mimeTypesMessage'=>'Veuillez importer un fichier csv ou xls valide'
                 ])
