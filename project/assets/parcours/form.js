@@ -68,7 +68,7 @@ $(document).on('click', '[data-action="delete-ue"]', function () {
 });
 
 function updateAvailableUE() {
-    const $blocUECategories = $('#list-bloc-ue select[id$="_blocUECategory"]');
+    const $blocUECategories = $('#list-bloc-ue select[id$="_category"]');
     $blocUECategories.each(function (index, blocUECategory) {
         const $blocUECategory = $(blocUECategory);
 
@@ -106,7 +106,7 @@ function updateAvailableUE() {
 }
 
 
-$(document).on('change', '#list-bloc-ue select[id$="_blocUECategory"]', function () {
+$(document).on('change', '#list-bloc-ue select[id$="_category"]', function () {
     const ueContainer = $(this).data('ues-container');
     const $ueContainer = $('#' + ueContainer);
 

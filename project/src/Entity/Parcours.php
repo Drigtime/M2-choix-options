@@ -49,23 +49,6 @@ class Parcours
         return $this->getAnneeFormation()->getLabel() . ' - ' . $this->getLabel();
     }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function getAnneeFormation(): ?AnneeFormation
-    {
-        return $this->anneeFormation;
-    }
-
-    public function setAnneeFormation(?AnneeFormation $anneeFormation): self
-    {
-        $this->anneeFormation = $anneeFormation;
-
-        return $this;
-    }
-
     /**
      * @return string|null
      */
@@ -80,6 +63,23 @@ class Parcours
     public function setLabel(?string $label): void
     {
         $this->label = $label;
+    }
+
+    public function getAnneeFormation(): ?AnneeFormation
+    {
+        return $this->anneeFormation;
+    }
+
+    public function setAnneeFormation(?AnneeFormation $anneeFormation): self
+    {
+        $this->anneeFormation = $anneeFormation;
+
+        return $this;
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
     }
 
     /**

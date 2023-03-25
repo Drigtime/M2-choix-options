@@ -67,8 +67,7 @@ class RegistrationFormType extends AbstractType
                         'placeholder' => 'Confirmation du mot de passe',
                     ],
                 ],
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

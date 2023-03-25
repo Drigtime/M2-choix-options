@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class UserGestionController extends AbstractController
 {
     #[Route('/', name: 'app_user_gestion_index', methods: ['GET', 'POST'])]
-    public function index(Request $request,UserGestionRepository $userGestionRepository): Response
+    public function index(Request $request, UserGestionRepository $userGestionRepository): Response
     {
         $form = $this->createForm(UserImportType::class);
         $form->handleRequest($request);
@@ -25,7 +25,7 @@ class UserGestionController extends AbstractController
 
             $fileImport = fopen($fileImport, 'r');
 
-            if($fileImport){
+            if ($fileImport) {
                 while (($data = fgetcsv($fileImport)) !== false) {
                     $userGestion = new UserGestion();
                     $userGestion->setNom($data[0]);
@@ -39,7 +39,7 @@ class UserGestionController extends AbstractController
 
         return $this->render('user_gestion/index.html.twig', [
             'user_gestions' => $userGestionRepository->findAll(),
-            'form'=> $form->createView()
+            'form' => $form->createView()
         ]);
     }
 
@@ -56,7 +56,7 @@ class UserGestionController extends AbstractController
             return $this->redirectToRoute('app_user_gestion_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('user_gestion/new.html.twig', [
+        return $this->render('user_gestion/new.html.twig', [
             'user_gestion' => $userGestion,
             'form' => $form,
         ]);
@@ -82,7 +82,7 @@ class UserGestionController extends AbstractController
             return $this->redirectToRoute('app_user_gestion_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('user_gestion/edit.html.twig', [
+        return $this->render('user_gestion/edit.html.twig', [
             'user_gestion' => $userGestion,
             'form' => $form,
         ]);
@@ -91,7 +91,7 @@ class UserGestionController extends AbstractController
     #[Route('/{id}', name: 'app_user_gestion_delete', methods: ['POST'])]
     public function delete(Request $request, UserGestion $userGestion, UserGestionRepository $userGestionRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$userGestion->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $userGestion->getId(), $request->request->get('_token'))) {
             $userGestionRepository->remove($userGestion, true);
         }
 

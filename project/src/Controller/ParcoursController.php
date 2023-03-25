@@ -2,15 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\BlocUE;
-use App\Entity\CampagneChoix;
 use App\Entity\Parcours;
-use App\Form\BlocUEType;
-use App\Form\CampagneChoixType;
 use App\Form\Parcours\ParcoursType;
-use App\Repository\BlocUERepository;
-use App\Repository\CampagneChoixRepository;
-use App\Repository\EtudiantRepository;
 use App\Repository\ParcoursRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -66,7 +59,7 @@ class ParcoursController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_parcours_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Parcours $parcours, ParcoursRepository $parcoursRepository, EtudiantRepository $etudiantRepository): Response
+    public function edit(Request $request, Parcours $parcours, ParcoursRepository $parcoursRepository): Response
     {
         $form = $this->createForm(ParcoursType::class, $parcours);
         $form->handleRequest($request);
@@ -81,92 +74,6 @@ class ParcoursController extends AbstractController
         return $this->render('parcours/edit.html.twig', [
             'parcour' => $parcours,
             'form' => $form,
-        ]);
-    }
-
-    // add bloc ue, with ajax
-    #[Route('/{id}/bloc_ue/add', name: 'app_parcours_add_bloc_ue', methods: ['GET', 'POST'])]
-    public function addBlocUe(Request $request, Parcours $parcours, BlocUERepository $blocUERepository): Response
-    {
-        $blocUE = new BlocUE();
-        $blocUE->setParcours($parcours);
-        $form = $this->createForm(BlocUEType::class, $blocUE);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $blocUERepository->save($blocUE, true);
-
-            return $this->render('parcours/bloc_ue/_list.html.twig', [
-                'parcours' => $parcours,
-                'bloc_ues' => $parcours->getBlocUEs(),
-            ]);
-        }
-
-        return $this->render('parcours/bloc_ue/_form.html.twig', [
-            'bloc_ue' => $blocUE,
-            'form' => $form,
-        ]);
-    }
-
-    // edit bloc ue, with ajax
-    #[Route('/{id}/bloc_ue/edit/{blocUE}', name: 'app_parcours_edit_bloc_ue', methods: ['GET', 'POST'])]
-    public function editBlocUe(Request $request, Parcours $parcours, BlocUERepository $blocUERepository, BlocUE $blocUE): Response
-    {
-        $form = $this->createForm(BlocUEType::class, $blocUE);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $blocUERepository->save($blocUE, true);
-
-            return $this->render('parcours/bloc_ue/_list.html.twig', [
-                'parcours' => $parcours,
-                'bloc_ues' => $parcours->getBlocUEs(),
-            ]);
-        }
-
-        return $this->render('parcours/bloc_ue/_form.html.twig', [
-            'bloc_ue' => $blocUE,
-            'form' => $form,
-        ]);
-    }
-
-    // delete bloc ue, with ajax
-    #[Route('/{id}/bloc_ue/delete/{blocUE}', name: 'app_parcours_delete_bloc_ue', methods: ['GET', 'POST'])]
-    public function deleteBlocUe(Request $request, Parcours $parcours, BlocUERepository $blocUERepository, BlocUE $blocUE): Response
-    {
-        if ($this->isCsrfTokenValid('delete' . $blocUE->getId(), $request->request->get('_token'))) {
-            $blocUERepository->remove($blocUE, true);
-
-            return $this->render('parcours/bloc_ue/_list.html.twig', [
-                'parcours' => $blocUE->getParcours(),
-                'bloc_ues' => $blocUE->getParcours()->getBlocUEs(),
-            ]);
-        }
-
-        return $this->render('parcours/bloc_ue/_delete_form.html.twig', [
-            'parcours' => $parcours,
-            'bloc_ue' => $blocUE,
-        ]);
-    }
-
-    // Route pour créer une campagne de choix pour ce parcours
-    #[Route('/{id}/campagne/add', name: 'app_parcours_campagne_add', methods: ['GET', 'POST'])]
-    public function newCampagne(Request $request, Parcours $parcour, CampagneChoixRepository $campagneChoixRepository): Response
-    {
-        $campagne = new CampagneChoix();
-        $campagne->setParcours($parcour);
-        $form = $this->createForm(CampagneChoixType::class, $campagne);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $campagneChoixRepository->save($campagne, true);
-
-            return $this->redirectToRoute('app_parcours_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('campagne_choix/new.html.twig', [
-            'campagne' => $campagne,
-            'form' => $form->createView(),
         ]);
     }
 

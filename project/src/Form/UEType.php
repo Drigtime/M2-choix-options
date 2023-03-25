@@ -26,8 +26,7 @@ class UEType extends AbstractType
             ->add('active', null, [
                 'label' => 'Actif',
                 'required' => false,
-            ])
-//            ->add('blocOptions')
+            ])//            ->add('blocOptions')
         ;
     }
 

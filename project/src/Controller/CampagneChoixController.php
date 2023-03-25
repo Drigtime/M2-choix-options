@@ -3,8 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\BlocOption;
-use App\Entity\BlocUE;
-use App\Entity\BlocUeUe;
 use App\Entity\CampagneChoix;
 use App\Entity\Groupe;
 use App\Form\CampagneChoixType;

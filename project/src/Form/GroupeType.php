@@ -14,8 +14,7 @@ class GroupeType extends AbstractType
         $builder
             ->add('label')
             ->add('ue')
-            ->add('etudiants')
-        ;
+            ->add('etudiants');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

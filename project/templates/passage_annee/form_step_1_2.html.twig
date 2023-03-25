@@ -29,39 +29,27 @@
         <div class="row g-4 mb-3">
             {% for etudiant in form.etudiants %}
                 {% set etudiantId = etudiant.vars.value.id %}
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="col-12 col-sm-6 {% if form.etudiants|length > 2 %}col-md-4 col-lg-3{% endif %}">
                     <div class="card">
                         <div class="card-header py-1 px-2">
                             {{ etudiant.vars.value.nom }} {{ etudiant.vars.value.prenom }}
                         </div>
                         <div class="card-body p-2">
-                            {% set groupedUes = {} %}
-                            {% for blocUE in etudiant.vars.value.parcours.blocUEs %}
-                                {% set groupedUes = groupedUes|merge({(blocUE.category.label): []}) %}
-                                {% for blocUeUe in blocUE.blocUeUes %}
-                                    {% set groupedUes = groupedUes|merge({(blocUE.category.label): groupedUes[blocUE.category.label]|merge([blocUeUe.ue])}) %}
-                                {% endfor %}
+                            {% set parcours = etudiant.vars.value.parcours %}
+                            {% set etudiantUEs = etudiant.etudiantUEs %}
+                            {% for blocUE in parcours.blocUEs %}
+                                <div class="h6">{{ blocUE.category.label }}</div>
+                                <ul class="list-unstyled">
+                                    {% for etudiantUE in etudiantUEs %}
+                                        {% set ue = etudiantUE.vars.value.ue %}
+                                        {% if ue in blocUE.blocUeUes|map(f => f.ue) %}
+                                            <li>
+                                                {{ form_widget(etudiantUE.acquis, {'label': ue.label }) }}
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
                             {% endfor %}
-
-                            {% for key in groupedUes|keys %}
-                                <h6>{{ key }}</h6>
-                                {% for etudiantUE in etudiant.etudiantUEs %}
-                                    {% if etudiantUE.vars.value.ue in groupedUes[key] %}
-                                        {{ form_row(etudiantUE.acquis, {'label': etudiantUE.vars.value.ue.label}) }}
-                                    {% endif %}
-                                {% endfor %}
-                            {% endfor %}
-{#                            {% for blocUe in etudiant.vars.value.parcours.blocUEs %}#}
-{#                                <h6>{{ blocUE.category.label }}</h6>#}
-{#                                {% for blocUeUe in blocUe.blocUeUes %}#}
-{#                                    <div class="form-check">#}
-{#                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">#}
-{#                                        <label class="form-check-label" for="flexCheckDefault">#}
-{#                                            {{ blocUeUe.ue.label }}#}
-{#                                        </label>#}
-{#                                    </div>#}
-{#                                {% endfor %}#}
-{#                            {% endfor %}#}
                         </div>
                     </div>
                 </div>

@@ -14,8 +14,7 @@ class BlocUECategoryType extends AbstractType
         $builder
             ->add('label', null, [
                 'label' => 'Nom',
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
