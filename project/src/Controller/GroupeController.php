@@ -47,7 +47,7 @@ class GroupeController extends AbstractController
             return $this->redirectToRoute('app_groupe_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('groupe/new.html.twig', [
+        return $this->render('groupe/new.html.twig', [
             'groupe' => $groupe,
             'form' => $form,
         ]);
@@ -73,7 +73,7 @@ class GroupeController extends AbstractController
             return $this->redirectToRoute('app_groupe_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('groupe/edit.html.twig', [
+        return $this->render('groupe/edit.html.twig', [
             'groupe' => $groupe,
             'form' => $form,
         ]);
@@ -82,7 +82,7 @@ class GroupeController extends AbstractController
     #[Route('/{id}', name: 'app_groupe_delete', methods: ['POST'])]
     public function delete(Request $request, Groupe $groupe, GroupeRepository $groupeRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$groupe->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $groupe->getId(), $request->request->get('_token'))) {
             $groupeRepository->remove($groupe, true);
         }
 

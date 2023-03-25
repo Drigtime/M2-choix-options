@@ -30,7 +30,7 @@ class PassageAnneeController extends AbstractController
     }
 
     #[Route('/passage_annee/workflow/new', name: 'app_passage_annee_worflow_new')]
-    public function new(Request $request, AnneeFormationRepository $anneeFormationRepository, SessionInterface $session): Response
+    public function new(): Response
     {
         return $this->redirectToRoute('app_passage_annee_worflow_step_1', ['anneeFormation' => 'M2']);
     }
@@ -125,7 +125,7 @@ class PassageAnneeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var Parcours $parcours */
             $parcours = $form->get('parcours')->getData();
-            $this->moveEtudiantToParcours($etudiant, $parcours);
+            $etudiant = $this->moveEtudiantToParcours($etudiant, $parcours);
 
             $etudiantRepository->save($etudiant, true);
 
@@ -141,6 +141,44 @@ class PassageAnneeController extends AbstractController
     }
 
     // same but it is possible to send an array of students, the form select a new parcours for all students
+
+    /**
+     * @param mixed $etudiant
+     * @param Parcours $parcours
+     * @return Etudiant
+     */
+    public function moveEtudiantToParcours(Etudiant $etudiant, Parcours $parcours): Etudiant
+    {
+        foreach ($etudiant->getResponseCampagnes() as $responseCampagne) {
+            $etudiant->removeResponseCampagne($responseCampagne);
+        }
+
+        // remove all EtudiantUE
+        $etudiant->getEtudiantUEs()->clear();
+
+        $etudiant->setParcours($parcours);
+
+        // add new EtudiantUE
+        foreach ($parcours->getBlocUEs() as $blocUE) {
+            $mandatoryUEs = $blocUE->getBlocUeUes()->filter(fn($blocUeUe) => !$blocUeUe->isOptional());
+            $optionalUEs = $blocUE->getBlocUeUes()->filter(fn($blocUeUe) => $blocUeUe->isOptional());
+            foreach ($mandatoryUEs as $blocUeUe) {
+                $etudiant->addEtudiantUE(new EtudiantUE($etudiant, $blocUeUe->getUe()));
+            }
+
+            // Assigner des UE optionnelles par défaut
+            $nbUEsOptional = $blocUE->getNbUEsOptional();
+            if ($nbUEsOptional > 0) {
+                $optionalUEs = $optionalUEs->slice(0, $nbUEsOptional);
+                foreach ($optionalUEs as $blocUeUe) {
+                    $etudiant->addEtudiantUE(new EtudiantUE($etudiant, $blocUeUe->getUe()));
+                }
+            }
+        }
+
+        return $etudiant;
+    }
+
     #[Route('/passage_annee/move_students', name: 'app_passage_annee_move_students')]
     public function moveStudents(Request $request, EtudiantRepository $etudiantRepository, AnneeFormationRepository $anneeFormationRepository, EntityManagerInterface $entityManager): Response
     {
@@ -159,7 +197,7 @@ class PassageAnneeController extends AbstractController
             $parcours = $form->get('parcours')->getData();
 
             foreach ($etudiants as $etudiant) {
-                $this->moveEtudiantToParcours($etudiant, $parcours);
+                $etudiant = $this->moveEtudiantToParcours($etudiant, $parcours);
                 $etudiantRepository->save($etudiant);
             }
             $entityManager->flush();
@@ -174,31 +212,5 @@ class PassageAnneeController extends AbstractController
             'form' => $form->createView(),
             'students' => $students,
         ]);
-    }
-
-    /**
-     * @param mixed $etudiant
-     * @param Parcours $parcours
-     * @return void
-     */
-    public function moveEtudiantToParcours(Etudiant $etudiant, Parcours $parcours): void
-    {
-        foreach ($etudiant->getResponseCampagnes() as $responseCampagne) {
-            $etudiant->removeResponseCampagne($responseCampagne);
-        }
-
-        // remove all EtudiantUE
-        foreach ($etudiant->getEtudiantUEs() as $etudiantUE) {
-            $etudiant->removeEtudiantUE($etudiantUE);
-        }
-
-        $etudiant->setParcours($parcours);
-
-        // add new EtudiantUE
-        foreach ($parcours->getBlocUEs() as $blocUE) {
-            foreach ($blocUE->getBlocUeUes() as $blocUeUe) {
-                $etudiant->addEtudiantUE(new EtudiantUE($etudiant, $blocUeUe->getUe()));
-            }
-        }
     }
 }

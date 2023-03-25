@@ -14,7 +14,6 @@ class EtudiantUEType extends AbstractType
     {
         $builder
             ->add('acquis', CheckboxType::class, [
-                'label' => false,
                 'required' => false,
                 'data' => true,
             ]);

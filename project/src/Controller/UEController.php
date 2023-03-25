@@ -78,7 +78,7 @@ class UEController extends AbstractController
     #[Route('/{id}', name: 'app_ue_delete', methods: ['POST'])]
     public function delete(Request $request, UE $uE, UERepository $uERepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$uE->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $uE->getId(), $request->request->get('_token'))) {
             $uERepository->remove($uE, true);
         }
 

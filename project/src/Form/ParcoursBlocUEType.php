@@ -33,8 +33,7 @@ class ParcoursBlocUEType extends AbstractType
                 'prototype_name' => '__ue__',
                 'by_reference' => false,
                 'label' => false
-            ])
-//            ->add('parcours')
+            ])//            ->add('parcours')
         ;
     }
 

@@ -26,7 +26,7 @@ class ResponseCampagneType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-             'data_class' => CampagneChoix::class,
+            'data_class' => CampagneChoix::class,
         ]);
     }
 }

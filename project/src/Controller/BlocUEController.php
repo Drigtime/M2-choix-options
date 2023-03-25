@@ -69,7 +69,7 @@ class BlocUEController extends AbstractController
     #[Route('/{id}', name: 'app_bloc_ue_delete', methods: ['POST'])]
     public function delete(Request $request, BlocUE $blocUE, BlocUERepository $blocUERepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$blocUE->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $blocUE->getId(), $request->request->get('_token'))) {
             $blocUERepository->remove($blocUE, true);
         }
 
