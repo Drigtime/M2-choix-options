@@ -223,7 +223,7 @@ class UE
 
         return $this;
     }
-    
+
     /**
      * @return Collection<int, BlocUeUe>
      */

@@ -48,11 +48,6 @@ class Etudiant
         return $this->getNom() . ' ' . $this->getPrenom();
     }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
     public function getNom(): ?string
     {
         return $this->nom;
@@ -75,6 +70,11 @@ class Etudiant
         $this->prenom = $prenom;
 
         return $this;
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
     }
 
     public function getMail(): ?string

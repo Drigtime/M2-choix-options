@@ -17,8 +17,7 @@ class AnneeFormationType extends AbstractType
                 'attr' => [
                     'placeholder' => 'M1, M2',
                 ],
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

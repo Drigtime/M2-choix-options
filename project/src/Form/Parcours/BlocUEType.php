@@ -4,7 +4,6 @@ namespace App\Form\Parcours;
 
 use App\Entity\BlocUE;
 use App\Entity\BlocUeUe;
-use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -21,6 +20,7 @@ class BlocUEType extends AbstractType
     {
         $this->translator = $translator;
     }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
