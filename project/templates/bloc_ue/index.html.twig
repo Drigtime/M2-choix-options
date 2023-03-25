@@ -28,7 +28,7 @@
         {% for bloc_ue in bloc_ues %}
             <tr>
                 <td>{{ bloc_ue.id }}</td>
-                <td>{{ bloc_ue.blocUECategory.label }}</td>
+                <td>{{ bloc_ue.category.label }}</td>
                 <td class="text-end">
                     {% for ue in bloc_ue.UEs %}
                         <span class="badge bg-primary">

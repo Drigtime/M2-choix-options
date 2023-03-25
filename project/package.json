@@ -32,6 +32,7 @@
         "jquery": "^3.6.3",
         "sortablejs": "^1.15.0",
         "startbootstrap-sb-admin": "^7.0.5",
+        "tom-select": "^2.2.2",
         "vue": "^3.2.45",
         "vue-loader": "^17.0.1"
     }

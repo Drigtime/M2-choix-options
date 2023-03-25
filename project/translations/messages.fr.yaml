@@ -20,8 +20,13 @@ form:
         label: 'Nom du parcours'
         blocUEs: 'Blocs UE'
     blocUE:
-        blocUECategory: 'Catégorie de bloc UE'
+        category: 'Catégorie de bloc UE'
         ues: 'UEs du bloc'
+        nbUEsOptional:
+            label: 'Nombre d''UEs optionnelle à choisir'
+            error:
+                max: 'Le nombre d''UEs à choisir doit être inférieur au nombre d''UEs optionnelles du bloc'
+                min: 'Le nombre d''UEs à choisir doit être supérieur à 0 car le bloc contient des UEs optionnelles'
     blocOption:
         blocUE: 'Bloc UE'
         ues: 'UEs du bloc'

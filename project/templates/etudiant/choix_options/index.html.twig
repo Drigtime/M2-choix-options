@@ -14,11 +14,11 @@
                     </div>
                     <div class="card-body">
                         {% set reponseCampage = reponsesCampagnes|filter(reponse => reponse.campagne.id == campagne.id)|first %}
-                        {% for blocOption in campagne.blocOptions %}
+                        {% for blocOption in campagne.blocOptions|filter(blocOption => blocOption.parcours == parcours) %}
                             <div class="card sub-card my-3">
                                 <div class="card-header">
-                                    <h6>{{ blocOption.blocUE.blocUECategory.label }}</h6>
-                                    Nombre d'UE à choisir : {{ blocOption.nbUEChoix }}
+                                    <h6>{{ blocOption.blocUE.category.label }}</h6>
+                                    Nombre d'UE à choisir : {{ blocOption.blocUE.nbUEsOptional }}
                                 </div>
                                 <div class="card-body">
                                     {% if reponseCampage %}

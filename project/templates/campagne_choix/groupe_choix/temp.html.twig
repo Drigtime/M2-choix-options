@@ -2,7 +2,7 @@
   <div class="nav nav-tabs" id="nav-tab" role="tablist">
     {% for bloc_ue in campagne_choix.blocOptions %}
     <button class="nav-link" id="nav-bloc-{{bloc_ue.id}}-tab" data-bs-toggle="tab" data-bs-target="#nav-bloc-{{bloc_ue.id}}" type="button" role="tab" aria-controls="nav-bloc-{{bloc_ue.id}} nav-tab-bloc-{{bloc_ue.id}}" aria-selected="false">
-    {{ bloc_ue.blocUE.blocUECategory.label }}
+    {{ bloc_ue.blocUE.category.label }}
     </button>
     {% endfor %}
   </div>

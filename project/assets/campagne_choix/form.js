@@ -1,111 +1,171 @@
-$('#campagne_choix_parcours').on('change', function () {
-    const $blocOptionContainer = $('#bloc-option-container');
-    const $listBlocUE = $('#list-bloc-ue');
+import TomSelect from "tom-select";
+import 'tom-select/dist/css/tom-select.bootstrap5.min.css';
 
-    // get the selected option
-    const selectedOption = $(this).find('option:selected');
-    // store the value of the selected option in a data attribute to later know what was the previous value
-    const previousValue = $(this).data('previousValue');
-    // get option with value "previousValue"
-    const previousOption = $(this).find(`option[value="${previousValue}"]`);
+new TomSelect("#campagne_choix_parcours", {});
 
-    // store $('#bloc-option-container') as a variable on the element previousOption to later load it back when the user select the previous option
-    previousOption.data('listBlocUE', $listBlocUE.clone(true));
+$(document).ready(function () {
+    const addBlocUEButton = $("#add-bloc-ue");
+    const blocUEContainer = $("#bloc-ue-container");
+    const selectChoixParcours = $("#campagne_choix_parcours");
 
-    $(this).data('previousValue', selectedOption.val());
+    const prototypeBlocUE = blocUEContainer.data("prototypeBlocUe");
+    const prototypeBlocOption = blocUEContainer.data("prototypeBlocOption");
+    const prototypeNoBlocUE = blocUEContainer.data("prototypeNoBlocUe");
+    const prototypeParcoursNoUes = blocUEContainer.data("prototypeParcoursNoUes");
 
-    const blocUEs = selectedOption.data('blocs-ue');
+    let blocUEIndex = $('[data-bloc-ue]').length;
+    let blocUEsByCategories = [];
 
-    if (selectedOption.data('listBlocUE') && selectedOption.data('listBlocUE').find('.card').length > 0) {
-        $listBlocUE.replaceWith(selectedOption.data('listBlocUE'));
-        $blocOptionContainer.show();
-    } else if (blocUEs.length > 0) {
-        $listBlocUE.empty();
-        $listBlocUE.html(`<div id="no-bloc-ue" class="col-12">
-                <div class="alert alert-primary m-0 p-2">
-                    Aucun bloc option n'a encore été ajouté.
-                </div>
-            </div>`);
-        $blocOptionContainer.show();
-    } else {
-        $blocOptionContainer.hide();
-        $listBlocUE.empty();
-    }
-}).change();
+    function updateBlocUEsByCategories(parcours) {
+        blocUEsByCategories = parcours.map((parcour) => parcour.blocUEs).flat().reduce((acc, blocUE) => {
+            const {categorie_id, label} = blocUE;
+            const categorie = acc.find((c) => c.id === categorie_id);
 
-$('#add-bloc-ue').on('click', function () {
-    let $container = $('#list-bloc-ue');
-    let newWidget = $container.data('prototype');
+            // find in which parcours the blocUE is
+            const parcour = parcours.find((parcour) => parcour.blocUEs.find((bloc) => bloc.id === blocUE.id));
 
-    const $noBlocUE = $('#no-bloc-ue');
-    if ($noBlocUE.length > 0) {
-        $noBlocUE.remove();
+            if (categorie) {
+                categorie.blocUEs.push({id: blocUE.id, parcours_label: parcour.label, parcours_id: parcour.id, ues: blocUE.ues});
+            } else {
+                acc.push({
+                    id: categorie_id,
+                    label,
+                    blocUEs: [{id: blocUE.id, parcours_label: parcour.label, parcours_id: parcour.id, ues: blocUE.ues}]
+                });
+            }
+            return acc;
+        }, []);
     }
 
-    newWidget = newWidget.replaceAll(/__name__/g, $container.children().length + 1);
-    $container.prepend(newWidget);
-    // trigger change event on the select inside the new widget
-    const $newBlocUE = $container.children().first();
+    function updateSelectBlocUECategoryOptions(selectBlocUECategory) {
+        const selectedOption = selectBlocUECategory.data('blocUeCategory')
+        selectBlocUECategory.empty();
+        blocUEsByCategories.forEach((blocUECategory) => {
+            const option = $("<option></option>");
+            option.val(blocUECategory.id);
+            option.text(blocUECategory.label);
+            option.data('blocUEs', blocUECategory.blocUEs);
+            selectBlocUECategory.append(option);
+        });
+        // check if the selectedOption is still available in selectBlocUECategory, if so restore the selected option
+        const selectedOptionsAvailable = blocUEsByCategories.find((blocUECategory) => blocUECategory.id === selectedOption);
+        if (selectedOptionsAvailable) {
+            selectBlocUECategory.val(selectedOption);
+        }
+    }
 
-    const $selectBlocUE = $newBlocUE.find('select');
-    // change option based on the selected parcours
-    const selectedParcours = $('#campagne_choix_parcours').find('option:selected');
-    const blocUEs = selectedParcours.data('blocs-ue');
-    $selectBlocUE.empty();
-    blocUEs.forEach(blocUE => {
-        const option = $(`<option value="${blocUE.id}">${blocUE.label}</option>`);
-        option.data('ues', blocUE.ues);
-        $selectBlocUE.append(option);
+
+    // Ajouter un bloc UE
+    function addBlocUE() {
+        const newBlocUE = $(prototypeBlocUE.replace(/__name__/g, blocUEIndex + 1));
+
+        const deleteButton = newBlocUE.find('[data-action="delete-bloc-ue"]');
+        deleteButton.on("click", removeBlocUE);
+
+        // Ajouter les catégories de blocs UE
+        const selectBlocUECategory = newBlocUE.find('[data-bloc-ue-category]');
+        updateSelectBlocUECategoryOptions(selectBlocUECategory);
+        selectBlocUECategory.on("change", onBlocUECategoryChange);
+
+        blocUEContainer.append(newBlocUE);
+        selectBlocUECategory.trigger("change");
+
+        blocUEIndex++;
+    }
+
+    // Supprimer un bloc UE
+    function removeBlocUE(event) {
+        const deleteButton = $(event.target).closest("button");
+        const blocUE = deleteButton.closest('[data-bloc-ue]');
+        blocUE.remove();
+
+        if (blocUEContainer.children().length === 0) {
+            const noBlocUE = $("<div></div>");
+            noBlocUE.html(prototypeNoBlocUE);
+            blocUEContainer.append(noBlocUE);
+        }
+    }
+
+    function onCampagneParcoursChange() {
+        const $blocOptionContainer = $('#bloc-option-container');
+        const $listBlocUE = $('#list-bloc-ue');
+
+        const selectedOptions = $(this).val();
+
+        const parcours = selectedOptions.map((value) => $(`#campagne_choix_parcours option[value="${value}"]`).data('blocs-ue'));
+        updateBlocUEsByCategories(parcours);
+
+        $('[data-bloc-ue-category]').each(function () {
+            updateSelectBlocUECategoryOptions($(this));
+        });
+
+        if (blocUEsByCategories.length > 0) {
+            $listBlocUE.empty();
+            $blocOptionContainer.show();
+        } else {
+            $blocOptionContainer.hide();
+            $listBlocUE.empty();
+        }
+    }
+
+    function onBlocUECategoryChange() {
+        const selectBlocUECategory = $(this);
+        selectBlocUECategory.data('blocUeCategory', selectBlocUECategory.val());
+        const blocUECategory = selectBlocUECategory.find('option:selected');
+        const blocUEs = blocUECategory.data('blocUEs');
+
+        const blocUEContainer = selectBlocUECategory.closest('[data-bloc-ue]');
+        const blocOptionContainer = blocUEContainer.find('[data-bloc-options-container]');
+        const blocOptionContainerDisplay = blocUEContainer.find('[data-bloc-options-container-display]');
+        blocOptionContainer.empty();
+        blocOptionContainerDisplay.empty();
+
+        let blocOptionIndex = $("#bloc-ue-container").data('bloc-option-index');
+        blocUEs.forEach((blocUE) => {
+            const newBlocOption = $(prototypeBlocOption.replace(/__name__/g, blocOptionIndex));
+            const blocOptionBlocUE = newBlocOption.find('[name$="[blocUE]"]');
+            const blocOptionParcours = newBlocOption.find('[name$="[parcours]"]');
+            blocOptionBlocUE.val(blocUE.id);
+            blocOptionParcours.val(blocUE.parcours_id);
+
+            const listUE = $('<ul></ul>');
+            blocUE.ues.forEach((ue) => {
+                listUE.append(`<li>${ue.label}</li>`);
+            });
+            blocOptionContainerDisplay.append(`<h5>${blocUE.parcours_label}</h5>`);
+            if (blocUE.ues.length > 0) {
+                blocOptionContainerDisplay.append(listUE);
+                blocOptionContainer.append(newBlocOption);
+                blocOptionIndex++;
+            } else {
+                blocOptionContainerDisplay.append(prototypeParcoursNoUes);
+            }
+        });
+        $("#bloc-ue-container").data('bloc-option-index', blocOptionIndex);
+    }
+
+
+    // Gestionnaire d'événements pour le select des parcours
+    selectChoixParcours.on('change', onCampagneParcoursChange);
+
+    // Gestionnaire d'événements pour ajouter un bloc UE
+    addBlocUEButton.on("click", addBlocUE);
+
+    // Gestionnaire d'événements pour supprimer un bloc UE existant
+    $('[data-action="delete-bloc-ue"]').each(function () {
+        $(this).on("click", removeBlocUE);
     });
 
-    $selectBlocUE.trigger('change');
+    // Gestionnaire d'événements pour le select des catégories de blocs UE
+    $('[data-bloc-ue-category]').each(function () {
+        $(this).on("change", onBlocUECategoryChange);
+    });
+
+    // Déclencher l'événement pour mettre à jour les blocs UE
+    selectChoixParcours.trigger('change');
+
+    // Déclencher l'événement pour mettre à jour les blocs options
+    $('[data-bloc-ue-category]').each(function () {
+        $(this).trigger('change');
+    });
 });
-
-$(document).on('click', '#list-bloc-ue [data-action="delete-bloc-ue"]', function () {
-    $(this).closest('[data-bloc-ue]').remove();
-    const $container = $('#list-bloc-ue');
-
-    if ($container.children().length === 0) {
-        const $noBlocUEPrototype = $container.data('no-bloc-ue');
-        $container.append($noBlocUEPrototype);
-    }
-});
-
-$(document).on('change', '#list-bloc-ue select[id$="_blocUE"]', function () {
-    const $uesContainerId = $(this).data('ues-container');
-    const $uesContainer = $("#" + $uesContainerId);
-
-    // list of ue are in the attribute data-ues on the option selected
-    const selectedBlocUECategory = $(this).find('option:selected');
-
-    // store the value of the selected option in a data attribute to later know what was the previous value
-    const previousValue = $(this).data('previousValue');
-    // get option with value "previousValue"
-    const previousBlocUECategory = $(this).find(`option[value="${previousValue}"]`);
-
-    // store $('#bloc-option-container') as a variable on the element previousBlocUECategory to later load it back when the user select the previous option
-    previousBlocUECategory.data('listUEs', $uesContainer.clone());
-
-    $(this).data('previousValue', selectedBlocUECategory.val());
-
-    const ues = selectedBlocUECategory.data('ues');
-
-    const index = $(this).closest('[data-bloc-ue]').data('index');
-
-    if (selectedBlocUECategory.data('listUEs') && selectedBlocUECategory.data('listUEs').children().length > 0) {
-        $uesContainer.replaceWith(selectedBlocUECategory.data('listUEs'));
-    } else if (ues.length > 0) {
-        $uesContainer.empty();
-        ues.forEach(function (ue) {
-            $uesContainer.append(`<div class="text-muted">${ue.label}</div>`);
-        });
-    } else {
-        $uesContainer.empty();
-        $uesContainer.append(`<div class="alert alert-primary" role="alert">
-                                Aucune UE n'est disponible pour cette catégorie
-                            </div>`);
-    }
-});
-
-// trigger change event on the select inside the new widget
-$('#list-bloc-ue select[id$="_blocUE"]').trigger('change');

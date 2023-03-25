@@ -17,7 +17,7 @@ class BlocUE
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?BlocUECategory $blocUECategory = null;
+    private ?BlocUECategory $category = null;
 
     #[ORM\ManyToOne(targetEntity: Parcours::class, inversedBy: 'blocUEs')]
     #[ORM\JoinColumn(name: 'parcours_id', referencedColumnName: 'id', nullable: false)]
@@ -29,6 +29,9 @@ class BlocUE
     #[ORM\OneToMany(mappedBy: 'blocUE', targetEntity: BlocUeUe::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $blocUeUes;
 
+    #[ORM\Column]
+    private ?int $nbUEsOptional = null;
+
     public function __construct()
     {
         $this->blocOptions = new ArrayCollection();
@@ -37,7 +40,7 @@ class BlocUE
 
     public function __toString(): string
     {
-        return $this->blocUECategory->getLabel();
+        return $this->category->getLabel();
     }
 
     public function getId(): ?int
@@ -45,14 +48,14 @@ class BlocUE
         return $this->id;
     }
 
-    public function getBlocUECategory(): ?BlocUECategory
+    public function getCategory(): ?BlocUECategory
     {
-        return $this->blocUECategory;
+        return $this->category;
     }
 
-    public function setBlocUECategory(BlocUECategory $blocUECategory): self
+    public function setCategory(BlocUECategory $category): self
     {
-        $this->blocUECategory = $blocUECategory;
+        $this->category = $category;
 
         return $this;
     }
@@ -125,6 +128,18 @@ class BlocUE
                 $blocUeUe->setBlocUE(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getNbUEsOptional(): ?int
+    {
+        return $this->nbUEsOptional;
+    }
+
+    public function setNbUEsOptional(int $nbUEsOptional): self
+    {
+        $this->nbUEsOptional = $nbUEsOptional;
 
         return $this;
     }

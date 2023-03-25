@@ -7,7 +7,6 @@ use App\Entity\UE;
 use App\Repository\UERepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -19,7 +18,7 @@ class BlocUEType extends AbstractType
     {
         $builder
             ->add('blocUECategory', null, [
-                'label' => 'form.blocUE.blocUECategory',
+                'label' => 'form.blocUE.category',
                 'choice_attr' => function ($choice, $key, $value) {
                     return [
                         'data-ues' => json_encode($choice->getUEs()->map(function ($ue) {

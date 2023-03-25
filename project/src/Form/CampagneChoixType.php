@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\BlocUE;
 use App\Entity\CampagneChoix;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -28,28 +29,33 @@ class CampagneChoixType extends AbstractType
                 'choice_label' => function ($parcours) {
                     return $parcours->getAnneeFormation()->getLabel() . ' - ' . $parcours->getLabel();
                 },
-                'choice_attr' => function ($choice) {
+                'choice_attr' => function ($parcours) {
                     return [
-                        'data-blocs-ue' => json_encode($choice->getBlocUEs()->map(function ($bloc) {
-                            return [
-                                'id' => $bloc->getId(),
-                                'label' => $bloc->__toString(),
-                                'ues' => $bloc->getBlocUeUes()
-                                    ->filter(function ($blocUeUe) {
-                                        return $blocUeUe->isOptional();
-                                    })
-                                    ->map(function ($blocUeUe) {
-                                        $ue = $blocUeUe->getUE();
-                                        return [
-                                            'id' => $ue->getId(),
-                                            'label' => $ue->getLabel(),
-                                        ];
-                                    })
-                                    ->getValues(),
-                            ];
-                        })->toArray())
+                        'data-blocs-ue' => json_encode([
+                            'label' => $parcours->getAnneeFormation()->getLabel() . ' - ' . $parcours->getLabel(),
+                            'blocUEs' => $parcours->getBlocUEs()->map(function (BlocUE $bloc) {
+                                return [
+                                    'id' => $bloc->getId(),
+                                    'label' => $bloc->__toString(),
+                                    'categorie_id' => $bloc->getCategory()->getId(),
+                                    'ues' => $bloc->getBlocUeUes()
+                                        ->filter(function ($blocUeUe) {
+                                            return $blocUeUe->isOptional();
+                                        })
+                                        ->map(function ($blocUeUe) {
+                                            $ue = $blocUeUe->getUE();
+                                            return [
+                                                'id' => $ue->getId(),
+                                                'label' => $ue->getLabel(),
+                                            ];
+                                        })
+                                        ->getValues(),
+                                ];
+                            })->toArray()
+                        ])
                     ];
                 },
+                'multiple' => true,
                 'placeholder' => false,
             ])
             ->add('blocOptions', CollectionType::class, [
@@ -75,26 +81,31 @@ class CampagneChoixType extends AbstractType
                     'choice_label' => function ($parcours) {
                         return $parcours->getAnneeFormation()->getLabel() . ' - ' . $parcours->getLabel();
                     },
-                    'choice_attr' => function ($choice) {
+                    'choice_attr' => function ($parcours) {
                         return [
-                            'data-blocs-ue' => json_encode($choice->getBlocUEs()->map(function ($bloc) {
-                                return [
-                                    'id' => $bloc->getId(),
-                                    'label' => $bloc->__toString(),
-                                    'ues' => $bloc->getBlocUeUes()
-                                        ->filter(function ($blocUeUe) {
-                                            return $blocUeUe->isOptional();
-                                        })
-                                        ->map(function ($blocUeUe) {
-                                            $ue = $blocUeUe->getUE();
-                                            return [
-                                                'id' => $ue->getId(),
-                                                'label' => $ue->getLabel(),
-                                            ];
-                                        })
-                                        ->getValues(),
-                                ];
-                            })->toArray())
+                            'data-blocs-ue' => json_encode([
+                                'id' => $parcours->getId(),
+                                'label' => $parcours->getAnneeFormation()->getLabel() . ' - ' . $parcours->getLabel(),
+                                'blocUEs' => $parcours->getBlocUEs()->map(function (BlocUE $bloc) {
+                                    return [
+                                        'id' => $bloc->getId(),
+                                        'label' => $bloc->__toString(),
+                                        'categorie_id' => $bloc->getCategory()->getId(),
+                                        'ues' => $bloc->getBlocUeUes()
+                                            ->filter(function ($blocUeUe) {
+                                                return $blocUeUe->isOptional();
+                                            })
+                                            ->map(function ($blocUeUe) {
+                                                $ue = $blocUeUe->getUE();
+                                                return [
+                                                    'id' => $ue->getId(),
+                                                    'label' => $ue->getLabel(),
+                                                ];
+                                            })
+                                            ->getValues(),
+                                    ];
+                                })->toArray()
+                            ])
                         ];
                     },
                     'placeholder' => false,
