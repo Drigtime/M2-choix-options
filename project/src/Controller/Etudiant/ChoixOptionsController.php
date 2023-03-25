@@ -22,26 +22,26 @@ class ChoixOptionsController extends AbstractController
 
     #[Route('/etudiant/options', name: 'app_etudiant_choix_options')]
     public function index(EtudiantRepository $etudiantRepository): Response
-    // {
-    //     $etudiant = $etudiantRepository->findOneBy(['mail' => $this->getUser()->getUserIdentifier()]);
-    //     $campagnes = $etudiant->getParcours()->getCampagneChoixes();
+        // {
+        //     $etudiant = $etudiantRepository->findOneBy(['mail' => $this->getUser()->getUserIdentifier()]);
+        //     $campagnes = $etudiant->getParcours()->getCampagneChoixes();
 
-    //     $responseCampagnes = $etudiant->getResponseCampagnes();
-    //     foreach($responseCampagnes as $responseCampagne) {
-    //         foreach($campagnes as $campagne) {
-    //             if ($campagne->getId() == $responseCampagne->getCampagne()->getId()) {
-    //                 $campagnes->removeElement($campagne);
-    //             }
-    //         }
-    //     }
+        //     $responseCampagnes = $etudiant->getResponseCampagnes();
+        //     foreach($responseCampagnes as $responseCampagne) {
+        //         foreach($campagnes as $campagne) {
+        //             if ($campagne->getId() == $responseCampagne->getCampagne()->getId()) {
+        //                 $campagnes->removeElement($campagne);
+        //             }
+        //         }
+        //     }
 
-    //     $responsesCampagnes = $etudiant->getResponseCampagnes();
-    
-    //     return $this->render('etudiant/choix_options/index.html.twig', [
-    //         'campagnes' => $campagnes,
-    //         'responsesCampagnes' => $responsesCampagnes
-    //     ]);
-    // }
+        //     $responsesCampagnes = $etudiant->getResponseCampagnes();
+
+        //     return $this->render('etudiant/choix_options/index.html.twig', [
+        //         'campagnes' => $campagnes,
+        //         'responsesCampagnes' => $responsesCampagnes
+        //     ]);
+        // }
     {
         $etudiant = $etudiantRepository->findOneBy(['mail' => $this->getUser()->getUserIdentifier()]);
         $campagnes = $etudiant->getParcours()->getCampagneChoixes();
@@ -64,9 +64,9 @@ class ChoixOptionsController extends AbstractController
             $jsonData = $request->getContent();
             $data = json_decode($jsonData, true);
 
-            foreach($data['ordre'] as $i => $ueId) {
+            foreach ($data['ordre'] as $i => $ueId) {
                 $choix = $choixRepository->findOneBy(['responseCampagne' => $responseCampagne, 'UE' => $ueRepository->findOneBy(['id' => $ueId]), 'blocOption' => $blocOptionRepository->findOneBy(['id' => $data['blocOptionsId']])]);
-                $choix->setOrdre($i+1);
+                $choix->setOrdre($i + 1);
 
                 $choixRepository->save($choix, true);
             }
@@ -89,18 +89,19 @@ class ChoixOptionsController extends AbstractController
 
         foreach ($campagne->getBlocOptions() as $blocOption) {
             foreach ($blocOption->getUEs() as $index => $ue) {
-                $choix = $choixRepository->findOneBy(['responseCampagne' => $responseCampagne, 'UE' => $ueRepository->findOneBy(['id' => $ue]), 'blocOption' => $blocOptionRepository->findOneBy(['id' => $blocOption->getId()])]);
+                $choix = $choixRepository->findOneBy(['responseCampagne' => $responseCampagne, 'UE' => $ue, 'blocOption' => $blocOption]);
                 if ($choix == null) {
                     $choix = new Choix();
                     $choix->setUE($ue);
                     $choix->setOrdre($index + 1);
                     $blocOption->addChoix($choix);
-                    $choixRepository->save($choix, true);
                     $responseCampagne->addChoix($choix);
                 }
             }
         }
-        
+
+        $responseCampagneRepository->save($responseCampagne, true);
+
         $form = $this->createForm(ResponseCampagneType::class, $campagne);
         $form->handleRequest($request);
 

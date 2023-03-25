@@ -32,14 +32,13 @@
                 </div>
             </div>
             <div class="card-body p-2">
-                {{ form_row(blocUE.blocUECategory, { 'attr': {'data-previous-value': blocUE.blocUECategory.vars.value } }) }}
+                {{ form_row(blocUE.category, { 'attr': {'data-previous-value': blocUE.category.vars.value } }) }}
+                {{ form_row(blocUE.nbUEsOptional) }}
                 <div class="ues-container d-grid gap-3"
                      data-block-ue-ues-count="{{ blocUE.blocUeUes|length }}"
                      data-original-prototype="{{ formMacros.printUE(blocUE.blocUeUes.vars.prototype)|e('html_attr') }}"
                      data-no-ue="{{ formMacros.printNoUE()|e('html_attr') }}"
                 >
-                    {% for label in ['UEs obligatoires', 'UEs optionnelles'] %}
-                    {% endfor %}
                     <div class="card ues-container-child">
                         <div class="card-header ps-3 pe-1 py-1">
                             <div class="d-flex">
@@ -47,9 +46,10 @@
                                     UEs obligatoires
                                 </div>
                                 <div class="flex-shrink-0">
-                                    <button type="button" class="btn btn-sm btn-primary" data-action="add-ue">
+                                    <button type="button" class="btn btn-sm btn-primary" data-action="add-ue"
+                                            data-bs-toggle="tooltip" data-bs-placement="top"
+                                            data-bs-title="Ajouter une UE">
                                         <i class="fas fa-plus"></i>
-                                        Ajouter une UE
                                     </button>
                                 </div>
                             </div>
@@ -74,9 +74,9 @@
                                 <div class="flex-shrink-0">
                                     <button type="button" class="btn btn-sm btn-primary"
                                             data-action="add-ue"
-                                            data-optional="1">
+                                            data-optional="1" data-bs-toggle="tooltip" data-bs-placement="top"
+                                            data-bs-title="Ajouter une UE optionnelle">
                                         <i class="fas fa-plus"></i>
-                                        Ajouter une UE
                                     </button>
                                 </div>
                             </div>

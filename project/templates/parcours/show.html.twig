@@ -48,7 +48,7 @@
             <div class="col-12 col-md-6 col-xxl-4">
                 <div class="card">
                     <div class="card-header">
-                        {{ blocUE.blocUECategory.label }}
+                        {{ blocUE.category.label }}
                     </div>
                     <div class="card-body p-2">
                         <div class="tab-pane {{ loop.first ? 'show active' }}"
@@ -56,7 +56,7 @@
                              role="tabpanel"
                              aria-labelledby="nav-ue-{{ blocUE.id }}-{{ loop.index }}-tab"
                              tabindex="0">
-                            <div class="accordion p-2" id="accordion-panels-stay-open-{{ blocUE.id }}-{{ loop.index }}">
+                            <div class="accordion" id="accordion-panels-stay-open-{{ blocUE.id }}-{{ loop.index }}">
                                 <div class="accordion-item">
                                     <h2 class="accordion-header"
                                         id="panels-stay-open-heading-{{ blocUE.id }}-{{ loop.index }}-1">
@@ -96,6 +96,9 @@
                                                 aria-expanded="true"
                                                 aria-controls="panels-stay-open-collapse-{{ blocUE.id }}-{{ loop.index }}-2">
                                             UEs optionnelles
+                                            {% if blocUE.nbUEsOptional > 0 %}
+                                                - {{ blocUE.nbUEsOptional }} UE(s) a choisir
+                                            {% endif %}
                                         </button>
                                     </h2>
                                     <div id="panels-stay-open-collapse-{{ blocUE.id }}-{{ loop.index }}-2"

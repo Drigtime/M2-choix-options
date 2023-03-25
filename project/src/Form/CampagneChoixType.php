@@ -37,7 +37,7 @@ class CampagneChoixType extends AbstractType
                                 return [
                                     'id' => $bloc->getId(),
                                     'label' => $bloc->__toString(),
-                                    'categorie_id' => $bloc->getBlocUECategory()->getId(),
+                                    'categorie_id' => $bloc->getCategory()->getId(),
                                     'ues' => $bloc->getBlocUeUes()
                                         ->filter(function ($blocUeUe) {
                                             return $blocUeUe->isOptional();
@@ -84,12 +84,13 @@ class CampagneChoixType extends AbstractType
                     'choice_attr' => function ($parcours) {
                         return [
                             'data-blocs-ue' => json_encode([
+                                'id' => $parcours->getId(),
                                 'label' => $parcours->getAnneeFormation()->getLabel() . ' - ' . $parcours->getLabel(),
                                 'blocUEs' => $parcours->getBlocUEs()->map(function (BlocUE $bloc) {
                                     return [
                                         'id' => $bloc->getId(),
                                         'label' => $bloc->__toString(),
-                                        'categorie_id' => $bloc->getBlocUECategory()->getId(),
+                                        'categorie_id' => $bloc->getCategory()->getId(),
                                         'ues' => $bloc->getBlocUeUes()
                                             ->filter(function ($blocUeUe) {
                                                 return $blocUeUe->isOptional();

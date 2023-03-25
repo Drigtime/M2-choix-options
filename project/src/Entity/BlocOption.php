@@ -3,14 +3,12 @@
 namespace App\Entity;
 
 use App\Repository\BlocOptionRepository;
-use ArrayAccess;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: BlocOptionRepository::class)]
 class BlocOption
-// implements ArrayAccess
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -20,14 +18,14 @@ class BlocOption
     #[ORM\ManyToOne(targetEntity: CampagneChoix::class, inversedBy: 'blocOptions')]
     private ?CampagneChoix $campagneChoix = null;
 
-    #[ORM\ManyToMany(targetEntity: UE::class, inversedBy: 'blocOptions', cascade: ['persist', 'remove'])]
+    #[ORM\ManyToMany(targetEntity: UE::class, inversedBy: 'blocOptions')]
     private Collection $UEs;
 
-    #[ORM\OneToMany(mappedBy: 'blocOption', targetEntity: Choix::class)]
+    #[ORM\OneToMany(mappedBy: 'blocOption', targetEntity: Choix::class, cascade: ['persist', 'remove'])]
     private Collection $choixes;
 
-    #[ORM\ManyToOne(inversedBy: 'blocOptions')]
-    private ?BlocUECategory $blocUECategory = null;
+    #[ORM\ManyToOne(targetEntity: BlocUE::class, inversedBy: 'blocOptions')]
+    private ?BlocUE $blocUE = null;
 
     #[ORM\ManyToOne(inversedBy: 'blocOptions')]
     private ?Parcours $parcours = null;
@@ -109,14 +107,14 @@ class BlocOption
         return $this;
     }
 
-    public function getBlocUECategory(): ?BlocUECategory
+    public function getBlocUE(): ?BlocUE
     {
-        return $this->blocUECategory;
+        return $this->blocUE;
     }
 
-    public function setBlocUECategory(?BlocUECategory $blocUECategory): self
+    public function setBlocUE(?BlocUE $blocUE): self
     {
-        $this->blocUECategory = $blocUECategory;
+        $this->blocUE = $blocUE;
 
         return $this;
     }

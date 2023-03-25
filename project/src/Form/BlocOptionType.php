@@ -3,10 +3,6 @@
 namespace App\Form;
 
 use App\Entity\BlocOption;
-use App\Entity\UE;
-use App\Repository\BlocUERepository;
-use App\Repository\UERepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -19,8 +15,8 @@ class BlocOptionType extends AbstractType
     {
         $builder
 //            ->add('campagneChoix')
-            ->add('blocUECategory', null, [
-                'label' => 'form.blocOption.blocUECategory',
+            ->add('blocUE', null, [
+                'label' => 'form.blocOption.blocUE',
 //                'choice_attr' => function ($bloc, $key, $value) {
 //                    return [
 //                        'data-ues' => json_encode($bloc->getBlocUeUes()
@@ -38,6 +34,7 @@ class BlocOptionType extends AbstractType
 //                },
 //                'placeholder' => false
             ])
+            ->add('parcours')
 //            ->add('UEs', EntityType::class, [
 //                'label' => 'form.blocOption.optionals.ues',
 //                'class' => UE::class,
@@ -80,14 +77,14 @@ class BlocOptionType extends AbstractType
                     if ($form->has('blocUE')) {
                         $form->remove('blocUE');
                     }
-                    $form->add('blocUECategory', null, [
-                        'label' => 'form.blocOption.blocUECategory',
+                    $form->add('blocUE', null, [
+                        'label' => 'form.blocOption.blocUE',
 //                        'query_builder' => function (BlocUERepository $er) use ($campagneChoix) {
 //                            return $er->createQueryBuilder('b')
 //                                ->join('b.parcours', 'p')
 //                                ->where('p.id = :parcours')
 //                                ->setParameter('parcours', $campagneChoix->getParcours()->getId())
-//                                ->orderBy('b.blocUECategory', 'ASC');
+//                                ->orderBy('b.blocUE', 'ASC');
 //                        },
 //                        'placeholder' => false,
 //                        'choice_attr' => function ($bloc, $key, $value) {

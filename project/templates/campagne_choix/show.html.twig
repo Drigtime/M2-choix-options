@@ -76,20 +76,47 @@
     {% if campagne_choix.blocOptions|length > 0 %}
         <h5>Liste des blocs UE</h5>
         <div class="row">
+            {% set blocOptionsByCategory = {} %}
+
+            {# Regrouper les blocOptions par blocUECategory #}
             {% for blocOption in campagne_choix.blocOptions %}
+                {% set category = blocOption.blocUE.category.label %}
+                {% if blocOptionsByCategory[category] is not defined %}
+                    {% set blocOptionsByCategory = blocOptionsByCategory|merge({ (category): [] }) %}
+                {% endif %}
+                {% set blocOptionsByCategory = blocOptionsByCategory|merge({ (category): blocOptionsByCategory[category]|merge([blocOption]) }) %}
+            {% endfor %}
+
+            {# Boucler sur le dictionnaire et afficher les blocs fusionnés #}
+            {% for category, blocOptions in blocOptionsByCategory %}
                 <div class="col-12 col-md-6 col-lg-4 col-xl-4">
                     <div class="card">
                         <div class="card-header">
-                            {{ blocOption.blocUECategory.label }} - {# TODO Afficher le nombre d'UE optionnel #} UE optionnelle(s)
+                            {{ category }}
                         </div>
                         <div class="card-body">
-                            <ul>
+                            {% set uesByParcours = {} %}
+                            {# Regrouper les ues par parcours #}
+                            {% for blocOption in blocOptions %}
                                 {% for ue in blocOption.ues %}
-                                    <li>
-                                        <a href="{{ path('app_ue_show', {'id': ue.id}) }}">{{ ue.label }}</a>
-                                    </li>
+                                    {% set parcoursLabel = blocOption.parcours.label %}
+                                    {% if uesByParcours[parcoursLabel] is not defined %}
+                                        {% set uesByParcours = uesByParcours|merge({ (parcoursLabel): {'parcours': blocOption.parcours, 'blocUE': blocOption.blocUE, 'ues': []} }) %}
+                                    {% endif %}
+                                    {% set uesByParcours = uesByParcours|merge({ (parcoursLabel): {'parcours': blocOption.parcours, 'blocUE': blocOption.blocUE, 'ues': uesByParcours[parcoursLabel].ues|merge([ue])} }) %}
                                 {% endfor %}
-                            </ul>
+                            {% endfor %}
+                            {# Afficher les ues séparées par parcours #}
+                            {% for parcoursLabel, blocOption in uesByParcours %}
+                                <h5>{{ blocOption.parcours.anneeFormation.label }} - {{ blocOption.parcours.label }} - {{ blocOption.blocUE.nbUEsOptional }} UE(s) optionnelle(s) à choisir</h5>
+                                <ul>
+                                    {% for ue in blocOption.ues %}
+                                        <li>
+                                            <a href="{{ path('app_ue_show', {'id': ue.id}) }}">{{ ue.label }}</a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>

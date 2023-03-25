@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\BlocOption;
+use App\Entity\BlocUE;
+use App\Entity\BlocUeUe;
 use App\Entity\CampagneChoix;
 use App\Entity\Groupe;
 use App\Form\CampagneChoixType;
@@ -44,33 +46,16 @@ class CampagneChoixController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $blocOptions = [];
-            foreach ($campagneChoix->getParcours() as $parcours) {
-                foreach ($campagneChoix->getBlocOptions() as $blocOption) {
-                    // find $parcours->getBlocUE which as the same category as $blocOption->getBlocUECategory
-                    $blocUe = $parcours->getBlocUEs()->filter(function ($blocUe) use ($blocOption) {
-                        return $blocUe->getBlocUECategory()->getId() === $blocOption->getBlocUECategory()->getId();
-                    })->first();
-                    if ($blocUe) {
-                        $newBlocOption = new BlocOption();
-                        $newBlocOption->setBlocUECategory($blocUe->getBlocUECategory());
-                        $newBlocOption->setParcours($parcours);
-                        foreach ($blocUe->getBlocUeUes() as $blocUeUe) {
-                            $newBlocOption->addUE($blocUeUe->getUe());
-                        }
-                        $blocOptions[] = $newBlocOption;
-                    }
+            foreach ($campagneChoix->getBlocOptions() as $blocOption) {
+                /* @var $blocOption BlocOption */
+                $parcours = $blocOption->getBlocUE();
+                $blocUeUes = $parcours->getBlocUeUes()->filter(function ($blocUeUe) {
+                    return $blocUeUe->isOptional();
+                });
+                foreach ($blocUeUes as $blocUeUe) {
+                    $blocOption->addUE($blocUeUe->getUE());
                 }
             }
-
-            foreach ($campagneChoix->getBlocOptions() as $blocOption) {
-                $campagneChoix->removeBlocOption($blocOption);
-            }
-
-            foreach ($blocOptions as $blocOption) {
-                $campagneChoix->addBlocOption($blocOption);
-            }
-
             $campagneChoixRepository->save($campagneChoix, true);
 
             return $this->redirectToRoute('app_campagne_choix_index', [], Response::HTTP_SEE_OTHER);
@@ -78,7 +63,7 @@ class CampagneChoixController extends AbstractController
 
         return $this->render('campagne_choix/new.html.twig', [
             'campagne_choix' => $campagneChoix,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
