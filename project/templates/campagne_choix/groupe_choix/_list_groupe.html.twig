@@ -1,8 +1,8 @@
 {#first section#}
 <ul class="nav nav-tabs" id="firstTab" role="tablist">
 	{% for bloc_ue in campagne_choix.blocOptions %}
-		<li class="nav-item" role="{{ bloc_ue.blocUE.blocUECategory.id}}">
-			<button class="nav-link" id="tab-{{ bloc_ue.blocUE.blocUECategory.id }}" data-bs-toggle="tab" data-bs-target="#tab-pane-{{ bloc_ue.blocUE.blocUECategory.id }}" type="button" role="tab" aria-controls="tab-pane-{{ bloc_ue.blocUE.blocUECategory.id }}" aria-selected="false">{{ bloc_ue.blocUE.blocUECategory.label }}</button>
+		<li class="nav-item" role="{{ bloc_ue.blocUE.category.id}}">
+			<button class="nav-link" id="tab-{{ bloc_ue.blocUE.category.id }}" data-bs-toggle="tab" data-bs-target="#tab-pane-{{ bloc_ue.blocUE.category.id }}" type="button" role="tab" aria-controls="tab-pane-{{ bloc_ue.blocUE.category.id }}" aria-selected="false">{{ bloc_ue.blocUE.category.label }}</button>
 		</li>
 	{% endfor %}
 </ul>
@@ -11,12 +11,12 @@
 {#first section elements#}
 <div class="tab-content" id="firstTabContent">
 	{% for bloc_ue in campagne_choix.blocOptions %}
-		<div class="tab-pane" id="tab-pane-{{ bloc_ue.blocUE.blocUECategory.id }}" role="tabpanel" aria-labelledby="tab-{{ bloc_ue.blocUE.blocUECategory.id }}" tabindex="0">
+		<div class="tab-pane" id="tab-pane-{{ bloc_ue.blocUE.category.id }}" role="tabpanel" aria-labelledby="tab-{{ bloc_ue.blocUE.category.id }}" tabindex="0">
 			{#second section#}
-			<ul class="nav nav-tabs" id="firstTab{{ bloc_ue.blocUE.blocUECategory.id }}" role="tablist">
+			<ul class="nav nav-tabs" id="firstTab{{ bloc_ue.blocUE.category.id }}" role="tablist">
 				{% for ue in bloc_ue.ues %}
-					<li class="nav-item" role="{{ bloc_ue.blocUE.blocUECategory.id }}">
-						<button class="nav-link" id="tab-{{ bloc_ue.blocUE.blocUECategory.id }}" data-bs-toggle="tab" data-bs-target="#{{ ue.label }}-tab-pane" type="button" role="tab" aria-controls="{{ ue.label }}-tab-pane" aria-selected="false">{{ ue.label }}</button>
+					<li class="nav-item" role="{{ bloc_ue.blocUE.category.id }}">
+						<button class="nav-link" id="tab-{{ bloc_ue.blocUE.category.id }}" data-bs-toggle="tab" data-bs-target="#{{ ue.label }}-tab-pane" type="button" role="tab" aria-controls="{{ ue.label }}-tab-pane" aria-selected="false">{{ ue.label }}</button>
 					</li>
 				{% endfor %}
 			</ul>

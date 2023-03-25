@@ -185,4 +185,5 @@ class CampagneChoix
 
         return $this;
     }
+
 }

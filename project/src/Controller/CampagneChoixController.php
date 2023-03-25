@@ -122,13 +122,15 @@ class CampagneChoixController extends AbstractController
         $indice = 1;
         $UE = null;
         $effectif = 25;
-        $parcours = $campagneChoix->getParcours();
-        $parcours_id = $parcours->getId();
-        $parcours = $parcoursRepository->findOneBy(['id' => $parcours_id]);
-        dump($parcours);
-        foreach ($parcours->getEtudiants() as $etudiant) {
-            $result[] = $etudiant;
+        foreach ($campagneChoix->getParcours() as $parcours) {
+            dump($parcours);
+            $parcours_id = $parcours->getId();
+            $parcours = $parcoursRepository->findOneBy(['id' => $parcours_id]);
+            foreach ($parcours->getEtudiants() as $etudiant) {
+                $result[] = $etudiant;
+            }
         }
+        dump($result);
         $choixes = $campagneChoix->getResponseCampagnes();
         $BlocUEs = $campagneChoix->getBlocOptions();
         dump($result);

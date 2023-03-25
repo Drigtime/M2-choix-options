@@ -92,7 +92,7 @@ class BlocUECategory
     {
         if (!$this->blocOptions->contains($blocOption)) {
             $this->blocOptions->add($blocOption);
-            $blocOption->setBlocUECategory($this);
+            $blocOption->getBlocUE()->setCategory($this);
         }
 
         return $this;
@@ -102,8 +102,8 @@ class BlocUECategory
     {
         if ($this->blocOptions->removeElement($blocOption)) {
             // set the owning side to null (unless already changed)
-            if ($blocOption->getBlocUECategory() === $this) {
-                $blocOption->setBlocUECategory(null);
+            if ($blocOption->getBlocUE()->getCategory() === $this) {
+                //$blocOption->getBlocUE()->setCategory(null);
             }
         }
 
