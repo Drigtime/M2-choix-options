@@ -39,7 +39,11 @@
         {% for campagne_choix in campagne_choixes %}
             <tr {% if loop.index is odd %}class="color"{% endif %}>
                 <td>{{ campagne_choix.id }}</td>
-                <td>{{ campagne_choix.parcours }}</td>
+                <td>
+                    {% for parcours in campagne_choix.parcours %}
+                        <span class="badge bg-primary">{{ parcours.anneeFormation ~ ' - ' ~ parcours.label }}</span>
+                    {% endfor %}
+                </td>
                 <td>{{ campagne_choix.dateDebut ? campagne_choix.dateDebut|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ campagne_choix.dateFin ? campagne_choix.dateFin|date('Y-m-d H:i:s') : '' }}</td>
                 <td class="text-end">

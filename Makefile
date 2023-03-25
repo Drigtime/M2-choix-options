@@ -60,11 +60,14 @@ console: start ## Pass a command to the symfony console
 	docker-compose exec php bin/console $(filter-out $@,$(MAKECMDGOALS))
 
 migration: start ## Create a migration
-	docker-compose exec php bin/console make:migration
+	docker-compose exec php bin/console make:migration --no-interaction
 
 migrate: start ## Migrate the database
-	docker-compose exec php composer install $(filter-out $@,$(MAKECMDGOALS))
 	docker-compose exec php bin/console d:m:m --no-interaction
+
+mm: start ## Migrate the database
+	make migration
+	make migrate
 
 controller: start ## Create a controller
 	docker-compose exec php bin/console make:controller

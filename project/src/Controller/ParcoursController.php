@@ -12,7 +12,6 @@ use App\Repository\BlocUERepository;
 use App\Repository\CampagneChoixRepository;
 use App\Repository\EtudiantRepository;
 use App\Repository\ParcoursRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

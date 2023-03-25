@@ -78,7 +78,7 @@ class AnneeFormationController extends AbstractController
     #[Route('/{id}', name: 'app_annee_formation_delete', methods: ['POST'])]
     public function delete(Request $request, AnneeFormation $anneeFormation, AnneeFormationRepository $anneeFormationRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$anneeFormation->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $anneeFormation->getId(), $request->request->get('_token'))) {
             $anneeFormationRepository->remove($anneeFormation, true);
         }
 

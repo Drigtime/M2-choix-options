@@ -49,6 +49,7 @@ class ChoixOptionsController extends AbstractController
         $reponsesCampagnes = $etudiant->getResponseCampagnes();
 
         return $this->render('etudiant/choix_options/index.html.twig', [
+            'parcours' => $etudiant->getParcours(),
             'campagnes' => $campagnes,
             'reponsesCampagnes' => $reponsesCampagnes,
         ]);
@@ -95,7 +96,7 @@ class ChoixOptionsController extends AbstractController
 
         foreach ($campagne->getBlocOptions() as $blocOption) {
             foreach ($blocOption->getUEs() as $index => $ue) {
-                $choix = $choixRepository->findOneBy(['responseCampagne' => $responseCampagne, 'UE' => $ueRepository->findOneBy(['id' => $ue]), 'blocOption' => $blocOptionRepository->findOneBy(['id' => $blocOption->getId()])]);
+                $choix = $choixRepository->findOneBy(['responseCampagne' => $responseCampagne, 'UE' => $ue, 'blocOption' => $blocOption]);
                 if ($choix == null) {
                     $choix = new Choix();
                     $choix->setUE($ue);
@@ -112,6 +113,7 @@ class ChoixOptionsController extends AbstractController
         $form->handleRequest($request);
 
         return $this->render('etudiant/choix_options/edit.html.twig', [
+            'parcours' => $etudiant->getParcours(),
             'form' => $form,
             'campagne' => $campagne,
         ]);

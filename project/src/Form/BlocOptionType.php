@@ -3,10 +3,6 @@
 namespace App\Form;
 
 use App\Entity\BlocOption;
-use App\Entity\UE;
-use App\Repository\BlocUERepository;
-use App\Repository\UERepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -21,23 +17,24 @@ class BlocOptionType extends AbstractType
 //            ->add('campagneChoix')
             ->add('blocUE', null, [
                 'label' => 'form.blocOption.blocUE',
-                'choice_attr' => function ($bloc, $key, $value) {
-                    return [
-                        'data-ues' => json_encode($bloc->getBlocUeUes()
-                            ->filter(function ($blocUeUe) {
-                                return $blocUeUe->isOptional();
-                            })
-                            ->map(function ($blocUeUe) {
-                                $ue = $blocUeUe->getUE();
-                                return [
-                                    'id' => $ue->getId(),
-                                    'label' => $ue->getLabel(),
-                                ];
-                            })->getValues())
-                    ];
-                },
-                'placeholder' => false
+//                'choice_attr' => function ($bloc, $key, $value) {
+//                    return [
+//                        'data-ues' => json_encode($bloc->getBlocUeUes()
+//                            ->filter(function ($blocUeUe) {
+//                                return $blocUeUe->isOptional();
+//                            })
+//                            ->map(function ($blocUeUe) {
+//                                $ue = $blocUeUe->getUE();
+//                                return [
+//                                    'id' => $ue->getId(),
+//                                    'label' => $ue->getLabel(),
+//                                ];
+//                            })->getValues())
+//                    ];
+//                },
+//                'placeholder' => false
             ])
+            ->add('parcours')
 //            ->add('UEs', EntityType::class, [
 //                'label' => 'form.blocOption.optionals.ues',
 //                'class' => UE::class,
@@ -46,19 +43,20 @@ class BlocOptionType extends AbstractType
 //                'expanded' => true,
 //                'mapped' => true,
 //            ])
-            ->add('nbUEChoix', null, [
-                'label' => 'form.blocOption.nbUEChoix',
-                'attr' => [
-                    'min' => 1,
-                ],
-            ]);
+//            ->add('nbUEChoix', null, [
+//                'label' => 'form.blocOption.nbUEChoix',
+//                'attr' => [
+//                    'min' => 1,
+//                ],
+//            ])
+        ;
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $form = $event->getForm();
             $blocOption = $event->getData();
             if ($blocOption) {
                 $campagneChoix = $blocOption->getCampagneChoix();
-                $blocUE = $blocOption->getBlocUE();
+//                $blocUE = $blocOption->getBlocUE();
 //                if ($blocUE) {
 //                    if ($form->has('UEs')) {
 //                        $form->remove('UEs');
@@ -81,57 +79,57 @@ class BlocOptionType extends AbstractType
                     }
                     $form->add('blocUE', null, [
                         'label' => 'form.blocOption.blocUE',
-                        'query_builder' => function (BlocUERepository $er) use ($campagneChoix) {
-                            return $er->createQueryBuilder('b')
-                                ->join('b.parcours', 'p')
-                                ->where('p.id = :parcours')
-                                ->setParameter('parcours', $campagneChoix->getParcours()->getId())
-                                ->orderBy('b.blocUECategory', 'ASC');
-                        },
-                        'placeholder' => false,
-                        'choice_attr' => function ($bloc, $key, $value) {
-                            return [
-                                'data-ues' => json_encode($bloc->getBlocUeUes()
-                                    ->filter(function ($blocUeUe) {
-                                        return $blocUeUe->isOptional();
-                                    })
-                                    ->map(function ($blocUeUe) {
-                                        $ue = $blocUeUe->getUE();
-                                        return [
-                                            'id' => $ue->getId(),
-                                            'label' => $ue->getLabel(),
-                                        ];
-                                    })->getValues())
-                            ];
-                        }
+//                        'query_builder' => function (BlocUERepository $er) use ($campagneChoix) {
+//                            return $er->createQueryBuilder('b')
+//                                ->join('b.parcours', 'p')
+//                                ->where('p.id = :parcours')
+//                                ->setParameter('parcours', $campagneChoix->getParcours()->getId())
+//                                ->orderBy('b.blocUE', 'ASC');
+//                        },
+//                        'placeholder' => false,
+//                        'choice_attr' => function ($bloc, $key, $value) {
+//                            return [
+//                                'data-ues' => json_encode($bloc->getBlocUeUes()
+//                                    ->filter(function ($blocUeUe) {
+//                                        return $blocUeUe->isOptional();
+//                                    })
+//                                    ->map(function ($blocUeUe) {
+//                                        $ue = $blocUeUe->getUE();
+//                                        return [
+//                                            'id' => $ue->getId(),
+//                                            'label' => $ue->getLabel(),
+//                                        ];
+//                                    })->getValues())
+//                            ];
+//                        }
                     ]);
                 }
             }
         });
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
-            $form = $event->getForm();
-            $data = $event->getData();
-            if ($data) {
-                $blocUEId = $data['blocUE'];
-                if ($blocUEId) {
-                    if ($form->has('UEs')) {
-                        $form->remove('UEs');
-                    }
-//                    $form->add('UEs', null, [
-//                        'label' => 'form.blocOption.ues',
-//                        'expanded' => true,
-//                        'query_builder' => function (UERepository $er) use ($blocUEId) {
-//                            return $er->createQueryBuilder('u')
-//                                ->join('u.blocUEs', 'b')
-//                                ->where('b.id = :blocUE')
-//                                ->setParameter('blocUE', $blocUEId)
-//                                ->orderBy('u.label', 'ASC');
-//                        }
-//                    ]);
-                }
-            }
-        });
+//        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
+//            $form = $event->getForm();
+//            $data = $event->getData();
+//            if ($data) {
+//                $blocUEId = $data['blocUE'];
+//                if ($blocUEId) {
+//                    if ($form->has('UEs')) {
+//                        $form->remove('UEs');
+//                    }
+////                    $form->add('UEs', null, [
+////                        'label' => 'form.blocOption.ues',
+////                        'expanded' => true,
+////                        'query_builder' => function (UERepository $er) use ($blocUEId) {
+////                            return $er->createQueryBuilder('u')
+////                                ->join('u.blocUEs', 'b')
+////                                ->where('b.id = :blocUE')
+////                                ->setParameter('blocUE', $blocUEId)
+////                                ->orderBy('u.label', 'ASC');
+////                        }
+////                    ]);
+//                }
+//            }
+//        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void

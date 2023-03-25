@@ -2,7 +2,7 @@
     {% for bloc_ue in campagne_choix.blocOptions %}
     <div class="card mb-4">
         <div class="card-header">
-            {{ bloc_ue.blocUE.blocUECategory.label }}
+            {{ bloc_ue.blocUE.category.label }}
         </div>
         
             {% for ue in bloc_ue.ues %}

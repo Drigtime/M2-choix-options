@@ -3,21 +3,29 @@
 namespace App\Form\Parcours;
 
 use App\Entity\BlocUE;
-use App\Entity\UE;
-use App\Repository\UERepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Entity\BlocUeUe;
+use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class BlocUEType extends AbstractType
 {
+    private $translator;
+
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('blocUECategory', null, [
-                'label' => 'form.blocUE.blocUECategory',
+            ->add('category', null, [
+                'label' => 'form.blocUE.category',
                 'choice_attr' => function ($choice, $key, $value) {
                     return [
                         'data-ues' => json_encode($choice->getUEs()->map(function ($ue) {
@@ -28,6 +36,29 @@ class BlocUEType extends AbstractType
                         })->toArray())
                     ];
                 }
+            ])
+            ->add('nbUEsOptional', null, [
+                'label' => 'form.blocUE.nbUEsOptional.label',
+                'attr' => [
+                    'min' => 0,
+                ],
+                'constraints' => [
+                    new Callback(function ($nbUEsOptional, ExecutionContextInterface $context) {
+                        $blocUeUes = $context->getObject()->getParent()->getData()->getBlocUeUes();
+                        if ($blocUeUes->count() > 0) {
+                            $blocUeUesOptional = $blocUeUes->filter(function (BlocUeUe $blocUeUe) {
+                                return $blocUeUe->isOptional();
+                            });
+                            if ($nbUEsOptional >= $blocUeUesOptional->count()) {
+                                $context->buildViolation($this->translator->trans('form.blocUE.nbUEsOptional.error.max'))
+                                    ->addViolation();
+                            } elseif ($nbUEsOptional == 0 && $blocUeUesOptional->count() > 0) {
+                                $context->buildViolation($this->translator->trans('form.blocUE.nbUEsOptional.error.min'))
+                                    ->addViolation();
+                            }
+                        }
+                    })
+                ]
             ])
             ->add('blocUeUes', CollectionType::class, [
                 'label' => false,

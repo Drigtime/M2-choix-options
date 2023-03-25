@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\BlocOption;
+use App\Entity\BlocUE;
+use App\Entity\BlocUeUe;
 use App\Entity\CampagneChoix;
 use App\Entity\Groupe;
 use App\Form\CampagneChoixType;
@@ -53,7 +56,6 @@ class CampagneChoixController extends AbstractController
                     $blocOption->addUE($blocUeUe->getUE());
                 }
             }
-
             $campagneChoixRepository->save($campagneChoix, true);
 
             return $this->redirectToRoute('app_campagne_choix_index', [], Response::HTTP_SEE_OTHER);
@@ -61,7 +63,7 @@ class CampagneChoixController extends AbstractController
 
         return $this->render('campagne_choix/new.html.twig', [
             'campagne_choix' => $campagneChoix,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
