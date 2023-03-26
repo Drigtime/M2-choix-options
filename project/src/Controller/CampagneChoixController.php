@@ -122,6 +122,7 @@ class CampagneChoixController extends AbstractController
         $indice = 1;
         $UE = null;
         $effectif = 25;
+        
         foreach ($campagneChoix->getParcours() as $parcours) {
             dump($parcours);
             $parcours_id = $parcours->getId();
@@ -130,9 +131,20 @@ class CampagneChoixController extends AbstractController
                 $result[] = $etudiant;
             }
         }
+        /*
+        dump($campagneChoix->getResponseCampagnes());
+        foreach ($campagneChoix->getResponseCampagnes() as $responsecampagne) {
+            foreach ($responsecampagne->getEtudiant() as $etudiant) {
+                $result[] = $etudiant;
+            }
+        }*/
+
         dump($result);
-        $choixes = $campagneChoix->getResponseCampagnes();
         $BlocUEs = $campagneChoix->getBlocOptions();
+        foreach($BlocUEs as $bloc){
+            dump($bloc->getParcours());
+        }
+        dump(count($BlocUEs));
         dump($result);
         dump("test");
         //Pour chaque ue du blocUE 

@@ -17,7 +17,7 @@
 
     {{ knp_pagination_filter(groupes, {
         'cc.id': 'ID',
-        'cc.label': 'Label',
+        'cc.label': 'Libellé',
         'ccue.label': 'UE',
     }) }}
 
@@ -38,7 +38,12 @@
             <tr {% if loop.index is odd %}class="color"{% endif %}>
                 <td>{{ groupe.id }}</td>
                 <td>{{ groupe.label }}</td>
-                <td>{{ groupe.ue }}</td>
+                <td>
+                <a href="{{ path('app_ue_show', {'id': groupe.ue.id}) }}">
+                {{ groupe.ue }}
+                </a>
+                </td>
+                
                 <td class="text-end">
                     <div class="btn-group">
                         <a href="{{ path('app_groupe_show', {'id': groupe.id}) }}"

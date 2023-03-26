@@ -2,7 +2,7 @@
 <ul class="nav nav-tabs" id="firstTab" role="tablist">
 	{% for bloc_ue in campagne_choix.blocOptions %}
 		<li class="nav-item" role="{{ bloc_ue.blocUE.category.id}}">
-			<button class="nav-link" id="tab-{{ bloc_ue.blocUE.category.id }}" data-bs-toggle="tab" data-bs-target="#tab-pane-{{ bloc_ue.blocUE.category.id }}" type="button" role="tab" aria-controls="tab-pane-{{ bloc_ue.blocUE.category.id }}" aria-selected="false">{{ bloc_ue.blocUE.category.label }}</button>
+			<button class="nav-link" id="tab-{{ bloc_ue.blocUE.category.id }}" data-bs-toggle="tab" data-bs-target="#tab-pane-{{ bloc_ue.blocUE.category.id }}" type="button" role="tab" aria-controls="tab-pane-{{ bloc_ue.blocUE.category.id }}" aria-selected="false">{{ bloc_ue.blocUE.category.label }} - {{ bloc_ue.parcours.label }} </button>
 		</li>
 	{% endfor %}
 </ul>
