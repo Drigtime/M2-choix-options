@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\Parcours;
+use App\Entity\Main\Parcours;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Main;
 
 use App\Repository\ResponseCampagneRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -23,7 +23,7 @@ class ResponseCampagne
     #[ORM\JoinColumn(nullable: false)]
     private ?CampagneChoix $campagne = null;
 
-    #[ORM\OneToMany(mappedBy: 'responseCampagne', targetEntity: Choix::class)]
+    #[ORM\OneToMany(mappedBy: 'responseCampagne', targetEntity: Choix::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $choixes;
 
     public function __construct()

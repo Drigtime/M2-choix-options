@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\CampagneChoix;
+use App\Entity\Main\CampagneChoix;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

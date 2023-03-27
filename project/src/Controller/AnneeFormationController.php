@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\AnneeFormation;
+use App\Entity\Main\AnneeFormation;
 use App\Form\AnneeFormationType;
 use App\Repository\AnneeFormationRepository;
 use Knp\Component\Pager\PaginatorInterface;

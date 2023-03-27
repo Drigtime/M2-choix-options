@@ -20,6 +20,10 @@ stop: ## Stop the project
 		echo "Project is already stopped"; \
 	fi
 
+restart: # Restart the projet
+	make stop
+	make start
+
 check-dependencies: ## Check the dependencies
 	docker-compose exec php sh -c "yarn check --integrity"
 

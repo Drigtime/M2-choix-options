@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\UserGestion;
+use App\Entity\Main\UserGestion;
 use App\Form\UserGestionType;
 use App\Form\UserImportType;
 use App\Repository\UserGestionRepository;
@@ -27,6 +27,7 @@ class UserGestionController extends AbstractController
 
             if ($fileImport) {
                 while (($data = fgetcsv($fileImport)) !== false) {
+                    dd($data);
                     $userGestion = new UserGestion();
                     $userGestion->setNom($data[0]);
                     $userGestion->setPrenom($data[1]);

@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\PassageAnnee;
+use App\Entity\Main\PassageAnnee;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

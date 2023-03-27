@@ -2,7 +2,7 @@
 
 namespace App\Form\PassageAnnee\Step_2;
 
-use App\Entity\EtudiantUE;
+use App\Entity\Main\EtudiantUE;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;

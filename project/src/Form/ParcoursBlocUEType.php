@@ -2,8 +2,8 @@
 
 namespace App\Form;
 
-use App\Entity\BlocUE;
-use App\Entity\UE;
+use App\Entity\Main\BlocUE;
+use App\Entity\Main\UE;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;

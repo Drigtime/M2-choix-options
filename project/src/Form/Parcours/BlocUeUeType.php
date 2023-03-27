@@ -2,8 +2,8 @@
 
 namespace App\Form\Parcours;
 
-use App\Entity\BlocUeUe;
-use App\Entity\UE;
+use App\Entity\Main\BlocUEUe;
+use App\Entity\Main\UE;
 use App\Repository\UERepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
