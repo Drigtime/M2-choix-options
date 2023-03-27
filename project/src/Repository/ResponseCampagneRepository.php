@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\ResponseCampagne;
+use App\Entity\Main\ResponseCampagne;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\BlocUECategory;
+use App\Entity\Main\BlocUECategory;
 use App\Form\BlocUECategoryType;
 use App\Repository\BlocUECategoryRepository;
 use Knp\Component\Pager\PaginatorInterface;

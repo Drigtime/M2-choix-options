@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\BlocUE;
+use App\Entity\Main\BlocUE;
 use App\Form\BlocUEType;
 use App\Repository\BlocUERepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

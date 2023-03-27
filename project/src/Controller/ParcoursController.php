@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Parcours;
+use App\Entity\Main\Parcours;
 use App\Form\Parcours\ParcoursType;
 use App\Repository\ParcoursRepository;
 use Knp\Component\Pager\PaginatorInterface;

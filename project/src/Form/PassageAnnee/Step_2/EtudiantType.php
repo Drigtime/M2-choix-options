@@ -2,7 +2,7 @@
 
 namespace App\Form\PassageAnnee\Step_2;
 
-use App\Entity\Etudiant;
+use App\Entity\Main\Etudiant;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;

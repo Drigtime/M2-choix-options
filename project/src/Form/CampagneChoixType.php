@@ -2,8 +2,8 @@
 
 namespace App\Form;
 
-use App\Entity\BlocUE;
-use App\Entity\CampagneChoix;
+use App\Entity\Main\BlocUE;
+use App\Entity\Main\CampagneChoix;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;

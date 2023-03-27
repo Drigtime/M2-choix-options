@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
-use App\Entity\Etudiant;
-use App\Entity\EtudiantUE;
-use App\Entity\Parcours;
+use App\Entity\Main\Etudiant;
+use App\Entity\Main\EtudiantUE;
+use App\Entity\Main\Parcours;
 use App\Form\MoveEtudiantType;
 use App\Form\PassageAnnee\Step_1\AnneeFormationType as Step1AnneeFormationType;
 use App\Form\PassageAnnee\Step_2\AnneeFormationType as Step2AnneeFormationType;
