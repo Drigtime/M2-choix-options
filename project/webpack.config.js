@@ -30,6 +30,7 @@ Encore
     .addEntry('campagne_choix_tab', './assets/campagne_choix/tab.js')
     .addEntry('passage_annee_index', './assets/passage_annee/index.js')
     .addEntry('passage_annee_form', './assets/passage_annee/form.js')
+    .addEntry('passage_annee_form_step_2', './assets/passage_annee/form_step_2.js')
     .addEntry('etudiant_choix_edit', './assets/etudiant_choix/edit.js')
 
     .addStyleEntry('login', './assets/styles/login.css')

@@ -20,15 +20,37 @@
         <div class="bg-light rounded-lg">
             <ol class="nav nav-pills nav-justified">
                 <li class="nav-item">
-                    <a class="nav-link {{ anneeFormation == 'M2' ? 'active' }}"
+                    <a class="nav-link {{ app.current_route == 'app_passage_annee_worflow_step_1' and anneeFormation == 'M2' ? 'active' }}"
                        href="{{ path('app_passage_annee_worflow_step_1', {'anneeFormation': 'M2'}) }}">
                         Étape 1 - M2
                     </a>
                 </li>
+                {% if app.session.get('form_step_M2_1_redoublants') %}
+                    <li class="nav-item">
+                        <a class="nav-link {{ app.current_route == 'app_passage_annee_worflow_step_1_2' and anneeFormation == 'M2' ? 'active' }}"
+                           href="{{ path('app_passage_annee_worflow_step_1_2', {'anneeFormation': 'M2'}) }}">
+                            Étape 1.2 - M2 redoublants
+                        </a>
+                    </li>
+                {% endif %}
                 <li class="nav-item">
-                    <a class="nav-link {{ anneeFormation == 'M2' ? 'disabled' }} {{ anneeFormation == 'M1' ? 'active' }}"
+                    <a class="nav-link {{ app.current_route == 'app_passage_annee_worflow_step_1' and anneeFormation == 'M1' ? 'active' }}"
                        href="{{ path('app_passage_annee_worflow_step_1', {'anneeFormation': 'M1'}) }}">
                         Étape 2 - M1
+                    </a>
+                </li>
+                {% if app.session.get('form_step_M1_1_redoublants') %}
+                    <li class="nav-item">
+                        <a class="nav-link {{ app.current_route == 'app_passage_annee_worflow_step_1_2' and anneeFormation == 'M1' ? 'active' }}"
+                           href="{{ path('app_passage_annee_worflow_step_1_2', {'anneeFormation': 'M1'}) }}">
+                            Étape 2.2 - M1 redoublants
+                        </a>
+                    </li>
+                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link {{ app.current_route == 'app_passage_annee_worflow_step_2' and anneeFormation == 'M1' ? 'active' }}"
+                       href="{{ path('app_passage_annee_worflow_step_2', {'anneeFormation': 'M1'}) }}">
+                        Étape 3 - M1 parcours
                     </a>
                 </li>
             </ol>

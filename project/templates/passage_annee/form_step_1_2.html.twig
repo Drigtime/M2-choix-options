@@ -17,11 +17,7 @@
                        class="btn btn-secondary">
                         Précédent
                     </a>
-                    {% if anneeFormation == 'M1' %}
-                        <button type="submit" class="btn btn-primary">Valider</button>
-                    {% else %}
-                        <button type="submit" class="btn btn-primary">Suivant</button>
-                    {% endif %}
+                    <button type="submit" class="btn btn-primary">Suivant</button>
                 </div>
             </div>
         </div>
@@ -62,11 +58,7 @@
                    class="btn btn-secondary">
                     Précédent
                 </a>
-                {% if anneeFormation == 'M1' %}
-                    <button type="submit" class="btn btn-primary">Valider</button>
-                {% else %}
-                    <button type="submit" class="btn btn-primary">Suivant</button>
-                {% endif %}
+                <button type="submit" class="btn btn-primary">Suivant</button>
             </div>
         </div>
         {{ form_end(form) }}

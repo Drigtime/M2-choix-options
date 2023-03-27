@@ -15,16 +15,12 @@
             <div class="ms-auto d-flex align-content-center flex-wrap">
                 <div class="btn-group">
                     {% if anneeFormation == 'M1' %}
-                        <a href="{{ path('app_passage_annee_worflow_step_1', {'anneeFormation': 'M2'}) }}"
+                        <a href="{{ path(previousRoute, {'anneeFormation': 'M2'}) }}"
                            class="btn btn-secondary">
                             Précédent
                         </a>
                     {% endif %}
-                    {% if anneeFormation == 'M1' %}
-                        <button type="submit" class="btn btn-primary">Valider</button>
-                    {% else %}
-                        <button type="submit" class="btn btn-primary">Suivant</button>
-                    {% endif %}
+                    <button type="submit" class="btn btn-primary">Suivant</button>
                 </div>
             </div>
         </div>
@@ -88,16 +84,12 @@
         <div class="d-flex justify-content-end mb-3">
             <div class="btn-group">
                 {% if anneeFormation == 'M1' %}
-                    <a href="{{ path('app_passage_annee_worflow_step_1', {'anneeFormation': 'M2'}) }}"
+                    <a href="{{ path(previousRoute, {'anneeFormation': 'M2'}) }}"
                        class="btn btn-secondary">
                         Précédent
                     </a>
                 {% endif %}
-                {% if anneeFormation == 'M1' %}
-                    <button type="submit" class="btn btn-primary">Valider</button>
-                {% else %}
-                    <button type="submit" class="btn btn-primary">Suivant</button>
-                {% endif %}
+                <button type="submit" class="btn btn-primary">Suivant</button>
             </div>
         </div>
         {{ form_end(form) }}
