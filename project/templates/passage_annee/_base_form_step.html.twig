@@ -18,42 +18,36 @@
         </div>
 
         <div class="bg-light rounded-lg">
-            <ol class="nav nav-pills nav-justified">
-                <li class="nav-item">
-                    <a class="nav-link {{ app.current_route == 'app_passage_annee_worflow_step_1' and anneeFormation == 'M2' ? 'active' }}"
-                       href="{{ path('app_passage_annee_worflow_step_1', {'anneeFormation': 'M2'}) }}">
-                        Étape 1 - M2
-                    </a>
-                </li>
+            <nav class="nav nav-pills nav-justified">
+                <a class="nav-link {{ app.current_route == 'app_passage_annee_worflow_step_1' ? 'active' }}"
+                   href="{{ path('app_passage_annee_worflow_step_1') }}">
+                    Étape 1 - M2
+                </a>
                 {% if app.session.get('form_step_M2_1_redoublants') %}
-                    <li class="nav-item">
-                        <a class="nav-link {{ app.current_route == 'app_passage_annee_worflow_step_1_2' and anneeFormation == 'M2' ? 'active' }}"
-                           href="{{ path('app_passage_annee_worflow_step_1_2', {'anneeFormation': 'M2'}) }}">
-                            Étape 1.2 - M2 redoublants
-                        </a>
-                    </li>
-                {% endif %}
-                <li class="nav-item">
-                    <a class="nav-link {{ app.current_route == 'app_passage_annee_worflow_step_1' and anneeFormation == 'M1' ? 'active' }}"
-                       href="{{ path('app_passage_annee_worflow_step_1', {'anneeFormation': 'M1'}) }}">
-                        Étape 2 - M1
+                    <a class="nav-link {{ app.current_route == 'app_passage_annee_worflow_step_1_2' ? 'active' }}"
+                       href="{{ path('app_passage_annee_worflow_step_1_2') }}">
+                        Étape 1.1 - M2 redoublants
                     </a>
-                </li>
+                {% endif %}
+                <a class="nav-link {{ app.current_route == 'app_passage_annee_worflow_step_2' ? 'active' }}"
+                   href="{{ path('app_passage_annee_worflow_step_2') }}">
+                    Étape 2 - M1
+                </a>
                 {% if app.session.get('form_step_M1_1_redoublants') %}
-                    <li class="nav-item">
-                        <a class="nav-link {{ app.current_route == 'app_passage_annee_worflow_step_1_2' and anneeFormation == 'M1' ? 'active' }}"
-                           href="{{ path('app_passage_annee_worflow_step_1_2', {'anneeFormation': 'M1'}) }}">
-                            Étape 2.2 - M1 redoublants
-                        </a>
-                    </li>
-                {% endif %}
-                <li class="nav-item">
-                    <a class="nav-link {{ app.current_route == 'app_passage_annee_worflow_step_2' and anneeFormation == 'M1' ? 'active' }}"
-                       href="{{ path('app_passage_annee_worflow_step_2', {'anneeFormation': 'M1'}) }}">
-                        Étape 3 - M1 parcours
+                    <a class="nav-link {{ app.current_route == 'app_passage_annee_worflow_step_2_2' ? 'active' }}"
+                       href="{{ path('app_passage_annee_worflow_step_2_2') }}">
+                        Étape 2.1 - M1 redoublants
                     </a>
-                </li>
-            </ol>
+                {% endif %}
+                <a class="nav-link {{ app.current_route == 'app_passage_annee_worflow_step_3' ? 'active' }}"
+                   href="{{ path('app_passage_annee_worflow_step_3') }}">
+                    Étape 3 - M1 parcours
+                </a>
+                <a class="nav-link {{ app.current_route == 'app_passage_annee_worflow_step_4' ? 'active' }}"
+                   href="{{ path('app_passage_annee_worflow_step_4') }}">
+                    Étape 4 - Importation des nouveaux M1
+                </a>
+            </nav>
         </div>
     </div>
 

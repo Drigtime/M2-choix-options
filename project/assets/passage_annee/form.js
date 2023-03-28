@@ -25,5 +25,11 @@ $(document).ready(function () {
 
     $('table').DataTable({
         language: languageFR,
+        // hide next/previous buttons if there is only one page
+        "initComplete": function(settings, json) {
+            if (this.api().page.info().pages <= 1) {
+                $('.pagination', this.api().table().container()).hide();
+            }
+        }
     });
 });

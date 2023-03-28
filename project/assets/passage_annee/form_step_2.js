@@ -4,6 +4,7 @@ const coursesList = document.getElementById("courses-list");
 const currentCourseList = document.getElementById("current-course-list");
 const toRightButton = document.getElementById("to-right");
 const toLeftButton = document.getElementById("to-left");
+const form = document.getElementById("form-step-2");
 
 // Création d'un tableau associatif pour stocker les étudiants pour chaque parcours
 const courses = {};
@@ -85,6 +86,31 @@ function removeStudentsFromCourse() {
     // Mise à jour de la liste des étudiants dans le parcours sélectionné
     updateCurrentCourseList();
 }
+
+form.addEventListener("submit", function (event) {
+    // Empêche l'envoi du formulaire
+    event.preventDefault();
+
+    // Check if there are still students in the left list
+    if (studentsList.options.length > 0) {
+        alert("Il reste des étudiants à placer dans les parcours.");
+        return;
+    }
+
+    // Ajout des étudiants pour chaque parcours au formulaire
+    Object.keys(courses).forEach((course) => {
+        courses[course].forEach((student) => {
+            const input = document.createElement("input");
+            input.type = "hidden";
+            input.name = `courses[${course}][]`;
+            input.value = student.value;
+            form.appendChild(input);
+        });
+    });
+
+    // Envoi du formulaire
+    form.submit();
+});
 
 // Écouteurs d'événement pour les boutons de déplacement
 toRightButton.addEventListener("click", addStudentsToCourse);

@@ -5,19 +5,17 @@
 {% endblock %}
 
 {% block content %}
-    <div>
+    <form action="{{ path('app_passage_annee_worflow_step_3') }}" method="post" id="form-step-2">
         <div class="d-flex my-3">
             <h4 class="mt-3 mb-0">
                 Étape 3 - Rattachement des étudiants aux parcours de M2
             </h4>
             <div class="ms-auto d-flex align-content-center flex-wrap">
                 <div class="btn-group">
-                    {% if anneeFormation == 'M1' %}
-                        <a href="{{ path(previousRoute, {'anneeFormation': 'M1'}) }}"
-                           class="btn btn-secondary">
-                            Précédent
-                        </a>
-                    {% endif %}
+                    <a href="{{ path(previousRoute) }}"
+                       class="btn btn-secondary">
+                        Précédent
+                    </a>
                     <button type="submit" class="btn btn-primary">Valider</button>
                 </div>
             </div>
@@ -37,7 +35,7 @@
         <div class="row">
             <!-- Liste des étudiants -->
             <div class="col-sm-6">
-                <button id="to-right" class="btn btn-primary w-100 mb-2">
+                <button type="button" id="to-right" class="btn btn-primary w-100 mb-2">
                     Ajouter au parcours
                     <i class="fas fa-arrow-right"></i>
                 </button>
@@ -52,7 +50,7 @@
             </div>
             <!-- Liste des parcours -->
             <div class="col-sm-6">
-                <button id="to-left" class="btn btn-primary w-100 mb-2">
+                <button type="button" id="to-left" class="btn btn-primary w-100 mb-2">
                     <i class="fas fa-arrow-left"></i>
                     Retirer du parcours
                 </button>
@@ -65,17 +63,15 @@
         <div class="d-flex my-3">
             <div class="ms-auto d-flex align-content-center flex-wrap">
                 <div class="btn-group">
-                    {% if anneeFormation == 'M1' %}
-                        <a href="{{ path(previousRoute, {'anneeFormation': 'M1'}) }}"
-                           class="btn btn-secondary">
-                            Précédent
-                        </a>
-                    {% endif %}
+                    <a href="{{ path(previousRoute) }}"
+                       class="btn btn-secondary">
+                        Précédent
+                    </a>
                     <button type="submit" class="btn btn-primary">Valider</button>
                 </div>
             </div>
         </div>
-    </div>
+    </form>
 {% endblock %}
 
 {% block stylesheets %}
