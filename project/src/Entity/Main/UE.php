@@ -39,6 +39,9 @@ class UE
     #[ORM\OneToMany(mappedBy: 'UE', targetEntity: BlocUeUe::class)]
     private Collection $blocUeUes;
 
+    #[ORM\OneToMany(mappedBy: 'ue', targetEntity: BlocOptionUe::class)]
+    private Collection $blocOptionUes;
+
     public function __construct()
     {
         $this->blocOptions = new ArrayCollection();
@@ -47,6 +50,7 @@ class UE
         $this->groupes = new ArrayCollection();
         $this->etudiantUEs = new ArrayCollection();
         $this->blocUeUes = new ArrayCollection();
+        $this->blocOptionUes = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -248,6 +252,36 @@ class UE
             // set the owning side to null (unless already changed)
             if ($blocUeUe->getUE() === $this) {
                 $blocUeUe->setUE(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, BlocOptionUe>
+     */
+    public function getBlocOptionUes(): Collection
+    {
+        return $this->blocOptionUes;
+    }
+
+    public function addBlocOptionUe(BlocOptionUe $blocOptionUe): self
+    {
+        if (!$this->blocOptionUes->contains($blocOptionUe)) {
+            $this->blocOptionUes->add($blocOptionUe);
+            $blocOptionUe->setUe($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBlocOptionUe(BlocOptionUe $blocOptionUe): self
+    {
+        if ($this->blocOptionUes->removeElement($blocOptionUe)) {
+            // set the owning side to null (unless already changed)
+            if ($blocOptionUe->getUe() === $this) {
+                $blocOptionUe->setUe(null);
             }
         }
 

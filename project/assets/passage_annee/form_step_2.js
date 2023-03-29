@@ -7,7 +7,8 @@ const toLeftButton = document.getElementById("to-left");
 const form = document.getElementById("form-step-2");
 
 // Création d'un tableau associatif pour stocker les étudiants pour chaque parcours
-const courses = {};
+// get data-form-data="{"1":["33","32","36","35"],"6":["34","40","37"],"7":["39","31","41"]}"
+const courses = JSON.parse(form.dataset.formData);
 
 // Fonction de mise à jour de la liste des étudiants dans le parcours sélectionné
 function updateCurrentCourseList() {
@@ -72,7 +73,7 @@ function removeStudentsFromCourse() {
 
     // Suppression des étudiants de la liste correspondante
     courses[selectedCourse] = courses[selectedCourse].filter(
-        (student) => !selectedStudents.some((s) => s.value === student.value)
+        (student) => !selectedStudents.some((s) => Number(s.value) === student.value)
     );
 
     // Ajout des étudiants à la liste de gauche
@@ -102,7 +103,7 @@ form.addEventListener("submit", function (event) {
         courses[course].forEach((student) => {
             const input = document.createElement("input");
             input.type = "hidden";
-            input.name = `courses[${course}][]`;
+            input.name = `parcours[${course}][]`;
             input.value = student.value;
             form.appendChild(input);
         });
@@ -115,6 +116,13 @@ form.addEventListener("submit", function (event) {
 // Écouteurs d'événement pour les boutons de déplacement
 toRightButton.addEventListener("click", addStudentsToCourse);
 toLeftButton.addEventListener("click", removeStudentsFromCourse);
+
+Object.keys(courses).forEach((course) => {
+    courses[course].forEach((student) => {
+        const option = studentsList.querySelector(`option[value="${student.value}"]`);
+        option.remove();
+    });
+});
 
 // Mise à jour initiale de la liste des étudiants dans le parcours sélectionné
 updateCurrentCourseList();

@@ -40,6 +40,8 @@ services:
     container_name: 'adminer'
     ports:
       - '8104:8080'
+    volumes:
+      - ./docker/adminer/adminer.css:/var/www/html/adminer.css
 
   mailhog:
     image: mailhog/mailhog

@@ -2,6 +2,7 @@
 
 namespace App\Entity\Main;
 
+use App\Entity\Main\PassageAnnee\EtudiantValide;
 use App\Repository\EtudiantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;

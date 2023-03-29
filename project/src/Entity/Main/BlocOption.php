@@ -18,9 +18,6 @@ class BlocOption
     #[ORM\ManyToOne(targetEntity: CampagneChoix::class, inversedBy: 'blocOptions')]
     private ?CampagneChoix $campagneChoix = null;
 
-    #[ORM\ManyToMany(targetEntity: UE::class, inversedBy: 'blocOptions')]
-    private Collection $UEs;
-
     #[ORM\OneToMany(mappedBy: 'blocOption', targetEntity: Choix::class, cascade: ['persist', 'remove'])]
     private Collection $choixes;
 
@@ -30,10 +27,13 @@ class BlocOption
     #[ORM\ManyToOne(inversedBy: 'blocOptions')]
     private ?Parcours $parcours = null;
 
+    #[ORM\ManyToMany(targetEntity: BlocOptionUe::class, mappedBy: 'blocOption')]
+    private Collection $blocOptionUes;
+
     public function __construct()
     {
-        $this->UEs = new ArrayCollection();
         $this->choixes = new ArrayCollection();
+        $this->blocOptionUes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -49,30 +49,6 @@ class BlocOption
     public function setCampagneChoix(?CampagneChoix $campagneChoix): self
     {
         $this->campagneChoix = $campagneChoix;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, UE>
-     */
-    public function getUEs(): Collection
-    {
-        return $this->UEs;
-    }
-
-    public function addUE(UE $UE): self
-    {
-        if (!$this->UEs->contains($UE)) {
-            $this->UEs->add($UE);
-        }
-
-        return $this;
-    }
-
-    public function removeUE(UE $UE): self
-    {
-        $this->UEs->removeElement($UE);
 
         return $this;
     }
@@ -130,4 +106,32 @@ class BlocOption
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, BlocOptionUe>
+     */
+    public function getBlocOptionUes(): Collection
+    {
+        return $this->blocOptionUes;
+    }
+
+    public function addBlocOptionUe(BlocOptionUe $blocOptionUe): self
+    {
+        if (!$this->blocOptionUes->contains($blocOptionUe)) {
+            $this->blocOptionUes->add($blocOptionUe);
+            $blocOptionUe->addBlocOption($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBlocOptionUe(BlocOptionUe $blocOptionUe): self
+    {
+        if ($this->blocOptionUes->removeElement($blocOptionUe)) {
+            $blocOptionUe->removeBlocOption($this);
+        }
+
+        return $this;
+    }
+
 }
