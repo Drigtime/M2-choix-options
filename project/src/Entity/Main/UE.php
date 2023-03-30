@@ -39,8 +39,11 @@ class UE
     #[ORM\OneToMany(mappedBy: 'UE', targetEntity: BlocUeUe::class)]
     private Collection $blocUeUes;
 
-    #[ORM\OneToMany(mappedBy: 'ue', targetEntity: BlocOptionUe::class)]
-    private Collection $blocOptionUes;
+    #[ORM\Column(nullable: true)]
+    private ?int $effectif = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $nbrGroupe = null;
 
     public function __construct()
     {
@@ -50,7 +53,6 @@ class UE
         $this->groupes = new ArrayCollection();
         $this->etudiantUEs = new ArrayCollection();
         $this->blocUeUes = new ArrayCollection();
-        $this->blocOptionUes = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -258,33 +260,28 @@ class UE
         return $this;
     }
 
-    /**
-     * @return Collection<int, BlocOptionUe>
-     */
-    public function getBlocOptionUes(): Collection
+    public function getEffectif(): ?int
     {
-        return $this->blocOptionUes;
+        return $this->effectif;
     }
 
-    public function addBlocOptionUe(BlocOptionUe $blocOptionUe): self
+    public function setEffectif(?int $effectif): self
     {
-        if (!$this->blocOptionUes->contains($blocOptionUe)) {
-            $this->blocOptionUes->add($blocOptionUe);
-            $blocOptionUe->setUe($this);
-        }
+        $this->effectif = $effectif;
 
         return $this;
     }
 
-    public function removeBlocOptionUe(BlocOptionUe $blocOptionUe): self
+    public function getNbrGroupe(): ?int
     {
-        if ($this->blocOptionUes->removeElement($blocOptionUe)) {
-            // set the owning side to null (unless already changed)
-            if ($blocOptionUe->getUe() === $this) {
-                $blocOptionUe->setUe(null);
-            }
-        }
+        return $this->nbrGroupe;
+    }
+
+    public function setNbrGroupe(?int $nbrGroupe): self
+    {
+        $this->nbrGroupe = $nbrGroupe;
 
         return $this;
     }
+
 }

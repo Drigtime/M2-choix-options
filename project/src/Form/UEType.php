@@ -6,6 +6,7 @@ use App\Entity\Main\BlocUECategory;
 use App\Entity\Main\UE;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -26,8 +27,21 @@ class UEType extends AbstractType
             ->add('active', null, [
                 'label' => 'Actif',
                 'required' => false,
-            ])//            ->add('blocOptions')
-        ;
+            ])
+            ->add('effectif', NumberType::class, [
+                'label' => 'Effectif',
+                'html5' => true,
+                'attr' => [
+                    'min' => 0,
+                ],
+            ])
+            ->add('nbrGroupe', NumberType::class, [
+                'label' => 'Nombre de groupe',
+                'html5' => true,
+                'attr' => [
+                    'min' => 0,
+                ],
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

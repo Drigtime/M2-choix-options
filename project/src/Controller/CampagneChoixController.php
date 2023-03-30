@@ -3,12 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Main\BlocOption;
-use App\Entity\Main\BlocOptionUe;
 use App\Entity\Main\CampagneChoix;
 use App\Entity\Main\Groupe;
 use App\Form\CampagneChoixType;
 use App\Form\GroupeType;
-use App\Repository\BlocOptionUeRepository;
 use App\Repository\CampagneChoixRepository;
 use App\Repository\GroupeRepository;
 use App\Repository\ParcoursRepository;
@@ -39,61 +37,26 @@ class CampagneChoixController extends AbstractController
     }
 
     #[Route('/new', name: 'app_campagne_choix_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, CampagneChoixRepository $campagneChoixRepository, BlocOptionUeRepository $blocOptionUeRepository): Response
+    public function new(Request $request, CampagneChoixRepository $campagneChoixRepository): Response
     {
         $campagneChoix = new CampagneChoix();
         $form = $this->createForm(CampagneChoixType::class, $campagneChoix);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // group blocOption by blocUe->category
-            $blocOptions = $campagneChoix->getBlocOptions();
-            $blocOptionsByCategory = [];
-            foreach ($blocOptions as $blocOption) {
-                $category = $blocOption->getBlocUE()->getCategory();
-                if (!array_key_exists($category->getId(), $blocOptionsByCategory)) {
-                    $blocOptionsByCategory[$category->getId()] = [];
-                }
-                $blocOptionsByCategory[$category->getId()][] = $blocOption;
-            }
-
-            // for each category, get all ues that are no duplicate
-            $uesByCategory = [];
-            foreach ($blocOptionsByCategory as $category => $blocOptions) {
-                $ues = [];
-                foreach ($blocOptions as $blocOption) {
-                    $blocUeUes = $blocOption->getBlocUE()->getBlocUeUes();
-                    foreach ($blocUeUes as $blocUeUe) {
-                        $ues[] = $blocUeUe->getUE();
-                    }
-                }
-                $uesByCategory[$category] = array_unique($ues, SORT_REGULAR);
-            }
-
-            // for each category and each ue, create a new blocOptionUe and add it to the blocOption
-            $blocOptionUEs = [];
-            foreach ($blocOptionsByCategory as $category => $blocOptions) {
-                foreach ($blocOptions as $blocOption) {
-                    $blocUeUes = $blocOption->getBlocUE()->getBlocUeUes()->filter(function ($blocUeUe) {
-                        return $blocUeUe->isOptional();
-                    });
-                    foreach ($uesByCategory[$category] as $ue) {
-                        if ($blocUeUes->filter(fn ($blocUeUe) => $blocUeUe->getUE() === $ue)->count() > 0) {
-                            $blocOptionUE = new BlocOptionUe();
-                            $blocOptionUE->addBlocOption($blocOption);
-                            $blocOptionUE->setUE($ue);
-                            $blocOptionUE->setEffectif(10);
-                            $blocOptionUEs[] = $blocOptionUE;
-                        }
-                    }
+            // same as in new action but we must remove all UEs from blocOptions
+            foreach ($campagneChoix->getBlocOptions() as $blocOption) {
+                /* @var $blocOption BlocOption */
+                $blocOption->getUEs()->clear();
+                $parcours = $blocOption->getBlocUE();
+                $blocUeUes = $parcours->getBlocUeUes()->filter(function ($blocUeUe) {
+                    return $blocUeUe->isOptional();
+                });
+                foreach ($blocUeUes as $blocUeUe) {
+                    $blocOption->addUE($blocUeUe->getUE());
                 }
             }
-
             $campagneChoixRepository->save($campagneChoix, true);
-            // save blocOptionUEs
-            foreach ($blocOptionUEs as $blocOptionUE) {
-                $blocOptionUeRepository->save($blocOptionUE, true);
-            }
 
             return $this->redirectToRoute('app_campagne_choix_index', [], Response::HTTP_SEE_OTHER);
         }

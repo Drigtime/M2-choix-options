@@ -34,24 +34,24 @@
 
                     {% for parcour in parcours %}
                         {% for blocOption in parcour.blocOptions|filter(blocOption => blocOption.campagneChoix.id == form.vars.data.id and blocOption.blocUE.category.id == blocUE.category) %}
-                            {% for blocOptionUe in blocOption.blocOptionUes %}
-                                {% set ue = blocOptionUe.ue %}
+                            {% for ue in blocOption.ues %}
                                 {% if ue not in allUEs %}
                                     {% set allUEs = allUEs|merge([ue]) %}
-                                    <div class="row">
-                                        <div class="col-8 col-sm-9 col-md-8 col-lg-10">
-                                            {{ ue }}
-                                            {% for parcour in parcours %}
-                                                {% for blocOption in parcour.blocOptions|filter(blocOption => blocOption.campagneChoix.id == form.vars.data.id and blocOption.blocUE.category.id == blocUE.category) %}
-                                                    {% if blocOptionUe.ue in blocOption.blocOptionUes|map(blocOptionUe => blocOptionUe.ue) %}
-                                                        <span class="badge bg-primary">{{ parcour.label }}</span>
-                                                    {% endif %}
-                                                {% endfor %}
+                                    <div>
+                                        {{ ue }}
+                                        {% for parcour in parcours %}
+                                            {% for blocOption in parcour.blocOptions|filter(blocOption => blocOption.campagneChoix.id == form.vars.data.id and blocOption.blocUE.category.id == blocUE.category) %}
+                                                {% if ue in blocOption.ues %}
+                                                    <span class="badge bg-primary">{{ parcour.label }}</span>
+                                                {% endif %}
                                             {% endfor %}
-                                        </div>
-                                        <div class="col-4 col-sm-3 col-md-4 col-lg-2">
-                                            <input type="number" class="form-control">
-                                        </div>
+                                        {% endfor %}
+                                        {% if ue.effectif is not null %}
+                                            <span class="badge bg-info">Effectif {{ ue.effectif }}</span>
+                                        {% endif %}
+                                        {% if ue.nbrGroupe is not null %}
+                                            <span class="badge bg-info">Groupes {{ ue.nbrGroupe }}</span>
+                                        {% endif %}
                                     </div>
                                 {% endif %}
                             {% endfor %}
@@ -75,7 +75,7 @@
 {% endmacro %}
 
 {% macro printNoBlocUE() %}
-    <div class="alert alert-primary m-0 p-2">Aucun bloc option n'a encore été ajouté.</div>
+    <div class="alert alert-primary mt-4 mb-0 p-2">Aucun bloc option n'a encore été ajouté.</div>
 {% endmacro %}
 
 {{ form_start(form) }}

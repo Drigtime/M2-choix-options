@@ -1,5 +1,15 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
+    {{ form_row(form.label) }}
+    {{ form_row(form.blocUECategories) }}
+    {{ form_row(form.active) }}
+    <div class="row">
+        <div class="col-12 col-md-6">
+            {{ form_row(form.effectif) }}
+        </div>
+        <div class="col-12 col-md-6">
+            {{ form_row(form.nbrGroupe) }}
+        </div>
+    </div>
 
     <div class="text-end">
         <button class="btn btn-sm btn-primary">

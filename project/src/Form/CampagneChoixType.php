@@ -32,7 +32,7 @@ class CampagneChoixType extends AbstractType
                 'choice_attr' => function ($parcours) {
                     return [
                         'data-blocs-ue' => json_encode([
-                            'label' => $parcours->getAnneeFormation()->getLabel() . ' - ' . $parcours->getLabel(),
+                            'label' => $parcours->getLabel(),
                             'blocUEs' => $parcours->getBlocUEs()->map(function (BlocUE $bloc) {
                                 return [
                                     'id' => $bloc->getId(),
@@ -47,6 +47,8 @@ class CampagneChoixType extends AbstractType
                                             return [
                                                 'id' => $ue->getId(),
                                                 'label' => $ue->getLabel(),
+                                                'effectif' => $ue->getEffectif(),
+                                                'nbrGroupe' => $ue->getNbrGroupe(),
                                             ];
                                         })
                                         ->getValues(),
@@ -85,7 +87,7 @@ class CampagneChoixType extends AbstractType
                         return [
                             'data-blocs-ue' => json_encode([
                                 'id' => $parcours->getId(),
-                                'label' => $parcours->getAnneeFormation()->getLabel() . ' - ' . $parcours->getLabel(),
+                                'label' => $parcours->getLabel(),
                                 'blocUEs' => $parcours->getBlocUEs()->map(function (BlocUE $bloc) {
                                     return [
                                         'id' => $bloc->getId(),
@@ -100,6 +102,8 @@ class CampagneChoixType extends AbstractType
                                                 return [
                                                     'id' => $ue->getId(),
                                                     'label' => $ue->getLabel(),
+                                                    'effectif' => $ue->getEffectif(),
+                                                    'nbrGroupe' => $ue->getNbrGroupe(),
                                                 ];
                                             })
                                             ->getValues(),
