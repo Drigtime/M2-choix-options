@@ -1,21 +1,65 @@
 {% extends 'base.html.twig' %}
-
-{% block title %}
-    Choix groupes 
-{% endblock %}
-
 {% block body %}
-    <div class="d-flex">
-        <h4>Validation des groupes</h4>
-    </div>
-    <div id="list-groupe">
-        {{ include('campagne_choix/groupe_choix/_list_groupe.html.twig') }}
-    </div>
+	<div class="row">
+		<div class="col-8">
+			<h5>Choix des étudiants</h5>
+			{#first section#}
+			<ul class="nav nav-tabs" id="firstTab" role="tablist">
+				{% for bloc_ue in blocsUES %}
+					<li class="nav-item" role="{{ bloc_ue['id']}}">
+						<button class="nav-link" id="tab-{{ bloc_ue['id'] }}" data-bs-toggle="tab" data-bs-target="#tab-pane-{{ bloc_ue['id'] }}" type="button" role="tab" aria-controls="tab-pane-{{ bloc_ue['id'] }}" aria-selected="false">{{ bloc_ue['intitule'] }}
+						</button>
+					</li>
+				{% endfor %}
+			</ul>
+			{#first section elements#}
+			<div class="tab-content" id="firstTabContent">
+				{% for bloc_ue in blocsUES %}
+					<div
+						class="tab-pane" id="tab-pane-{{ bloc_ue['id'] }}" role="tabpanel" aria-labelledby="tab-{{ bloc_ue['id'] }}" tabindex="0">
+						{#second section#}
+						<ul class="nav nav-tabs" id="firstTab{{ bloc_ue['id'] }}" role="tablist">
+							{% for ue in bloc_ue.ues %}
+								<li class="nav-item" role="{{ bloc_ue['id'] }}">
+									<button class="nav-link btn-selection btn_ue" id="tab-{{ bloc_ue['id'] }}" 
+									data-bs-toggle="tab" 
+									data-bs-target="#{{ ue }}-tab-pane" 
+									type="button" 
+									role="tab" 
+									aria-controls="{{ ue }}-tab-pane" 
+									aria-selected="false" 
+									data-parcours="{{ bloc_ue['parcours'] }}" 
+									data-UEID = {{ bloc_ue['id'] }}
+									data-url="{{ path('app_campagne_choix_get_etudiant',{ 'parcours':  bloc_ue['parcours'] }) }}"
+									>{{ ue }}</button>
+								</li>
+							{% endfor %}
+						</ul>
+					</div>
+				{% endfor %}
+			</div>
+			{#second section elements#}
+			<table class="table" id="etudiant_container">
+				<thead>
+					<th>Selectionner</th>
+					<th>Noms</th>
+					<th>Parcours</th>
+				</thead>
+				<tbody></tbody>
+			</table>
+			<div class="col-12">
+			<button class="btn btn-primary float-right" data-bs-toggle="modal" data-bs-target="#exampleModal">Choix du groupe <i class="fas fa-arrow-right"></i></button>
+			</div>
+		</div>
+		<div class="col-4">
+			<h5>Constitution des groupes</h5>
+		</div>
+	</div>
+	<input type="hidden" id="choixUE" name="choixUE" value="">
+	<a href="{{ path('app_bloc_ue_index') }}">back to list</a>
 {% endblock %}
-
-
 
 {% block javascripts %}
-{{parent()}}
-    {{ encore_entry_script_tags('campagne_choix_tab') }}
+	{{ parent() }}
+	{{ encore_entry_script_tags('etudiant_groupe_manuel') }}
 {% endblock %}

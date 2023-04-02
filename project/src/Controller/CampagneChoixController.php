@@ -15,6 +15,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 
 #[Route('/admin/campagne_choix')]
 class CampagneChoixController extends AbstractController
@@ -222,6 +224,12 @@ class CampagneChoixController extends AbstractController
                     //manuel
                     case 3:
                         //a implementer 
+                        //fausses data pour avancer le front
+
+                     
+
+                        
+
                         break;
                 }
             }
@@ -235,11 +243,83 @@ class CampagneChoixController extends AbstractController
 
             return $this->redirectToRoute('app_campagne_choix_index', [], Response::HTTP_SEE_OTHER);
         }
+        $informatique_SIO = array(
+            'id'=>1,
+            'intitule'=>'informatique - SIO',
+            'parcours'=>'SIO',
+            'ues'=>array('archi web','c#','nodeJs')
+        );
+
+        $informatique_OSIE = array(
+            'id'=>2,
+            'parcours'=>'OSIE',
+            'intitule'=>'informatique - OSIE',
+            'ues'=>array('archi web','c#','nodeJs')
+        );
+
+        $competence_traverse_SIO = array(
+            'id'=>3,
+            'parcours'=>'SIO',
+            'intitule'=>'compétence transverse - SIO',
+            'ues'=>array('anglais','espagnol')
+        );
+
+        $competence_traverse_OSIE = array(
+            'id'=>4,
+            'parcours'=>'OSIE',
+            'intitule'=>'compétence transverse - OSIE',
+            'ues'=>array('anglais','espagnol')
+        );
+
+        $blocsUES = array();
+        array_push($blocsUES,$informatique_SIO,$informatique_OSIE,$competence_traverse_SIO,$competence_traverse_OSIE);
 
         return $this->render('campagne_choix/groupe_choix/_groupe_choix.html.twig', [
             'campagne_choix' => $campagneChoix,
+            'blocsUES' => $blocsUES,
             'form' => $form,
         ]);
     }
+
+    #[Route('/list/{parcours}', name: 'app_campagne_choix_get_etudiant', methods: ['POST'])]
+    public function list(Request $request,$parcours): JsonResponse
+    {
+        $etudiants_OSIE = array(
+            'jean lafesse',
+            'henry pointevant',
+            'igor dosgore',
+            'brice denice',
+            'daniel craig',
+
+        );
+
+        $etudiants_SIO = array(
+            'andrew tate',
+            'napoleon bonaparte',
+            'john wick',
+            'solomon grundy',
+            'miyamoto musashi',
+        );
+
+        $data = $request->getContent();
+
+        dump($parcours);
+        dump($data);
+
+        $etudiants = array();
+
+        if($data == 'OSIE'){
+            $etudiants = $etudiants_OSIE;
+        }
+        elseif($data == 'SIO'){
+            $etudiants = $etudiants_SIO;
+        }
+
+        
+        
+        return $this->json($etudiants);
+    }
+
+
     
 }
