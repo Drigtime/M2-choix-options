@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\UserGestion;
+use App\Entity\Etudiant;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -38,7 +38,7 @@ class UserImportType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => UserGestion::class,
+            'data_class' => Etudiant::class,
         ]);
     }
 }

@@ -9,26 +9,26 @@
         <tbody>
             <tr>
                 <th>Id</th>
-                <td>{{ user_gestion.id }}</td>
+                <td>{{ etudiant.id }}</td>
             </tr>
             <tr>
                 <th>Nom</th>
-                <td>{{ user_gestion.Nom }}</td>
+                <td>{{ etudiant.Nom }}</td>
             </tr>
             <tr>
                 <th>Prenom</th>
-                <td>{{ user_gestion.Prenom }}</td>
+                <td>{{ etudiant.Prenom }}</td>
             </tr>
             <tr>
                 <th>Email</th>
-                <td>{{ user_gestion.Email }}</td>
+                <td>{{ etudiant.Mail }}</td>
             </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('app_user_gestion_index') }}">back to list</a>
+    <a href="{{ path('app_etudiant_index') }}">back to list</a>
 
-    <a href="{{ path('app_user_gestion_edit', {'id': user_gestion.id}) }}">edit</a>
+    <a href="{{ path('app_etudiant_edit', {'id': etudiant.id}) }}">edit</a>
 
-    {{ include('user_gestion/_delete_form.html.twig') }}
+    {{ include('etudiant/_delete_form.html.twig') }}
 {% endblock %}
