@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\BlocOption;
 use App\Entity\CampagneChoix;
 use App\Entity\Groupe;
+use App\Entity\Etudiant;
 use App\Form\CampagneChoixType;
 use App\Form\GroupeType;
 use App\Repository\CampagneChoixRepository;
@@ -133,21 +134,13 @@ class CampagneChoixController extends AbstractController
                 $result[] = $etudiant;
             }
         }
-        /*
         dump($campagneChoix->getResponseCampagnes());
-        foreach ($campagneChoix->getResponseCampagnes() as $responsecampagne) {
-            foreach ($responsecampagne->getEtudiant() as $etudiant) {
-                $result[] = $etudiant;
-            }
-        }*/
 
-        dump($result);
         $BlocUEs = $campagneChoix->getBlocOptions();
         foreach($BlocUEs as $bloc){
             dump($bloc->getParcours());
         }
         dump(count($BlocUEs));
-        dump($result);
         dump("test");
         //Pour chaque ue du blocUE 
         for ($g = 0; $g < count($BlocUEs); $g++) {
@@ -156,30 +149,42 @@ class CampagneChoixController extends AbstractController
             dump($BlocUE);
             $UEs = $BlocUE->getUEs();
             for ($i = 0; $i < count($UEs); $i++) {
+                $result = array();
                 $UE = $UEs[$i];
                 if(count($UE->getGroupes()) == 0){
-                dump("test123");
-                // $result = array_keys(array_filter($choixes, function($v){
-                //     if($v.getUE() == $UE){
-                //         return $v->getEtudiant();
-                //     }
-                // }));
-                dump("etudiants");
+                $responses = $campagneChoix->getResponseCampagnes();
+                for($y = 0; $y < count($responses); $y++) {
+                    $choixes = $responses[$y]->getChoixes();
+                    for($z = 0; $z < count($BlocUEs); $z++) {
+                    if($UE == $choixes[$z]->getUE()){
+                        $result[] = $responses[$y]->getEtudiant(); 
+                        dump($UE);
+                        dump($result);
+                    }
+                    }
+                }
+            
+                dump($result);
+                dump(count($result));
+                if(empty($result) == false){
+                 
                 $indice = 1;
                 switch ($choix) {
                     //groupe par ordre alphabetique
                     case 1:
+                        usort($result, function($a, $b) {return strcmp($a->getNom(), $b->getNom());});
                         $j = 0;
-                        while ($j < count($result)) {
-                            $j++;
-                            if (count($groupe->getEtudiants()) >= $effectif) {
+                        for($j = 0; $j < count($result); $j++) {
+                            dump($result);
+                            if (count($groupe->getEtudiants()) > $effectif) {
                                 $groupe->setLabel($UE->getLabel() . "-Groupe-" . strval($indice));
                                 $UE->addGroupe($groupe);
                                 $groupeRep->save($groupe, true);
                                 dump($groupe);
                                 $indice = $indice + 1;
                                 $groupe = new Groupe();
-                            } else if ($j == count($result)) {
+                            } else if ($j == count($result)-1) {
+                                $groupe->addEtudiant($result[$j]);
                                 $groupe->setLabel($UE->getLabel() . "-Groupe-" . strval($indice));
                                 $UE->addGroupe($groupe);
                                 $groupeRep->save($groupe, true);
@@ -188,38 +193,39 @@ class CampagneChoixController extends AbstractController
                                 $groupe = new Groupe();
                             } else {
                                 $groupe->addEtudiant($result[$j]);
+                                dump($groupe);
                             }
+                            $j++;
 
                         }
-                        dump($groupe);
-                        $groupeRep->save($groupe);
                         break;
                     //aleatoire
                     case 2:
                         shuffle($result);
-                        $j = 0;
-                        while ($j < count($result)) {
-                            $j++;
-                            if (count($groupe->getEtudiants()) >= $effectif) {
+                        for($j = 0; $j < count($result); $j++) {
+                            dump($result);
+                            if (count($groupe->getEtudiants()) > $effectif) {
                                 $groupe->setLabel($UE->getLabel() . "-Groupe-" . strval($indice));
                                 $UE->addGroupe($groupe);
-                                $indice = $indice + 1;
+                                $groupeRep->save($groupe, true);
                                 dump($groupe);
+                                $indice = $indice + 1;
                                 $groupe = new Groupe();
+                            } else if ($j == count($result)-1) {
                                 $groupe->addEtudiant($result[$j]);
-                            } else if ($j == count($result)) {
                                 $groupe->setLabel($UE->getLabel() . "-Groupe-" . strval($indice));
                                 $UE->addGroupe($groupe);
+                                $groupeRep->save($groupe, true);
                                 dump($groupe);
                                 $indice = $indice + 1;
                                 $groupe = new Groupe();
                             } else {
                                 $groupe->addEtudiant($result[$j]);
+                                dump($groupe);
                             }
+                            $j++;
+
                         }
-                        dump($groupe);
-                        $UE->addGroupe($groupe);
-                        $groupeRep->save($groupe, true);
                         break;
                     //manuel
                     case 3:
@@ -231,6 +237,7 @@ class CampagneChoixController extends AbstractController
                         
 
                         break;
+                }   
                 }
             }
             }
