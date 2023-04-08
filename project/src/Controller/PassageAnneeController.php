@@ -22,10 +22,25 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class PassageAnneeController extends AbstractController
 {
-    #[Route('/passage_annee', name: 'app_passage_annee')]
-    public function index(AnneeFormationRepository $anneeFormationRepository): Response
+
+    private AnneeFormationRepository $anneeFormationRepository;
+    private ParcoursRepository $parcoursRepository;
+    private EtudiantRepository $etudiantRepository;
+
+    public function __construct(
+        AnneeFormationRepository $anneeFormationRepository,
+        ParcoursRepository       $parcoursRepository,
+        EtudiantRepository       $etudiantRepository)
     {
-        $anneeFormation = $anneeFormationRepository->findAll();
+        $this->anneeFormationRepository = $anneeFormationRepository;
+        $this->parcoursRepository = $parcoursRepository;
+        $this->etudiantRepository = $etudiantRepository;
+    }
+
+    #[Route('/passage_annee', name: 'app_passage_annee')]
+    public function index(): Response
+    {
+        $anneeFormation = $this->anneeFormationRepository->findAll();
 
         return $this->render('passage_annee/index.html.twig', [
             'anneeFormation' => $anneeFormation,
@@ -37,15 +52,13 @@ class PassageAnneeController extends AbstractController
     {
         $session->remove('passage_annee_form');
         $session->set('passage_annee_form', [
-            "form_step_M1_1_redoublants" => null,
-            "form_step_M2_1_redoublants" => null,
-            'form_step_M2_1_valides' => null,
-            'form_step_M1_1_valides' => null,
-            'form_step_M2_1_stop' => null,
-            'form_step_M1_1_stop' => null,
-            'form_step_M2_2_data' => null,
-            'form_step_M1_2_data' => null,
-            'form_step_M1_3_data' => null,
+            "form_step_M2_1_data" => [],
+            "form_step_M1_1_data" => [],
+            "form_step_M1_1_redoublants" => [],
+            "form_step_M2_1_redoublants" => [],
+            'form_step_M2_2_data' => [],
+            'form_step_M1_2_data' => [],
+            'form_step_M1_3_data' => [],
         ]);
 
         return $this->redirectToRoute('app_passage_annee_workflow_step_1');
@@ -54,76 +67,87 @@ class PassageAnneeController extends AbstractController
     // $anneeFormation is a string like "M2" or "M1"
     #[Route('/passage_annee/workflow/step_1', name: 'app_passage_annee_workflow_step_1', methods: ['GET', 'POST'])]
     #[Route('/passage_annee/workflow/step_2', name: 'app_passage_annee_workflow_step_2', methods: ['GET', 'POST'])]
-    public function newStep1(Request $request, AnneeFormationRepository $anneeFormationRepository, SessionInterface $session): Response
+    public function newStep1(Request $request, SessionInterface $session): Response
     {
-        $anneeFormation = $request->attributes->get('_route') === 'app_passage_annee_workflow_step_1' ? AnneeFormation::M2 : AnneeFormation::M1;
+        $routeName = $request->attributes->get('_route');
+        $anneeFormation = $routeName === 'app_passage_annee_workflow_step_1' ? AnneeFormation::M2 : AnneeFormation::M1;
 
         $passageAnneForm = $session->get('passage_annee_form');
-        $formDatas = $passageAnneForm["form_step_{$anneeFormation}_1_data"] ?? null;
+        $formData = $passageAnneForm["form_step_{$anneeFormation}_1_data"] ?? [];
 
-        if ($formDatas) {
-            $form = $this->createForm(Step1AnneeFormationType::class, $formDatas);
-            $redoublants = $passageAnneForm["form_step_{$anneeFormation}_1_redoublants"] ?? null;
+        if ($formData) {
+            $students = array_map(function ($studentData) {
+                $student = $this->etudiantRepository->find($studentData['id']);
+                $student->setStatut($studentData['statut']);
+                return $student;
+            }, $formData);
+
+            $form = $this->createForm(Step1AnneeFormationType::class, ['etudiants' => $students]);
+
+            $redoublants = $passageAnneForm["form_step_{$anneeFormation}_1_redoublants"] ?? [];
             if ($redoublants) {
-                foreach ($form->get('etudiants') as $etudiant) {
-                    if (in_array($etudiant->getData(), $redoublants)) {
-                        $etudiant->get('statut')->setData('1');
+                foreach ($form->get('etudiants') as $student) {
+                    if (in_array($student->getData(), $redoublants)) {
+                        $student->getData()->setStatut(1);
                     }
                 }
             }
         } else {
-            $etudiants = [];
-            foreach ($anneeFormationRepository->findOneBy(['label' => $anneeFormation])->getParcours() as $parcours) {
-                foreach ($parcours->getEtudiants() as $etudiant) {
-                    $etudiants[] = $etudiant;
+            $students = [];
+            foreach ($this->anneeFormationRepository->findOneBy(['label' => $anneeFormation])->getParcours() as $parcours) {
+                foreach ($parcours->getEtudiants() as $student) {
+                    $students[] = $student;
                 }
             }
 
-            $form = $this->createForm(Step1AnneeFormationType::class, ['etudiants' => $etudiants]);
+            $form = $this->createForm(Step1AnneeFormationType::class, ['etudiants' => $students]);
         }
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Get all Etudiant with valide = "1" (redouble)
-            $redoubles = [];
-            $valides = [];
-            $stop = [];
-            foreach ($form->get('etudiants') as $etudiant) {
-                if ($etudiant->get('statut')->getData() === '1') {
-                    $redoubles[] = $etudiant->getData();
-                } elseif ($etudiant->get('statut')->getData() === '0') {
-                    $valides[] = $etudiant->getData();
-                } elseif ($etudiant->get('statut')->getData() === '2') {
-                    $stop[] = $etudiant->getData();
+            $formData = [];
+            $validStudents = [];
+            $stoppedStudents = [];
+            $retainedStudents = [];
+
+            foreach ($form->get('etudiants') as $student) {
+                $formData[] = [
+                    'id' => $student->getData()->getId(),
+                    'statut' => $student->getData()->getStatut()
+                ];
+
+                switch ($student->getData()->getStatut()) {
+                    case 0:
+                        $validStudents[] = ['id' => $student->getData()->getId()];
+                        break;
+                    case 1:
+                        $retainedStudents[] = ['id' => $student->getData()->getId()];
+                        break;
+                    case 2:
+                        $stoppedStudents[] = ['id' => $student->getData()->getId()];
+                        break;
                 }
             }
 
-            $passageAnneForm["form_step_{$anneeFormation}_1_data"] = $form->getData();
-            $passageAnneForm["form_step_{$anneeFormation}_1_valides"] = $valides;
-            $passageAnneForm["form_step_{$anneeFormation}_1_stop"] = $stop;
+            $passageAnneForm["form_step_{$anneeFormation}_1_data"] = $formData;
+            $passageAnneForm["form_step_{$anneeFormation}_1_valides"] = $validStudents;
+            $passageAnneForm["form_step_{$anneeFormation}_1_stops"] = $stoppedStudents;
+            $passageAnneForm["form_step_{$anneeFormation}_1_redoublants"] = $retainedStudents;
 
             $session->set('passage_annee_form', $passageAnneForm);
 
-            if (!empty($redoubles)) {
-                $passageAnneForm["form_step_{$anneeFormation}_1_redoublants"] = $redoubles;
-                $session->set('passage_annee_form', $passageAnneForm);
-                if ($anneeFormation === AnneeFormation::M2) {
-                    return $this->redirectToRoute('app_passage_annee_workflow_step_1_2');
-                } elseif ($anneeFormation === AnneeFormation::M1) {
-                    return $this->redirectToRoute('app_passage_annee_workflow_step_2_2');
-                }
+            $redoubles = $passageAnneForm["form_step_{$anneeFormation}_1_redoublants"] ?? [];
+            if ($redoubles) {
+                $routeName = $anneeFormation === AnneeFormation::M2 ? 'app_passage_annee_workflow_step_1_2' : 'app_passage_annee_workflow_step_2_2';
+                return $this->redirectToRoute($routeName);
             } else {
-                $passageAnneForm["form_step_{$anneeFormation}_1_redoublants"] = null;
-                $passageAnneForm["form_step_{$anneeFormation}_2_data"] = null;
+                $passageAnneForm["form_step_{$anneeFormation}_2_data"] = [];
+                $session->set('passage_annee_form', $passageAnneForm);
             }
 
-            if ($anneeFormation === AnneeFormation::M1) {
-                return $this->redirectToRoute('app_passage_annee_workflow_step_3');
-            } elseif ($anneeFormation === AnneeFormation::M2) {
-                return $this->redirectToRoute('app_passage_annee_workflow_step_2');
-            }
-            return $this->redirectToRoute('app_passage_annee_workflow_step_1');
+            $routeName = $anneeFormation === AnneeFormation::M1 ? 'app_passage_annee_workflow_step_3' : 'app_passage_annee_workflow_step_2';
+            return $this->redirectToRoute($routeName);
         }
 
         $previousRoute = $passageAnneForm['form_step_M2_2_data'] ? 'app_passage_annee_workflow_step_1_2' : 'app_passage_annee_workflow_step_1';
@@ -137,78 +161,88 @@ class PassageAnneeController extends AbstractController
 
     #[Route('/passage_annee/workflow/step_1_1', name: 'app_passage_annee_workflow_step_1_2', methods: ['GET', 'POST'])]
     #[Route('/passage_annee/workflow/step_2_1', name: 'app_passage_annee_workflow_step_2_2', methods: ['GET', 'POST'])]
-    public function newStep11(Request $request, EtudiantRepository $etudiantRepository, SessionInterface $session): Response
+    public function newStep11(Request $request, SessionInterface $session): Response
     {
         $anneeFormation = $request->attributes->get('_route') === 'app_passage_annee_workflow_step_1_2' ? AnneeFormation::M2 : AnneeFormation::M1;
 
         $passageAnneForm = $session->get('passage_annee_form');
-        $step2FormData = $passageAnneForm["form_step_{$anneeFormation}_2_data"] ?? null;
+        $passageAnneFormIndex = "form_step_{$anneeFormation}_2_data";
+        $step2FormData = $passageAnneForm[$passageAnneFormIndex] ?? null;
 
+        $redoublants = $passageAnneForm["form_step_{$anneeFormation}_1_redoublants"] ?? [];
         if ($step2FormData) {
-            $etudiantList = [];
+            $redoublantIds = array_column($redoublants, 'id');
 
-            // Récupération des redoublants sélectionnés dans l'étape 1
-            $redoublants = $passageAnneForm["form_step_{$anneeFormation}_1_redoublants"] ?? [];
-            $redoublantIds = array_map(function ($redoublant) {
-                return $redoublant->getId();
-            }, $redoublants);
-
-            // Suppression des étudiants qui ne sont pas redoublants
-            $etudiantsStep2 = array_filter($step2FormData['etudiants'], function ($dataEtudiant) use ($redoublantIds) {
-                return in_array($dataEtudiant->getId(), $redoublantIds);
+            $etudiantsStep2 = array_filter($step2FormData, function ($dataEtudiant) use ($redoublantIds) {
+                return in_array($dataEtudiant['id'], $redoublantIds);
             });
 
-            // Ajout des redoublants qui n'étaient pas dans l'étape 2
             $newRedoublants = array_filter($redoublants, function ($redoublant) use ($etudiantsStep2) {
-                $etudiantIds = array_map(function ($etudiant) {
-                    return $etudiant->getId();
-                }, $etudiantsStep2);
-                return !in_array($redoublant->getId(), $etudiantIds);
+                $etudiantIds = array_column($etudiantsStep2, 'id');
+                return !in_array($redoublant['id'], $etudiantIds);
             });
 
             foreach ($newRedoublants as $redoublant) {
-                $etudiant = $etudiantRepository->find($redoublant->getId());
+                $etudiant = $this->etudiantRepository->find($redoublant['id']);
                 $etudiantUEs = $etudiant->getEtudiantUEs();
                 foreach ($etudiantUEs as $etudiantUE) {
                     $etudiantUE->setAcquis(true);
                 }
-                $etudiantsStep2[] = $etudiant;
+                $etudiantsStep2[] = [
+                    'id' => $etudiant->getId(),
+                    'etudiantUEs' => array_map(function ($etudiantUE) {
+                        return [
+                            'ueId' => $etudiantUE->getUE()->getId(),
+                            'acquis' => $etudiantUE->isAcquis()
+                        ];
+                    }, $etudiantUEs->toArray())
+                ];
             }
 
-            // Récupération des étudiants de l'étape 2 avec les UE à valider
+            $etudiantIds = array_column($etudiantsStep2, 'id');
+            $etudiantList = $this->etudiantRepository->findBy(['id' => $etudiantIds]);
             foreach ($etudiantsStep2 as $dataEtudiant) {
-                $etudiant = $etudiantRepository->find($dataEtudiant->getId());
-                $etudiantUEs = $dataEtudiant->getEtudiantUEs();
+                $etudiant = array_filter($etudiantList, function ($etudiant) use ($dataEtudiant) {
+                    return $etudiant->getId() === $dataEtudiant['id'];
+                });
+                $etudiant = array_shift($etudiant);
+                $etudiantUEs = $dataEtudiant['etudiantUEs'];
                 foreach ($etudiant->getEtudiantUEs() as $etudiantUE) {
                     foreach ($etudiantUEs as $etudiantUEData) {
-                        if ($etudiantUE->getUE()->getId() === $etudiantUEData->getUE()->getId()) {
-                            $etudiantUE->setAcquis($etudiantUEData->isAcquis());
+                        if ($etudiantUE->getUE()->getId() === $etudiantUEData['ueId']) {
+                            $etudiantUE->setAcquis($etudiantUEData['acquis']);
                         }
                     }
                 }
-                $etudiantList[] = $etudiant;
             }
-
-            $passageAnneForm["form_step_{$anneeFormation}_2_data"] = ['etudiants' => $etudiantList];
-            $session->set('passage_annee_form', $passageAnneForm);
-            $form = $this->createForm(Step2AnneeFormationType::class, ['etudiants' => $etudiantList]);
         } else {
-            $dataEtudiants = $passageAnneForm["form_step_{$anneeFormation}_1_redoublants"] ?? [];
-            $etudiantList = [];
-            foreach ($dataEtudiants as $dataEtudiant) {
-                $etudiant = $etudiantRepository->find($dataEtudiant->getId());
+            $etudiantIds = array_column($redoublants, 'id');
+            $etudiantList = $this->etudiantRepository->findBy(['id' => $etudiantIds]);
+            foreach ($etudiantList as $etudiant) {
                 foreach ($etudiant->getEtudiantUEs() as $etudiantUE) {
                     $etudiantUE->setAcquis(true);
                 }
-                $etudiantList[] = $etudiant;
             }
-            $form = $this->createForm(Step2AnneeFormationType::class, ['etudiants' => $etudiantList]);
         }
-
+        $form = $this->createForm(Step2AnneeFormationType::class, ['etudiants' => $etudiantList]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $passageAnneForm["form_step_{$anneeFormation}_2_data"] = $form->getData();
+            $etudiants = $form->getData()['etudiants'];
+
+            $passageAnneForm[$passageAnneFormIndex] = array_map(function ($etudiant) {
+                return [
+                    'id' => $etudiant->getId(),
+                    'etudiantUEs' => array_map(function ($etudiantUE) {
+                        return [
+                            'id' => $etudiantUE->getId(),
+                            'ueId' => $etudiantUE->getUE()->getId(),
+                            'acquis' => $etudiantUE->isAcquis(),
+                        ];
+                    }, $etudiant->getEtudiantUEs()->toArray())
+                ];
+            }, $etudiants);
+
             $session->set('passage_annee_form', $passageAnneForm);
 
             if ($anneeFormation === AnneeFormation::M2) {
@@ -219,40 +253,46 @@ class PassageAnneeController extends AbstractController
         }
 
         return $this->render('passage_annee/form_step_1_2.html.twig', [
-            'form' => $form,
+            'form' => $form->createView(),
             'anneeFormation' => $anneeFormation,
         ]);
+
     }
 
     #[Route('/passage_annee/workflow/step_3', name: 'app_passage_annee_workflow_step_3', methods: ['GET', 'POST'])]
-    public function newStep3(Request $request, SessionInterface $session, ParcoursRepository $parcoursRepository, EtudiantRepository $etudiantRepository): Response
+    public function newStep3(Request $request, SessionInterface $session): Response
     {
         $passageAnneForm = $session->get('passage_annee_form');
-        $queryBuilder = $parcoursRepository->createQueryBuilder('p')
+        $parcoursQueryBuilder = $this->parcoursRepository->createQueryBuilder('p')
             ->join('p.anneeFormation', 'af')
             ->where('af.label = :anneeFormation')
             ->setParameter('anneeFormation', AnneeFormation::M2);
-        $parcours = $queryBuilder->getQuery()->getResult();
+        $parcours = $parcoursQueryBuilder->getQuery()->getResult();
 
-        $etudiants = $passageAnneForm["form_step_M1_1_valides"] ?? [];
-        // persiste les étudiants, sinon Doctrine n'arrive pas à les reconnaître
-        foreach ($etudiants as $etudiant) {
-            $etudiantRepository->save($etudiant);
-        }
+        $etudiants = array_map(function ($dataEtudiant) {
+            return $this->etudiantRepository->find($dataEtudiant['id']);
+        }, array_filter($passageAnneForm["form_step_M1_1_data"] ?? [], function ($etudiant) {
+            return $etudiant['statut'] === 0;
+        }));
 
         // handle post request
         if ($request->isMethod('POST')) {
-            $formData = array_map(function ($etudiants) use ($etudiantRepository) {
-                return array_map(function ($etudiantId) use ($etudiantRepository) {
-                    return $etudiantRepository->find($etudiantId);
-                }, $etudiants);
-            }, $request->request->all()['parcours']);
+            $formData = [];
+            foreach ($request->request->all()['parcours'] as $parcoursId => $etudiantsIds) {
+                $etudiants = [];
+                foreach ($etudiantsIds as $etudiantId) {
+                    $etudiant = $this->etudiantRepository->find($etudiantId);
+                    $etudiants[] = [
+                        'id' => $etudiantId,
+                        'text' => $etudiant->__toString()
+                    ];
+                }
+                $formData[$parcoursId] = $etudiants;
+            }
             $passageAnneForm["form_step_M1_3_data"] = $formData;
             $session->set('passage_annee_form', $passageAnneForm);
             return $this->redirectToRoute('app_passage_annee_workflow_submit');
         }
-
-        // TODO créer un formulaire pour cette étape, ou gérer les résultat de la requête
 
         $formData = $passageAnneForm["form_step_M1_3_data"] ?? [];
         $previousRoute = $passageAnneForm["form_step_M1_1_redoublants"] ? 'app_passage_annee_workflow_step_2_2' : 'app_passage_annee_workflow_step_2';
@@ -264,8 +304,8 @@ class PassageAnneeController extends AbstractController
             'formData' => array_map(function ($etudiants) {
                 return array_map(function ($etudiant) {
                     return [
-                        'value' => $etudiant->getId(),
-                        'text' => $etudiant->__toString(),
+                        'value' => $etudiant['id'],
+                        'text' => $etudiant['text'],
                     ];
                 }, $etudiants);
             }, $formData),
@@ -273,77 +313,26 @@ class PassageAnneeController extends AbstractController
     }
 
     #[Route('/passage_annee/workflow/submit', name: 'app_passage_annee_workflow_submit')]
-    public function savePassageAnnee(Session $session, EtudiantRepository $etudiantRepository, ParcoursRepository $parcoursRepository): Response
+    public function savePassageAnnee(SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
         $passageAnneForm = $session->get('passage_annee_form');
 
-        $formStep1M2Valides = $passageAnneForm['form_step_M2_1_valides'];
-        $formStep1M2Stop = $passageAnneForm['form_step_M2_1_stop'];
-        $formStep2M2Data = $passageAnneForm['form_step_M2_2_data'];
+        $this->removeStudents(array_merge($passageAnneForm['form_step_M2_1_valides'], $passageAnneForm['form_step_M2_1_stops']));
+        $this->updateStudentUEStatus($passageAnneForm['form_step_M2_1_redoublants'], $passageAnneForm['form_step_M2_2_data']);
 
-        $formStep1M1Valides = $passageAnneForm['form_step_M1_1_valides'];
-        $formStep1M1Stop = $passageAnneForm['form_step_M1_1_stop'];
-        $formStep2M1Data = $passageAnneForm['form_step_M1_2_data'];
+        $this->removeStudents($passageAnneForm['form_step_M1_1_stops']);
+        $this->updateStudentUEStatus($passageAnneForm['form_step_M1_1_redoublants'], $passageAnneForm['form_step_M1_2_data']);
 
-        $formStep3M1Data = $passageAnneForm['form_step_M1_3_data'];
-
-        // Supprimer les étudiants de M2 qui sont validés
-        foreach (array_merge($formStep1M2Valides, $formStep1M2Stop) as $etudiant) {
-            $etudiant = $etudiantRepository->find($etudiant->getId());
-            $etudiantRepository->remove($etudiant);
-        }
-
-        // Mettre à jour le statuts des ues des étudiants de M2 qui sont redoublants
-        foreach ($formStep2M2Data['etudiants'] as $dataEtudiant) {
-            $etudiant = $etudiantRepository->find($dataEtudiant->getId());
-            $etudiantUEs = $dataEtudiant->getEtudiantUEs();
-            foreach ($etudiant->getEtudiantUEs() as $etudiantUE) {
-                foreach ($etudiantUEs as $etudiantUEData) {
-                    if ($etudiantUE->getUE()->getId() === $etudiantUEData->getUE()->getId()) {
-                        $etudiantUE->setAcquis($etudiantUEData->isAcquis());
-                    }
-                }
+        // Déplacer les étudiants de M1 vers leur parcours de M2 correspondant
+        foreach ($passageAnneForm['form_step_M1_3_data'] as $parcoursId => $etudiants) {
+            $studentIds = array_column($etudiants, 'id');
+            $students = $this->etudiantRepository->findBy(['id' => $studentIds]);
+            foreach ($students as $student) {
+                $this->etudiantRepository->save($this->moveEtudiantToParcours($student, $this->parcoursRepository->find($parcoursId)));
             }
-            $etudiantRepository->save($etudiant);
         }
 
-        // Supprimer les étudiants de M1 qui sont validés
-        foreach (array_merge($formStep1M1Valides, $formStep1M1Stop) as $etudiant) {
-            $etudiant = $etudiantRepository->find($etudiant->getId());
-            $etudiantRepository->remove($etudiant);
-        }
-
-        // Mettre à jour le statuts des ues des étudiants de M1 qui sont redoublants
-        foreach ($formStep2M1Data['etudiants'] as $dataEtudiant) {
-            dump($dataEtudiant);
-            $etudiant = $etudiantRepository->find($dataEtudiant->getId());
-            $etudiantUEs = $dataEtudiant->getEtudiantUEs();
-            foreach ($etudiant->getEtudiantUEs() as $etudiantUE) {
-                foreach ($etudiantUEs as $etudiantUEData) {
-                    if ($etudiantUE->getUE()->getId() === $etudiantUEData->getUE()->getId()) {
-                        $etudiantUE->setAcquis($etudiantUEData->isAcquis());
-                    }
-                }
-            }
-            $etudiantRepository->save($etudiant);
-        }
-
-        foreach ($formStep3M1Data as $parcoursId => $etudiantIds) {
-            $parcours = $parcoursRepository->find($parcoursId);
-//                if (!$parcours) {
-//                    $this->addFlash('error', "Le parcours {$parcoursId} n'existe pas");
-//                    return $this->redirectToRoute('app_passage_annee_workflow_step_3');
-//                }
-
-            foreach ($etudiantIds as $etudiantId) {
-                $etudiant = $etudiantRepository->find($etudiantId);
-                $etudiant->getParcours()->removeEtudiant($etudiant);
-                $etudiant->setParcours($parcours);
-                $parcours->addEtudiant($etudiant);
-            }
-
-            $parcoursRepository->save($parcours);
-        }
+        $entityManager->flush();
 
         $session->remove('passage_annee_form');
 
@@ -352,23 +341,55 @@ class PassageAnneeController extends AbstractController
         return $this->redirectToRoute('app_passage_annee');
     }
 
-    #[Route('/passage_annee/move_student/{id}', name: 'app_passage_annee_move_student')]
-    public function moveStudent(Etudiant $etudiant, Request $request, EtudiantRepository $etudiantRepository, AnneeFormationRepository $anneeFormationRepository): Response
+    private function removeStudents(array $students): void
     {
-        $form = $this->createForm(MoveEtudiantType::class, $etudiant);
+        $studentIds = array_column($students, 'id');
+        $students = $this->etudiantRepository->findBy(['id' => $studentIds]);
 
-        $form->handleRequest($request);
+        foreach ($students as $etudiant) {
+            $this->etudiantRepository->remove($etudiant);
+        }
+    }
+
+    private function updateStudentUEStatus(array $redoublants, array $stepData): void
+    {
+        $studentIds = array_column($redoublants, 'id');
+        $students = $this->etudiantRepository->findBy(['id' => $studentIds]);
+
+        foreach ($students as $student) {
+            $studentId = $student->getId();
+            $studentData = array_filter($stepData, function ($data) use ($studentId) {
+                return $data['id'] === $studentId;
+            });
+
+            if (!$studentData) {
+                continue;
+            }
+
+            $etudiantUEs = $studentData[0]['etudiantUEs'];
+            foreach ($student->getEtudiantUEs() as $etudiantUE) {
+                $ueId = $etudiantUE->getUE()->getId();
+                foreach ($etudiantUEs as $etudiantUEData) {
+                    if (array_key_exists('ueId', $etudiantUEData) && $etudiantUEData['ueId'] === $ueId) {
+                        $etudiantUE->setAcquis($etudiantUEData['acquis']);
+                    }
+                }
+            }
+
+            $this->etudiantRepository->save($student);
+        }
+    }
+
+    #[Route('/passage_annee/move_student/{id}', name: 'app_passage_annee_move_student')]
+    public function moveStudent(Etudiant $etudiant, Request $request): Response
+    {
+        $form = $this->createForm(MoveEtudiantType::class, $etudiant)->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Parcours $parcours */
-            $parcours = $form->get('parcours')->getData();
-            $etudiant = $this->moveEtudiantToParcours($etudiant, $parcours);
+            $this->etudiantRepository->save($this->moveEtudiantToParcours($etudiant, $form->get('parcours')->getData()), true);
 
-            $etudiantRepository->save($etudiant, true);
-
-            $anneeFormation = $anneeFormationRepository->findAll();
             return $this->render('passage_annee/_list_annee.html.twig', [
-                'anneeFormation' => $anneeFormation,
+                'anneeFormation' => $this->anneeFormationRepository->findAll(),
             ]);
         }
 
@@ -386,24 +407,19 @@ class PassageAnneeController extends AbstractController
      */
     public function moveEtudiantToParcours(Etudiant $etudiant, Parcours $parcours): Etudiant
     {
-        foreach ($etudiant->getResponseCampagnes() as $responseCampagne) {
-            $etudiant->removeResponseCampagne($responseCampagne);
-        }
-
-        // remove all EtudiantUE
+        $etudiant->getResponseCampagnes()->clear();
         $etudiant->getEtudiantUEs()->clear();
 
         $etudiant->setParcours($parcours);
 
-        // add new EtudiantUE
         foreach ($parcours->getBlocUEs() as $blocUE) {
-            $mandatoryUEs = $blocUE->getBlocUeUes()->filter(fn($blocUeUe) => !$blocUeUe->isOptional());
-            $optionalUEs = $blocUE->getBlocUeUes()->filter(fn($blocUeUe) => $blocUeUe->isOptional());
+            $mandatoryUEs = $blocUE->getMandatoryUEs();
+            $optionalUEs = $blocUE->getOptionalUEs();
+
             foreach ($mandatoryUEs as $blocUeUe) {
                 $etudiant->addEtudiantUE(new EtudiantUE($etudiant, $blocUeUe->getUe()));
             }
 
-            // Assigner des UE optionnelles par défaut
             $nbUEsOptional = $blocUE->getNbUEsOptional();
             if ($nbUEsOptional > 0) {
                 $optionalUEs = $optionalUEs->slice(0, $nbUEsOptional);
@@ -417,12 +433,12 @@ class PassageAnneeController extends AbstractController
     }
 
     #[Route('/passage_annee/move_students', name: 'app_passage_annee_move_students')]
-    public function moveStudents(Request $request, EtudiantRepository $etudiantRepository, AnneeFormationRepository $anneeFormationRepository, EntityManagerInterface $entityManager): Response
+    public function moveStudents(Request $request, EntityManagerInterface $entityManager): Response
     {
         $students = $request->request->all()['students'];
         $etudiants = [];
         foreach ($students as $student) {
-            $etudiants[] = $etudiantRepository->find($student);
+            $etudiants[] = $this->etudiantRepository->find($student);
         }
 
         $form = $this->createForm(MoveEtudiantType::class);
@@ -435,11 +451,12 @@ class PassageAnneeController extends AbstractController
 
             foreach ($etudiants as $etudiant) {
                 $etudiant = $this->moveEtudiantToParcours($etudiant, $parcours);
-                $etudiantRepository->save($etudiant);
+                $this->etudiantRepository->save($etudiant);
             }
-            $entityManager->flush();
 
-            $anneeFormation = $anneeFormationRepository->findAll();
+            $entityManager->flush();
+            $anneeFormation = $this->anneeFormationRepository->findAll();
+
             return $this->render('passage_annee/_list_annee.html.twig', [
                 'anneeFormation' => $anneeFormation,
             ]);

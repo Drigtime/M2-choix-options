@@ -2,11 +2,11 @@
 
 namespace App\Entity\Main;
 
-use App\Entity\Main\PassageAnnee\EtudiantValide;
 use App\Repository\EtudiantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: EtudiantRepository::class)]
 class Etudiant
@@ -31,11 +31,15 @@ class Etudiant
     #[ORM\ManyToMany(targetEntity: Groupe::class, mappedBy: 'etudiants')]
     private Collection $groupes;
 
+    #[MaxDepth(1)]
     #[ORM\OneToMany(mappedBy: 'etudiant', targetEntity: EtudiantUE::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $etudiantUEs;
 
     #[ORM\OneToMany(mappedBy: 'etudiant', targetEntity: ResponseCampagne::class, orphanRemoval: true)]
     private Collection $responseCampagnes;
+
+    // statut n'est pas un champ de la base de données mais un champ virtuel qui permet de savoir si l'étudiant est admis ou non à la fin de l'année
+    private int $statut = 0;
 
     public function __construct()
     {
@@ -185,6 +189,18 @@ class Etudiant
                 $responseCampagne->setEtudiant(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStatut(): int
+    {
+        return $this->statut;
+    }
+
+    public function setStatut(int $statut): self
+    {
+        $this->statut = $statut;
 
         return $this;
     }

@@ -110,6 +110,16 @@ class BlocUE
         return $this->blocUeUes;
     }
 
+    public function getMandatoryUEs(): Collection
+    {
+        return $this->blocUeUes->filter(fn (BlocUeUe $blocUeUe) => !$blocUeUe->isOptional());
+    }
+
+    public function getOptionalUEs(): Collection
+    {
+        return $this->blocUeUes->filter(fn (BlocUeUe $blocUeUe) => $blocUeUe->isOptional());
+    }
+
     public function addBlocUeUe(BlocUeUe $blocUeUe): self
     {
         if (!$this->blocUeUes->contains($blocUeUe)) {

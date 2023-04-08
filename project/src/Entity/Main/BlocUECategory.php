@@ -22,13 +22,9 @@ class BlocUECategory
     #[ORM\ManyToMany(targetEntity: UE::class, mappedBy: 'blocUECategories')]
     private Collection $uEs;
 
-    #[ORM\OneToMany(mappedBy: 'blocUECategorie', targetEntity: BlocOption::class)]
-    private Collection $blocOptions;
-
     public function __construct()
     {
         $this->uEs = new ArrayCollection();
-        $this->blocOptions = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -75,36 +71,6 @@ class BlocUECategory
     {
         if ($this->uEs->removeElement($uE)) {
             $uE->removeBlocUECategory($this);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, BlocOption>
-     */
-    public function getBlocOptions(): Collection
-    {
-        return $this->blocOptions;
-    }
-
-    public function addBlocOption(BlocOption $blocOption): self
-    {
-        if (!$this->blocOptions->contains($blocOption)) {
-            $this->blocOptions->add($blocOption);
-            $blocOption->setBlocUECategory($this);
-        }
-
-        return $this;
-    }
-
-    public function removeBlocOption(BlocOption $blocOption): self
-    {
-        if ($this->blocOptions->removeElement($blocOption)) {
-            // set the owning side to null (unless already changed)
-            if ($blocOption->getBlocUECategory() === $this) {
-                $blocOption->setBlocUECategory(null);
-            }
         }
 
         return $this;
