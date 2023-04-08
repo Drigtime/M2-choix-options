@@ -245,6 +245,7 @@ class CampagneChoixController extends AbstractController
         }
         $informatique_SIO = array(
             'id'=>1,
+            'nb_groupes'=>2,
             'intitule'=>'informatique - SIO',
             'parcours'=>'SIO',
             'ues'=>array('archi web','c#','nodeJs')
@@ -253,6 +254,7 @@ class CampagneChoixController extends AbstractController
         $informatique_OSIE = array(
             'id'=>2,
             'parcours'=>'OSIE',
+            'nb_groupes'=>2,
             'intitule'=>'informatique - OSIE',
             'ues'=>array('archi web','c#','nodeJs')
         );
@@ -260,6 +262,7 @@ class CampagneChoixController extends AbstractController
         $competence_traverse_SIO = array(
             'id'=>3,
             'parcours'=>'SIO',
+            'nb_groupes'=>3,
             'intitule'=>'compétence transverse - SIO',
             'ues'=>array('anglais','espagnol')
         );
@@ -267,6 +270,7 @@ class CampagneChoixController extends AbstractController
         $competence_traverse_OSIE = array(
             'id'=>4,
             'parcours'=>'OSIE',
+            'nb_groupes'=>3,
             'intitule'=>'compétence transverse - OSIE',
             'ues'=>array('anglais','espagnol')
         );
@@ -315,8 +319,6 @@ class CampagneChoixController extends AbstractController
             $etudiants = $etudiants_SIO;
         }
 
-        
-        
         return $this->json($etudiants);
     }
 

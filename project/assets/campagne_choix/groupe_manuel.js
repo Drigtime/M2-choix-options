@@ -40,25 +40,53 @@ $(document).ready(function() {
 
     $(".btn_ue").click(function() {
         var id = $(this).data("ueid");
+        var nbGroupes = $(this).data("nbgroupes");
         console.log(id)
         $("#choixUE").val(id);
+        $("#nbGroupes").val(nbGroupes);
+        $('#etudiant_container tbody').empty();
 
 
     });
 
+    $(".first_section").click(function() {
+      $('#etudiant_container tbody').empty();
+  });
 
-    $('#SIO0').on('change', function() {
-        if ($(this).is(':checked')) {
-          console.log('Checkbox is checked.');
-          // Do something when checkbox is checked.
-        } else {
-          console.log('Checkbox is unchecked.');
-          // Do something when checkbox is unchecked.
-        }
-      });
+  
+  });
 
+
+  $(document).on('change', 'input[type="checkbox"][name="selection_etudiant[]"]', function() {
+    if ($('input[type="checkbox"][name="selection_etudiant[]"]:checked').length > 0) {
+      console.log('at last one')
+      $('#choixGroupeBtn').prop('disabled', false);
+    } else {
+      console.log('none')
+      $('#choixGroupeBtn').prop('disabled', true);
+    }
 
   });
+
+  $('#choixGroupeModal').on('shown.bs.modal', function () {
+    console.log('open modal');
+    var nbGroupes = parseInt($('#nbGroupes').val());
+
+    $('.choixGroupeModal_body').empty();
+    for(var i = 1;i<=nbGroupes;i++){
+      console.log(i)
+      $('.choixGroupeModal_body').append(
+        $('<button/>', {
+          text: 'Groupe'+i,
+          class: 'btn btn-primary mt-2'
+        }),
+        '<br>'
+      );
+    }
+    
+
+  });
+
 
 
 
