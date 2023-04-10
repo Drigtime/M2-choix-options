@@ -8,13 +8,10 @@ $(document).ready(function() {
     var url = $(this).data("url");
     var parcours = $(this).data("parcours");
     console.log(url)
-    console.log(parcours)
               $.ajax({
                 url: url,
                 type: 'POST',
                 contentType: 'application/json',
-                dataType: 'json',
-                data: parcours,
                 success: function(data) {
 					console.log(data)
                     var tableBody = $('#etudiant_container tbody');
@@ -23,8 +20,9 @@ $(document).ready(function() {
                     $.each(data, function(index, etudiant) {
                         tableBody.append(
                         '<tr>'+
-                        '<td><input class="form-check-input selection_etudiant" type="checkbox" id="'+parcours+i+'" value="'+i+'" name="selection_etudiant[]"></td>'+
-                        '<td>'+etudiant+'</td>'+
+                        '<td><input class="form-check-input selection_etudiant" type="checkbox" id="'+etudiant.id+'" value="'+etudiant.id+'" name="selection_etudiant[]"></td>'+
+                        '<td>'+etudiant.nom+'</td>'+
+                        '<td>'+etudiant.prenom+'</td>'+
                         '<td>'+parcours+'</td>'+
                         '</tr>');
                         i++;
@@ -73,17 +71,20 @@ $(document).ready(function() {
     var nbGroupes = parseInt($('#nbGroupes').val());
 
     $('.choixGroupeModal_body').empty();
+    var radioGroup = $('<div>');
     for(var i = 1;i<=nbGroupes;i++){
       console.log(i)
-      $('.choixGroupeModal_body').append(
-        $('<button/>', {
-          text: 'Groupe'+i,
-          class: 'btn btn-primary mt-2'
-        }),
-        '<br>'
-      );
+      $('<input>').attr({
+        type: 'radio',
+        id: 'option'+i,
+        class:'form-check-input',
+        name: 'choixGroupe',
+        value: i
+      }).appendTo(radioGroup);
+      $('<label>').attr('for', 'option'+i).text(' Groupe '+i).appendTo(radioGroup);
+      $('<br>').appendTo(radioGroup);
     }
-    
+    $('.choixGroupeModal_body').append(radioGroup);
 
   });
 

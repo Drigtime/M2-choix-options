@@ -125,7 +125,7 @@ class CampagneChoixController extends AbstractController
         $indice = 1;
         $UE = null;
         $effectif = 25;
-        
+
         foreach ($campagneChoix->getParcours() as $parcours) {
             dump($parcours);
             $parcours_id = $parcours->getId();
@@ -137,7 +137,7 @@ class CampagneChoixController extends AbstractController
         dump($campagneChoix->getResponseCampagnes());
 
         $BlocUEs = $campagneChoix->getBlocOptions();
-        foreach($BlocUEs as $bloc){
+        foreach ($BlocUEs as $bloc) {
             dump($bloc->getParcours());
         }
         dump(count($BlocUEs));
@@ -151,95 +151,89 @@ class CampagneChoixController extends AbstractController
             for ($i = 0; $i < count($UEs); $i++) {
                 $result = array();
                 $UE = $UEs[$i];
-                if(count($UE->getGroupes()) == 0){
-                $responses = $campagneChoix->getResponseCampagnes();
-                for($y = 0; $y < count($responses); $y++) {
-                    $choixes = $responses[$y]->getChoixes();
-                    for($z = 0; $z < count($BlocUEs); $z++) {
-                    if($UE == $choixes[$z]->getUE()){
-                        $result[] = $responses[$y]->getEtudiant(); 
-                        dump($UE);
-                        dump($result);
+                if (count($UE->getGroupes()) == 0) {
+                    $responses = $campagneChoix->getResponseCampagnes();
+                    for ($y = 0; $y < count($responses); $y++) {
+                        $choixes = $responses[$y]->getChoixes();
+                        dump($choixes);
+                        for ($z = 0; $z < count($BlocUEs); $z++) {
+                            if ($UE == $choixes[$z]->getUE()) {
+                                $result[] = $responses[$y]->getEtudiant();
+                                dump($UE);
+                                dump($result);
+                            }
+                        }
                     }
+
+                    dump($result);
+                    dump(count($result));
+                    if (empty($result) == false) {
+
+                        $indice = 1;
+                        switch ($choix) {
+                                //groupe par ordre alphabetique
+                            case 1:
+                                usort($result, function ($a, $b) {
+                                    return strcmp($a->getNom(), $b->getNom());
+                                });
+                                $j = 0;
+                                for ($j = 0; $j < count($result); $j++) {
+                                    dump($result);
+                                    if (count($groupe->getEtudiants()) > $effectif) {
+                                        $groupe->setLabel($UE->getLabel() . "-Groupe-" . strval($indice));
+                                        $UE->addGroupe($groupe);
+                                        $groupeRep->save($groupe, true);
+                                        dump($groupe);
+                                        $indice = $indice + 1;
+                                        $groupe = new Groupe();
+                                    } else if ($j == count($result) - 1) {
+                                        $groupe->addEtudiant($result[$j]);
+                                        $groupe->setLabel($UE->getLabel() . "-Groupe-" . strval($indice));
+                                        $UE->addGroupe($groupe);
+                                        $groupeRep->save($groupe, true);
+                                        dump($groupe);
+                                        $indice = $indice + 1;
+                                        $groupe = new Groupe();
+                                    } else {
+                                        $groupe->addEtudiant($result[$j]);
+                                        dump($groupe);
+                                    }
+                                    $j++;
+                                }
+                                break;
+                                //aleatoire
+                            case 2:
+                                shuffle($result);
+                                for ($j = 0; $j < count($result); $j++) {
+                                    dump($result);
+                                    if (count($groupe->getEtudiants()) > $effectif) {
+                                        $groupe->setLabel($UE->getLabel() . "-Groupe-" . strval($indice));
+                                        $UE->addGroupe($groupe);
+                                        $groupeRep->save($groupe, true);
+                                        dump($groupe);
+                                        $indice = $indice + 1;
+                                        $groupe = new Groupe();
+                                    } else if ($j == count($result) - 1) {
+                                        $groupe->addEtudiant($result[$j]);
+                                        $groupe->setLabel($UE->getLabel() . "-Groupe-" . strval($indice));
+                                        $UE->addGroupe($groupe);
+                                        $groupeRep->save($groupe, true);
+                                        dump($groupe);
+                                        $indice = $indice + 1;
+                                        $groupe = new Groupe();
+                                    } else {
+                                        $groupe->addEtudiant($result[$j]);
+                                        dump($groupe);
+                                    }
+                                    $j++;
+                                }
+                                break;
+                                //manuel
+                            case 3:
+                                break;
+                        }
                     }
                 }
-            
-                dump($result);
-                dump(count($result));
-                if(empty($result) == false){
-                 
-                $indice = 1;
-                switch ($choix) {
-                    //groupe par ordre alphabetique
-                    case 1:
-                        usort($result, function($a, $b) {return strcmp($a->getNom(), $b->getNom());});
-                        $j = 0;
-                        for($j = 0; $j < count($result); $j++) {
-                            dump($result);
-                            if (count($groupe->getEtudiants()) > $effectif) {
-                                $groupe->setLabel($UE->getLabel() . "-Groupe-" . strval($indice));
-                                $UE->addGroupe($groupe);
-                                $groupeRep->save($groupe, true);
-                                dump($groupe);
-                                $indice = $indice + 1;
-                                $groupe = new Groupe();
-                            } else if ($j == count($result)-1) {
-                                $groupe->addEtudiant($result[$j]);
-                                $groupe->setLabel($UE->getLabel() . "-Groupe-" . strval($indice));
-                                $UE->addGroupe($groupe);
-                                $groupeRep->save($groupe, true);
-                                dump($groupe);
-                                $indice = $indice + 1;
-                                $groupe = new Groupe();
-                            } else {
-                                $groupe->addEtudiant($result[$j]);
-                                dump($groupe);
-                            }
-                            $j++;
-
-                        }
-                        break;
-                    //aleatoire
-                    case 2:
-                        shuffle($result);
-                        for($j = 0; $j < count($result); $j++) {
-                            dump($result);
-                            if (count($groupe->getEtudiants()) > $effectif) {
-                                $groupe->setLabel($UE->getLabel() . "-Groupe-" . strval($indice));
-                                $UE->addGroupe($groupe);
-                                $groupeRep->save($groupe, true);
-                                dump($groupe);
-                                $indice = $indice + 1;
-                                $groupe = new Groupe();
-                            } else if ($j == count($result)-1) {
-                                $groupe->addEtudiant($result[$j]);
-                                $groupe->setLabel($UE->getLabel() . "-Groupe-" . strval($indice));
-                                $UE->addGroupe($groupe);
-                                $groupeRep->save($groupe, true);
-                                dump($groupe);
-                                $indice = $indice + 1;
-                                $groupe = new Groupe();
-                            } else {
-                                $groupe->addEtudiant($result[$j]);
-                                dump($groupe);
-                            }
-                            $j++;
-
-                        }
-                        break;
-                    //manuel
-                    case 3:
-                        //a implementer 
-                        //fausses data pour avancer le front
-
-                     
-
-                        
-
-                        break;
-                }   
-                }
-            }
             }
         }
         $form = $this->createForm(GroupeType::class, $groupe);
@@ -250,85 +244,44 @@ class CampagneChoixController extends AbstractController
 
             return $this->redirectToRoute('app_campagne_choix_index', [], Response::HTTP_SEE_OTHER);
         }
-        $informatique_SIO = array(
-            'id'=>1,
-            'nb_groupes'=>2,
-            'intitule'=>'informatique - SIO',
-            'parcours'=>'SIO',
-            'ues'=>array('archi web','c#','nodeJs')
-        );
-
-        $informatique_OSIE = array(
-            'id'=>2,
-            'parcours'=>'OSIE',
-            'nb_groupes'=>2,
-            'intitule'=>'informatique - OSIE',
-            'ues'=>array('archi web','c#','nodeJs')
-        );
-
-        $competence_traverse_SIO = array(
-            'id'=>3,
-            'parcours'=>'SIO',
-            'nb_groupes'=>3,
-            'intitule'=>'compétence transverse - SIO',
-            'ues'=>array('anglais','espagnol')
-        );
-
-        $competence_traverse_OSIE = array(
-            'id'=>4,
-            'parcours'=>'OSIE',
-            'nb_groupes'=>3,
-            'intitule'=>'compétence transverse - OSIE',
-            'ues'=>array('anglais','espagnol')
-        );
-
-        $blocsUES = array();
-        array_push($blocsUES,$informatique_SIO,$informatique_OSIE,$competence_traverse_SIO,$competence_traverse_OSIE);
 
         return $this->render('campagne_choix/groupe_choix/_groupe_choix.html.twig', [
             'campagne_choix' => $campagneChoix,
-            'blocsUES' => $blocsUES,
             'form' => $form,
         ]);
     }
 
-    #[Route('/list/{parcours}', name: 'app_campagne_choix_get_etudiant', methods: ['POST'])]
-    public function list(Request $request,$parcours): JsonResponse
+    #[Route('/list/{id}/{parcours_id}', name: 'app_campagne_choix_get_etudiant', methods: ['POST'])]
+    public function list(Request $request, $id, $parcours_id, campagneChoix $campagneChoix): JsonResponse
     {
-        $etudiants_OSIE = array(
-            'jean lafesse',
-            'henry pointevant',
-            'igor dosgore',
-            'brice denice',
-            'daniel craig',
 
-        );
+        $results = array();
+        $parcours = $campagneChoix->getParcours();
 
-        $etudiants_SIO = array(
-            'andrew tate',
-            'napoleon bonaparte',
-            'john wick',
-            'solomon grundy',
-            'miyamoto musashi',
-        );
-
-        $data = $request->getContent();
-
-        dump($parcours);
-        dump($data);
-
-        $etudiants = array();
-
-        if($data == 'OSIE'){
-            $etudiants = $etudiants_OSIE;
+        foreach($parcours as $parcour){
+            if($parcour->getId() == $parcours_id){
+                $etudiants = $parcour->getEtudiants();
+                foreach($etudiants as $etudiant){
+                    $results[] = $etudiant;
+                }
+            }
         }
-        elseif($data == 'SIO'){
-            $etudiants = $etudiants_SIO;
-        }
-
-        return $this->json($etudiants);
+        return $this->json(array_map(function($etudiant){
+            return [
+              "id" => $etudiant->getId(),
+              "nom" => $etudiant->getNom(),
+              "prenom" => $etudiant->getPrenom(),
+            ];
+          }, $results));
     }
 
+    //gestion du post ici
+    // #[Route('/groupe_manuel', name: 'app_campagne_choix_groupe_manuel', methods: ['POST'])]
+    // public function groupe_manuel(Request $request , campagneChoix $campagneChoix): Response
+    // {
+
+    //     dump($request);
+    // }
 
     
 }

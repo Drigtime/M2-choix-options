@@ -5,23 +5,31 @@
 			<h5>Choix des étudiants</h5>
 			{#first section#}
 			<ul class="nav nav-tabs" id="firstTab" role="tablist">
-				{% for bloc_ue in blocsUES %}
-					<li class="nav-item first_section" role="{{ bloc_ue['id']}}">
-						<button class="nav-link" id="tab-{{ bloc_ue['id'] }}" data-bs-toggle="tab" data-bs-target="#tab-pane-{{ bloc_ue['id'] }}" type="button" role="tab" aria-controls="tab-pane-{{ bloc_ue['id'] }}" aria-selected="false">{{ bloc_ue['intitule'] }}
+				{% for bloc_ue in campagne_choix.blocOptions %}
+					<li class="nav-item first_section" role="{{ bloc_ue.id}}">
+						<button class="nav-link" id="tab-{{ bloc_ue.id }}" data-bs-toggle="tab" data-bs-target="#tab-pane-{{ bloc_ue.id }}" type="button" role="tab" aria-controls="tab-pane-{{ bloc_ue.id }}" aria-selected="false">{{ bloc_ue.blocUE.category.label }} - {{ bloc_ue.parcours.label }}
 						</button>
 					</li>
 				{% endfor %}
 			</ul>
 			{#first section elements#}
 			<div class="tab-content" id="firstTabContent">
-				{% for bloc_ue in blocsUES %}
+				{% for bloc_ue in campagne_choix.blocOptions %}
 					<div
-						class="tab-pane" id="tab-pane-{{ bloc_ue['id'] }}" role="tabpanel" aria-labelledby="tab-{{ bloc_ue['id'] }}" tabindex="0">
+						class="tab-pane" id="tab-pane-{{ bloc_ue.id }}" role="tabpanel" aria-labelledby="tab-{{ bloc_ue.id }}" tabindex="0">
 						{#second section#}
-						<ul class="nav nav-tabs" id="firstTab{{ bloc_ue['id'] }}" role="tablist">
+						<ul class="nav nav-tabs" id="firstTab{{ bloc_ue.id }}" role="tablist">
 							{% for ue in bloc_ue.ues %}
-								<li class="nav-item" role="{{ bloc_ue['id'] }}">
-									<button class="nav-link btn-selection btn_ue" id="tab-{{ bloc_ue['id'] }}" data-bs-toggle="tab" data-bs-target="#{{ ue }}-tab-pane" type="button" role="tab" aria-controls="{{ ue }}-tab-pane" aria-selected="false" data-parcours="{{ bloc_ue['parcours'] }}" data-ueid={{ bloc_ue['id'] }} data-nbgroupes={{ bloc_ue['nb_groupes'] }} data-url="{{ path('app_campagne_choix_get_etudiant',{ 'parcours': bloc_ue['parcours'] }) }}">{{ ue }}</button>
+								<li class="nav-item" role="{{ ue.id }}">
+									<button class="nav-link btn-selection btn_ue" id="tab-{{ ue.id }}" 
+									data-bs-toggle="tab" 
+									data-bs-target="#{{ ue.id }}-tab-pane" 
+									data-url="{{ path('app_campagne_choix_get_etudiant',{ 'id':campagne_choix.id,'parcours_id': bloc_ue.parcours.id }) }}"
+									data-parcours = {{ bloc_ue.parcours.label }}
+									data-nbgroupes = '2'
+									type="button" role="tab" 
+									aria-controls="{{ ue.id }}-tab-pane" 
+									aria-selected="false">{{ ue.label }}</button>
 								</li>
 							{% endfor %}
 						</ul>
@@ -32,7 +40,8 @@
 			<table class="table" id="etudiant_container">
 				<thead>
 					<th>Selectionner</th>
-					<th>Noms</th>
+					<th>Nom</th>
+					<th>Prenom</th>
 					<th>Parcours</th>
 				</thead>
 				<tbody></tbody>
@@ -60,13 +69,16 @@
 					<h1 class="modal-title fs-5" id="choixGroupeModalLabel">Choix du groupe</h1>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
+				<form method="post" action="{{ path('app_campagne_choix_groupe_manuel') }}">
 				<div class="choixGroupeModal_body p-3">
-					...
+				
+					
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-					<button type="button" class="btn btn-primary">Valider</button>
+					<button type="submit" class="btn btn-primary">Valider</button>
 				</div>
+				</form>
 			</div>
 		</div>
 	</div>
