@@ -16,6 +16,8 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Service\MailerService;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 #[Route('/admin/etudiant')]
 class EtudiantController extends AbstractController
@@ -25,20 +27,34 @@ class EtudiantController extends AbstractController
     }
 
     #[Route('/', name: 'app_etudiant_index', methods: ['GET', 'POST'])]
-    public function index(Request $request,EtudiantRepository $etudiantRepository,UserRepository $userRepository,UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager,PaginatorInterface $paginator): Response
+    public function index(Request $request, EtudiantRepository $etudiantRepository, UserRepository $userRepository, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
     {
         $form = $this->createForm(UserImportType::class);
         $form->handleRequest($request);
-        
+
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $fileImport = $form->get('fileImport')->getData();
+            $file = $form->get('fileImport');
 
+
+
+            if (!$file instanceof UploadedFile) {
+                throw new FileException('Pas de fichier importé');
+            }
+
+            // Check if the file is a CSV or XLS file
+            $mimeTypeGuesser = \Symfony\Component\Mime\MimeTypes::getDefault();
+            $mimeType = $mimeTypeGuesser->guessMimeType($file->getPathname());
+            if (!in_array($mimeType, ['text/csv', 'application/vnd.ms-excel'])) {
+                throw new FileException('Invalid file format. Only CSV and XLS files are allowed.');
+            }
+
+            $fileImport = $file->getData();
             $fileImport = fopen($fileImport, 'r');
 
-            if($fileImport){
-                while(($data = fgetcsv($fileImport)) !== false) {
-                    if($data[0] != 'nom'){
+            if ($fileImport) {
+                while (($data = fgetcsv($fileImport)) !== false) {
+                    if ($data[0] != 'nom') {
                         $etudiant = new Etudiant();
                         $etudiant->setNom($data[0]);
                         $etudiant->setPrenom($data[1]);
@@ -48,7 +64,7 @@ class EtudiantController extends AbstractController
                         $user = new User();
                         $user->setEmail($data[2]);
                         $user->setPassword('default');
-                        $userRepository->save($user,true);
+                        $userRepository->save($user, true);
                         // generate a signed url and email it to the user
                         $this->mailerService->sendEmailConfirmation('app_verify_email', $user);
                     }
@@ -68,7 +84,7 @@ class EtudiantController extends AbstractController
 
         return $this->render('etudiant/index.html.twig', [
             'etudiants' => $etudiants,
-            'form'=> $form->createView()
+            'form' => $form->createView()
         ]);
     }
 
@@ -120,10 +136,23 @@ class EtudiantController extends AbstractController
     #[Route('/{id}', name: 'app_etudiant_delete', methods: ['POST'])]
     public function delete(Request $request, Etudiant $etudiant, EtudiantRepository $etudiantRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$etudiant->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $etudiant->getId(), $request->request->get('_token'))) {
             $etudiantRepository->remove($etudiant, true);
         }
 
         return $this->redirectToRoute('app_etudiant_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/{id}/delete', name: 'app_etudiant_suppr', methods: ['GET','POST'])]
+    public function suppr(Request $request, Etudiant $etudiant, EtudiantRepository $etudiantRepository): Response
+    {
+        
+        $etudiantRepository->remove($etudiant, true);
+        
+
+        return $this->redirectToRoute('app_etudiant_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+
+ 
 }
