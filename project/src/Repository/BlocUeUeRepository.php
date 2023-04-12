@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\BlocUeUe;
+use App\Entity\Main\BlocUEUe;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

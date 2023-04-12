@@ -2,8 +2,8 @@
 
 namespace App\Service;
 
-use App\Entity\ResetPasswordToken;
-use App\Entity\User;
+use App\Entity\User\ResetPasswordToken;
+use App\Entity\User\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;

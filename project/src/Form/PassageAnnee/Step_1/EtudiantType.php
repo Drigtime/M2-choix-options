@@ -2,7 +2,7 @@
 
 namespace App\Form\PassageAnnee\Step_1;
 
-use App\Entity\Etudiant;
+use App\Entity\Main\Etudiant;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -10,7 +10,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class EtudiantType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('statut', ChoiceType::class, [
@@ -19,12 +19,11 @@ class EtudiantType extends AbstractType
                     'Redouble' => '1',
                     'Arrête' => '2',
                 ],
-                'label' => 'Admis',
-                'mapped' => false,
+                'label' => 'Admis'
             ]);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Etudiant::class,

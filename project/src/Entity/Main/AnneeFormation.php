@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Main;
 
 use App\Repository\AnneeFormationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -10,6 +10,9 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: AnneeFormationRepository::class)]
 class AnneeFormation
 {
+    const M1 = 'M1';
+    const M2 = 'M2';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

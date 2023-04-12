@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?php
 
 namespace App\Form\PassageAnnee\Step_2;
@@ -26,4 +27,33 @@ class EtudiantUEType extends AbstractType
             'data_class' => EtudiantUE::class,
         ]);
     }
+=======
+<?php
+
+namespace App\Form\PassageAnnee\Step_2;
+
+use App\Entity\Main\EtudiantUE;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+class EtudiantUEType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('acquis', CheckboxType::class, [
+                'required' => false,
+            ]);
+
+    }
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => EtudiantUE::class,
+        ]);
+    }
+>>>>>>> main
 }

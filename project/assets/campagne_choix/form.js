@@ -25,7 +25,12 @@ $(document).ready(function () {
             const parcour = parcours.find((parcour) => parcour.blocUEs.find((bloc) => bloc.id === blocUE.id));
 
             if (categorie) {
-                categorie.blocUEs.push({id: blocUE.id, parcours_label: parcour.label, parcours_id: parcour.id, ues: blocUE.ues});
+                categorie.blocUEs.push({
+                    id: blocUE.id,
+                    parcours_label: parcour.label,
+                    parcours_id: parcour.id,
+                    ues: blocUE.ues
+                });
             } else {
                 acc.push({
                     id: categorie_id,
@@ -67,6 +72,10 @@ $(document).ready(function () {
         updateSelectBlocUECategoryOptions(selectBlocUECategory);
         selectBlocUECategory.on("change", onBlocUECategoryChange);
 
+        if (blocUEContainer.children().length === 1 && blocUEContainer.children().first().data('bloc-ue') === undefined) {
+            blocUEContainer.empty();
+        }
+
         blocUEContainer.append(newBlocUE);
         selectBlocUECategory.trigger("change");
 
@@ -80,8 +89,7 @@ $(document).ready(function () {
         blocUE.remove();
 
         if (blocUEContainer.children().length === 0) {
-            const noBlocUE = $("<div></div>");
-            noBlocUE.html(prototypeNoBlocUE);
+            const noBlocUE = $(prototypeNoBlocUE);
             blocUEContainer.append(noBlocUE);
         }
     }
@@ -121,6 +129,42 @@ $(document).ready(function () {
         blocOptionContainerDisplay.empty();
 
         let blocOptionIndex = $("#bloc-ue-container").data('bloc-option-index');
+        // merge each blocUEs ues into one array, so there wont be duplicates in the list of ues
+
+        const mergedUes = [];
+        blocUEs.forEach(parcours => {
+            parcours.ues.forEach(ue => {
+                const existingUe = mergedUes.find(mergedUe => mergedUe.id === ue.id);
+                if (existingUe) {
+                    existingUe.parcours.push(parcours.parcours_label);
+                } else {
+                    mergedUes.push({
+                        id: ue.id,
+                        label: ue.label,
+                        effectif: ue.effectif,
+                        nbrGroupe: ue.nbrGroupe,
+                        parcours: [parcours.parcours_label]
+                    });
+                }
+            });
+        });
+
+        mergedUes.forEach((ue) => {
+            const ueDisplay = $(`<div></div>`);
+            // add the label, then add the parcours labels as span badges with the primary color and the effectif and nbrGroupe span badges with the info color
+            ueDisplay.append(`<span>${ue.label}</span>`);
+            ue.parcours.forEach((parcours) => {
+                ueDisplay.append(`<span class="ms-1 badge bg-primary">${parcours}</span>`);
+            });
+            if (ue.effectif) {
+                ueDisplay.append(`<span class="ms-1 badge bg-info">Effectif ${ue.effectif}</span>`);
+            }
+            if (ue.nbrGroupe) {
+                ueDisplay.append(`<span class="ms-1 badge bg-info">Groupes ${ue.nbrGroupe}</span>`);
+            }
+            blocOptionContainerDisplay.append(ueDisplay);
+        });
+
         blocUEs.forEach((blocUE) => {
             const newBlocOption = $(prototypeBlocOption.replace(/__name__/g, blocOptionIndex));
             const blocOptionBlocUE = newBlocOption.find('[name$="[blocUE]"]');
@@ -128,17 +172,9 @@ $(document).ready(function () {
             blocOptionBlocUE.val(blocUE.id);
             blocOptionParcours.val(blocUE.parcours_id);
 
-            const listUE = $('<ul></ul>');
-            blocUE.ues.forEach((ue) => {
-                listUE.append(`<li>${ue.label}</li>`);
-            });
-            blocOptionContainerDisplay.append(`<h5>${blocUE.parcours_label}</h5>`);
             if (blocUE.ues.length > 0) {
-                blocOptionContainerDisplay.append(listUE);
                 blocOptionContainer.append(newBlocOption);
                 blocOptionIndex++;
-            } else {
-                blocOptionContainerDisplay.append(prototypeParcoursNoUes);
             }
         });
         $("#bloc-ue-container").data('bloc-option-index', blocOptionIndex);
