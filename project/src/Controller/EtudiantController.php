@@ -45,31 +45,41 @@ class EtudiantController extends AbstractController
             // Check if the file is a CSV or XLS file
             $mimeTypeGuesser = \Symfony\Component\Mime\MimeTypes::getDefault();
             $mimeType = $mimeTypeGuesser->guessMimeType($file->getPathname());
-            if (!in_array($mimeType, ['text/csv', 'application/vnd.ms-excel'])) {
-                throw new FileException('Invalid file format. Only CSV and XLS files are allowed.');
-            }
+            //gestion csv
+            if (!in_array($mimeType, ['text/csv'])) {
+                $fileImport = $file->getData();
+                $fileImport = fopen($fileImport, 'r');
 
-            $fileImport = $file->getData();
-            $fileImport = fopen($fileImport, 'r');
+                if ($fileImport) {
+                    while (($data = fgetcsv($fileImport)) !== false) {
+                        if ($data[0] != 'nom') {
+                            $etudiant = new Etudiant();
+                            $etudiant->setNom($data[0]);
+                            $etudiant->setPrenom($data[1]);
+                            $etudiant->setMail($data[2]);
+                            $etudiantRepository->save($etudiant, true);
 
-            if ($fileImport) {
-                while (($data = fgetcsv($fileImport)) !== false) {
-                    if ($data[0] != 'nom') {
-                        $etudiant = new Etudiant();
-                        $etudiant->setNom($data[0]);
-                        $etudiant->setPrenom($data[1]);
-                        $etudiant->setMail($data[2]);
-                        $etudiantRepository->save($etudiant, true);
-
-                        $user = new User();
-                        $user->setEmail($data[2]);
-                        $user->setPassword('default');
-                        $userRepository->save($user, true);
-                        // generate a signed url and email it to the user
-                        $this->mailerService->sendEmailConfirmation('app_verify_email', $user);
+                            $user = new User();
+                            $user->setEmail($data[2]);
+                            $user->setPassword('default');
+                            $userRepository->save($user, true);
+                            // generate a signed url and email it to the user
+                            $this->mailerService->sendEmailConfirmation('app_verify_email', $user);
+                        }
                     }
                 }
             }
+            //gestion xls
+            elseif (!in_array($mimeType, ['application/vnd.ms-excel'])) {
+                
+            } else {
+                throw new FileException('Invalid file format. Only CSV and XLS files are allowed.');
+            }
+
+
+
+
+
             return $this->redirectToRoute('app_etudiant_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -143,16 +153,13 @@ class EtudiantController extends AbstractController
         return $this->redirectToRoute('app_etudiant_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/{id}/delete', name: 'app_etudiant_suppr', methods: ['GET','POST'])]
+    #[Route('/{id}/delete', name: 'app_etudiant_suppr', methods: ['GET', 'POST'])]
     public function suppr(Request $request, Etudiant $etudiant, EtudiantRepository $etudiantRepository): Response
     {
-        
+
         $etudiantRepository->remove($etudiant, true);
-        
+
 
         return $this->redirectToRoute('app_etudiant_index', [], Response::HTTP_SEE_OTHER);
     }
-
-
- 
 }
