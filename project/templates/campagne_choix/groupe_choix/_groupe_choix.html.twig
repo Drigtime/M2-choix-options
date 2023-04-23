@@ -69,7 +69,7 @@
 					<h1 class="modal-title fs-5" id="choixGroupeModalLabel">Choix du groupe</h1>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
-				<form method="post" action="{{ path('app_campagne_choix_groupe_manuel') }}">
+				<form method="post" action="{{ path('app_campagne_choix_groupe_manuel',{ 'id':campagne_choix.id}) }}">
 				<div class="choixGroupeModal_body p-3">
 				
 					
