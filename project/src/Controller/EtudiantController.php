@@ -53,18 +53,23 @@ class EtudiantController extends AbstractController
                 if ($fileImport) {
                     while (($data = fgetcsv($fileImport)) !== false) {
                         if ($data[0] != 'nom') {
-                            $etudiant = new Etudiant();
-                            $etudiant->setNom($data[0]);
-                            $etudiant->setPrenom($data[1]);
-                            $etudiant->setMail($data[2]);
-                            $etudiantRepository->save($etudiant, true);
+                            $user_exist = $userRepository->findOneByMail($data[2]);
 
-                            $user = new User();
-                            $user->setEmail($data[2]);
-                            $user->setPassword('default');
-                            $userRepository->save($user, true);
-                            // generate a signed url and email it to the user
-                            $this->mailerService->sendEmailConfirmation('app_verify_email', $user);
+                            if($user_exist == null){
+                                $etudiant = new Etudiant();
+                                $etudiant->setNom($data[0]);
+                                $etudiant->setPrenom($data[1]);
+                                $etudiant->setMail($data[2]);
+                                $etudiantRepository->save($etudiant, true);
+    
+                                $user = new User();
+                                $user->setEmail($data[2]);
+                                $user->setPassword('default');
+                                $userRepository->save($user, true);
+                                // generate a signed url and email it to the user
+                                $this->mailerService->sendEmailConfirmation('app_verify_email', $user);
+                            }
+
                         }
                     }
                 }
@@ -103,11 +108,29 @@ class EtudiantController extends AbstractController
         $form = $this->createForm(EtudiantType::class, $etudiant);
         $form->handleRequest($request);
 
+        
+
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $user_exist = $userRepository->findOneByMail($etudiant->getMail());
+
+            if($user_exist == null){
+
             $etudiantRepository->save($etudiant, true);
+            $user = new User();
+            $user->setEmail($etudiant->getMail());
+            $user->setPassword('default');
+            $userRepository->save($user, true);
+            // generate a signed url and email it to the user
+            $this->mailerService->sendEmailConfirmation('app_verify_email', $user);
+        
 
 
             return $this->redirectToRoute('app_etudiant_index', [], Response::HTTP_SEE_OTHER);
+            }
+            else{
+                dump('email deja utilisé');
+            }
         }
 
         return $this->renderForm('etudiant/new.html.twig', [
@@ -162,12 +185,12 @@ class EtudiantController extends AbstractController
         return $this->redirectToRoute('app_etudiant_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/{id}/renvoie', name: 'app_etudiant_renvoyer', methods: ['GET', 'POST'])]
-    public function renvoie(Request $request,$id, UserRepository $userRepository): Response
+    #[Route('/{mail}/renvoie', name: 'app_etudiant_renvoyer', methods: ['GET', 'POST'])]
+    public function renvoie(Request $request,$mail, UserRepository $userRepository): Response
     {
 
 
-        $user = $userRepository->findOneBySomeField($id);
+        $user = $userRepository->findOneByEmail($mail);
         $this->mailerService->sendEmailConfirmation('app_verify_email', $user);
 
 
