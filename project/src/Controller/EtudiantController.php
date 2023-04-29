@@ -76,10 +76,6 @@ class EtudiantController extends AbstractController
                 throw new FileException('Invalid file format. Only CSV and XLS files are allowed.');
             }
 
-
-
-
-
             return $this->redirectToRoute('app_etudiant_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -99,14 +95,17 @@ class EtudiantController extends AbstractController
     }
 
     #[Route('/new', name: 'app_etudiant_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EtudiantRepository $etudiantRepository): Response
+    public function new(Request $request, EtudiantRepository $etudiantRepository, UserRepository $userRepository): Response
     {
         $etudiant = new Etudiant();
+        $user = new User();
+
         $form = $this->createForm(EtudiantType::class, $etudiant);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $etudiantRepository->save($etudiant, true);
+
 
             return $this->redirectToRoute('app_etudiant_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -158,6 +157,18 @@ class EtudiantController extends AbstractController
     {
 
         $etudiantRepository->remove($etudiant, true);
+
+
+        return $this->redirectToRoute('app_etudiant_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/renvoie', name: 'app_etudiant_renvoyer', methods: ['GET', 'POST'])]
+    public function renvoie(Request $request,$id, UserRepository $userRepository): Response
+    {
+
+
+        $user = $userRepository->findOneBySomeField($id);
+        $this->mailerService->sendEmailConfirmation('app_verify_email', $user);
 
 
         return $this->redirectToRoute('app_etudiant_index', [], Response::HTTP_SEE_OTHER);
