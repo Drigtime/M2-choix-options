@@ -37,7 +37,6 @@ class Parcours
 
     public function __construct()
     {
-        $this->groupes = new ArrayCollection();
         $this->blocUEs = new ArrayCollection();
         $this->etudiants = new ArrayCollection();
         $this->campagneChoixes = new ArrayCollection();
@@ -82,35 +81,6 @@ class Parcours
         return $this->id;
     }
 
-    /**
-     * @return Collection<int, Groupe>
-     */
-    public function getGroupes(): Collection
-    {
-        return $this->groupes;
-    }
-
-    public function addGroupe(Groupe $groupe): self
-    {
-        if (!$this->groupes->contains($groupe)) {
-            $this->groupes->add($groupe);
-            $groupe->setParcours($this);
-        }
-
-        return $this;
-    }
-
-    public function removeGroupe(Groupe $groupe): self
-    {
-        if ($this->groupes->removeElement($groupe)) {
-            // set the owning side to null (unless already changed)
-            if ($groupe->getParcours() === $this) {
-                $groupe->setParcours(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, BlocUE>
