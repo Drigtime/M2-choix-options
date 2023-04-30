@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}UserGestion index{% endblock %}
+{% block title %}Etudiant index{% endblock %}
 
 {% block body %}
     <h1>Import des etudiants</h1>
@@ -23,14 +23,16 @@
             </tr>
         </thead>
         <tbody>
-        {% for user_gestion in user_gestions %}
+        {% for etudiant in etudiants %}
             <tr>
-                <td>{{ user_gestion.Nom }}</td>
-                <td>{{ user_gestion.Prenom }}</td>
-                <td>{{ user_gestion.Email }}</td>
+                <td>{{ etudiant.Nom }}</td>
+                <td>{{ etudiant.Prenom }}</td>
+                <td>{{ etudiant.Mail }}</td>
                 <td>
-                    <a href="{{ path('app_user_gestion_show', {'id': user_gestion.id}) }}">show</a>
-                    <a href="{{ path('app_user_gestion_edit', {'id': user_gestion.id}) }}">edit</a>
+                    <a href="{{ path('app_etudiant_show', {'id': etudiant.id}) }}">Details</a>
+                    <a href="{{ path('app_etudiant_edit', {'id': etudiant.id}) }}">Modifier</a>
+                    <a href="{{ path('app_etudiant_suppr', {'id': etudiant.id}) }}">Supprimer</a>
+                    <a href="{{ path('app_etudiant_renvoyer', {'mail': etudiant.mail}) }}">Renvoie mail</a>
                 </td>
             </tr>
         {% else %}
@@ -40,6 +42,10 @@
         {% endfor %}
         </tbody>
     </table>
+        {# display navigation #}
+    <div class="navigation d-flex justify-content-center">
+        {{ knp_pagination_render(etudiants) }}
+    </div>
 
-    <a href="{{ path('app_user_gestion_new') }}">Create new</a>
+    <a href="{{ path('app_etudiant_new') }}">Create new</a>
 {% endblock %}
