@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\Etudiant;
-use App\Entity\User;
+use App\Entity\Main\Etudiant;
+use App\Entity\User\User;
 use App\Form\EtudiantType;
 use App\Form\UserImportType;
 use App\Repository\EtudiantRepository;
