@@ -191,8 +191,10 @@ class EtudiantController extends AbstractController
 
 
         $user = $userRepository->findOneByEmail($mail);
-        $this->mailerService->sendEmailConfirmation('app_verify_email', $user);
 
+        if($user != null){
+            $this->mailerService->sendEmailConfirmation('app_verify_email', $user);
+        }
 
         return $this->redirectToRoute('app_etudiant_index', [], Response::HTTP_SEE_OTHER);
     }
