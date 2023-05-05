@@ -24,9 +24,8 @@
 									<button class="nav-link btn-selection btn_ue" id="tab-{{ ue.id }}" 
 									data-bs-toggle="tab" 
 									data-bs-target="#{{ ue.id }}-tab-pane" 
-									data-url="{{ path('app_campagne_choix_get_etudiant',{ 'id':campagne_choix.id,'parcours_id': bloc_ue.parcours.id }) }}"
+									data-url="{{ path('app_campagne_choix_get_etudiant',{ 'id':campagne_choix.id,'ue_id': ue.id }) }}"
 									data-parcours = {{ bloc_ue.parcours.label }}
-									data-nbgroupes = '2'
 									type="button" role="tab" 
 									aria-controls="{{ ue.id }}-tab-pane" 
 									aria-selected="false">{{ ue.label }}</button>

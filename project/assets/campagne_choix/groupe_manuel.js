@@ -66,27 +66,7 @@ $(document).ready(function() {
 
   });
 
-  $('#choixGroupeModal').on('shown.bs.modal', function () {
-    console.log('open modal');
-    var nbGroupes = parseInt($('#nbGroupes').val());
 
-    $('.choixGroupeModal_body').empty();
-    var radioGroup = $('<div>');
-    for(var i = 1;i<=nbGroupes;i++){
-      console.log(i)
-      $('<input>').attr({
-        type: 'radio',
-        id: 'option'+i,
-        class:'form-check-input',
-        name: 'choixGroupe',
-        value: i
-      }).appendTo(radioGroup);
-      $('<label>').attr('for', 'option'+i).text(' Groupe '+i).appendTo(radioGroup);
-      $('<br>').appendTo(radioGroup);
-    }
-    $('.choixGroupeModal_body').append(radioGroup);
-
-  });
 
 
 

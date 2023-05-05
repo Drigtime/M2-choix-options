@@ -6,6 +6,7 @@ use App\Entity\Main\BlocOption;
 use App\Entity\Main\CampagneChoix;
 use App\Entity\Main\Groupe;
 use App\Entity\Main\Etudiant;
+use App\Entity\Main\UE;
 use App\Form\CampagneChoixType;
 use App\Form\GroupeType;
 use App\Repository\CampagneChoixRepository;
@@ -118,6 +119,23 @@ class CampagneChoixController extends AbstractController
 
         return $this->redirectToRoute('app_campagne_choix_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    // #[Route('/{id}/choix/{choix}', name: 'app_campagne_groupe_choix_ue', methods: ['GET', 'POST'])]
+    // public function choix_groupe_ue(Request $request, $id, $choix, GroupeRepository $groupeRep, CampagneChoix $campagneChoix, CampagneChoixRepository $campagneChoixRepository, ParcoursRepository $parcoursRepository): Response
+    // {
+    //     // $parcours = $campagneChoix->getParcours();
+    //     // foreach($parcours as $p){
+    //     //     $b = $p->getBlocUEs();
+    //     //     dump($b);
+    //     //     foreach($b){
+               
+    //     //     }
+    //     // }
+    //     return $this->render('campagne_choix/groupe_choix/choix_groupe_ue.html.twig', [
+    //         'campagne_choix' => $campagneChoix,
+    //     ]);
+    // }
+
 
     //Crée les groupes une fois la campagne termine 
     #[Route('/{id}/choix/{choix}', name: 'app_campagne_groupe_choix', methods: ['GET', 'POST'])]
@@ -303,21 +321,44 @@ class CampagneChoixController extends AbstractController
         ]);
     }
 
-    #[Route('/list/{id}/{parcours_id}', name: 'app_campagne_choix_get_etudiant', methods: ['POST'])]
-    public function list(Request $request, $id, $parcours_id, campagneChoix $campagneChoix): JsonResponse
+    #[Route('/list/{id}/{ue_id}', name: 'app_campagne_choix_get_etudiant', methods: ['POST'])]
+    public function list(Request $request, $id, $ue_id, campagneChoix $campagneChoix, UE $UE): JsonResponse
     {
 
         $results = array();
-        $parcours = $campagneChoix->getParcours();
+        $responses = $campagneChoix->getResponseCampagnes();
 
-        foreach($parcours as $parcour){
-            if($parcour->getId() == $parcours_id){
-                $etudiants = $parcour->getEtudiants();
-                foreach($etudiants as $etudiant){
-                    $results[] = $etudiant;
+        foreach($responses as $r){
+            dump($r);
+            $choixes = $r->getChoixes();
+            dump($choixes);
+            foreach($choixes as $choix){
+                if($choix->getUE() == $UE){
+                    $results[] = $r->getEtudiant();
                 }
             }
         }
+
+
+
+
+
+
+
+
+        
+
+
+
+        // foreach($parcours as $parcour){
+        //     if($parcour->getId() == $parcours_id){
+        //         $etudiants = $parcour->getEtudiants();
+        //         foreach($etudiants as $etudiant){
+        //             $results[] = $etudiant;
+        //         }
+        //     }
+        // }
+
         return $this->json(array_map(function($etudiant){
             return [
               "id" => $etudiant->getId(),

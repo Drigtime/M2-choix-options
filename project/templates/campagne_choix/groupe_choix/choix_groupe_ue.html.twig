@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th>UE obligatoire</th>
+				<th>Parcours</th>
+				<th>actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for parcours in campagne_choix.parcours %}
+
+				{#second section#}
+
+				{% for blo in parcours.blocUES %}
+
+					{% for bloc_ue in blocUES.blocOptions %}
+
+						{% for ue in bloc_ue.ues %}
+							<tr>
+								<td>{{ue.label}}</td>
+								<td>{{parcours.label}}</td>
+							</tr>
+						{% endfor %}
+
+					{% endfor %}
+
+				{% endfor %}
+			{% endfor %}
+
+		</tbody>
+		<table>
+
+
+		{% endblock %}
