@@ -5,6 +5,7 @@ $(document).ready(function() {
     console.log('js ready')
     $(".btn-selection").click(function() {
     console.log("clic btn")
+    $('#etudiant_container tbody').empty();
     var url = $(this).data("url");
     var parcours = $(this).data("parcours");
     console.log(url)
@@ -24,6 +25,7 @@ $(document).ready(function() {
                         '<td>'+etudiant.nom+'</td>'+
                         '<td>'+etudiant.prenom+'</td>'+
                         '<td>'+parcours+'</td>'+
+                        '<td>'+etudiant.ordre+'</td>'+
                         '</tr>');
                         i++;
                     });
@@ -35,17 +37,6 @@ $(document).ready(function() {
     });
 
   
-
-    $(".btn_ue").click(function() {
-        var id = $(this).data("ueid");
-        var nbGroupes = $(this).data("nbgroupes");
-        console.log(id)
-        $("#choixUE").val(id);
-        $("#nbGroupes").val(nbGroupes);
-        $('#etudiant_container tbody').empty();
-
-
-    });
 
     $(".first_section").click(function() {
       $('#etudiant_container tbody').empty();

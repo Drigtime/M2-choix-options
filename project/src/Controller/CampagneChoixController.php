@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 
 #[Route('/admin/campagne_choix')]
@@ -321,20 +322,36 @@ class CampagneChoixController extends AbstractController
         ]);
     }
 
-    #[Route('/list/{id}/{ue_id}', name: 'app_campagne_choix_get_etudiant', methods: ['POST'])]
-    public function list(Request $request, $id, $ue_id, campagneChoix $campagneChoix, UE $UE): JsonResponse
+    #[Route('/list/{campagne_id}/{ue_id}', name: 'app_campagne_choix_get_etudiant', methods: ['POST'])]
+    #[ParamConverter('campagneChoix', campagneChoix::class, options: ['id' => 'campagne_id'])]
+    #[ParamConverter('UE', UE::class, options: ['id' => 'ue_id'])]
+    public function list(Request $request, $campagne_id, $ue_id, campagneChoix $campagneChoix, UE $UE): JsonResponse
     {
 
         $results = array();
         $responses = $campagneChoix->getResponseCampagnes();
 
+        dump($UE);
+        dump($ue_id);
         foreach($responses as $r){
-            dump($r);
+            
             $choixes = $r->getChoixes();
-            dump($choixes);
+            
             foreach($choixes as $choix){
                 if($choix->getUE() == $UE){
-                    $results[] = $r->getEtudiant();
+                    dump($choix);
+                    $etudiant = $r->getEtudiant();
+                    $selected = array(
+                        'id'=>$etudiant->getId(),
+                        "nom" => $etudiant->getNom(),
+                        "prenom" => $etudiant->getPrenom(),
+                        'ordre'=>$choix->getOrdre()
+                    );
+                    if(!in_array($selected,$results)){
+                        $results[] = $selected;
+                    }
+                    
+
                 }
             }
         }
@@ -342,8 +359,7 @@ class CampagneChoixController extends AbstractController
 
 
 
-
-
+        return $this->json($results);
 
 
         
@@ -359,13 +375,13 @@ class CampagneChoixController extends AbstractController
         //     }
         // }
 
-        return $this->json(array_map(function($etudiant){
-            return [
-              "id" => $etudiant->getId(),
-              "nom" => $etudiant->getNom(),
-              "prenom" => $etudiant->getPrenom(),
-            ];
-          }, $results));
+        // return $this->json(array_map(function($etudiant){
+        //     return [
+        //       "id" => $etudiant->getId(),
+        //       "nom" => $etudiant->getNom(),
+        //       "prenom" => $etudiant->getPrenom(),
+        //     ];
+        //   }, $results));
     }
 
     //gestion du post ici
