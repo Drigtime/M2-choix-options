@@ -16,7 +16,6 @@ $(document).ready(function() {
                 success: function(data) {
 					console.log(data)
                     var tableBody = $('#etudiant_container tbody');
-                    var i=0;
                     tableBody.empty();
                     $.each(data, function(index, etudiant) {
                         tableBody.append(
@@ -27,7 +26,8 @@ $(document).ready(function() {
                         '<td>'+parcours+'</td>'+
                         '<td>'+etudiant.ordre+'</td>'+
                         '</tr>');
-                        i++;
+                        $('#choixGroupeBtn').attr('data-bs-target',"#choixGroupeModal"+etudiant.ue);
+                        
                     });
                 },
                 error: function(xhr, textStatus, errorThrown) {

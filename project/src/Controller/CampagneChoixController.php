@@ -10,6 +10,7 @@ use App\Entity\Main\UE;
 use App\Form\CampagneChoixType;
 use App\Form\GroupeType;
 use App\Repository\CampagneChoixRepository;
+use App\Repository\EtudiantRepository;
 use App\Repository\GroupeRepository;
 use App\Repository\ParcoursRepository;
 use Doctrine\Common\Collections\Criteria;
@@ -302,6 +303,32 @@ class CampagneChoixController extends AbstractController
                                 //manuel
                                 //gestion dans une autre route 
                             case 3:
+                                // $bloc_ues = $campagneChoix->getBlocOptions();
+                                // foreach($bloc_ues as $bloc_ue){
+                                //     $UES = $bloc_ue->getUEs();
+                                //     foreach($UES as $UE){
+                                //         dump($UE);
+                                //     }
+                                // }
+                                $BlocUEs = $campagneChoix->getBlocOptions();
+                                $UEs = $BlocUE->getUEs();
+
+                                foreach($BlocUEs as $BlocUE){
+                                    $UEs = $BlocUE->getUEs();
+                                    foreach($UEs as $UE){
+                                    
+                                        if(count($UE->getGroupes()) != $UE->getNbrGroupe()){
+                                            dump($UE);
+                                            for($i = 1; $i<= $UE->getNbrGroupe(); $i++){
+                                                $groupe = new Groupe();
+                                                $groupe->setLabel($UE->getLabel() . "-Groupe-" . strval($i));
+                                                $UE->addGroupe($groupe);
+                                                $groupeRep->save($groupe, true);
+                                            }
+                                        }
+                                    }
+                                }
+                                
                                 break;
                         } 
                     }
@@ -345,7 +372,8 @@ class CampagneChoixController extends AbstractController
                         'id'=>$etudiant->getId(),
                         "nom" => $etudiant->getNom(),
                         "prenom" => $etudiant->getPrenom(),
-                        'ordre'=>$choix->getOrdre()
+                        'ordre'=>$choix->getOrdre(),
+                        'ue'=>$ue_id
                     );
                     if(!in_array($selected,$results)){
                         $results[] = $selected;
@@ -355,44 +383,33 @@ class CampagneChoixController extends AbstractController
                 }
             }
         }
-
-
-
-
         return $this->json($results);
-
-
-        
-
-
-
-        // foreach($parcours as $parcour){
-        //     if($parcour->getId() == $parcours_id){
-        //         $etudiants = $parcour->getEtudiants();
-        //         foreach($etudiants as $etudiant){
-        //             $results[] = $etudiant;
-        //         }
-        //     }
-        // }
-
-        // return $this->json(array_map(function($etudiant){
-        //     return [
-        //       "id" => $etudiant->getId(),
-        //       "nom" => $etudiant->getNom(),
-        //       "prenom" => $etudiant->getPrenom(),
-        //     ];
-        //   }, $results));
     }
 
     //gestion du post ici
-    #[Route('/groupe_manuel/{id}', name: 'app_campagne_choix_groupe_manuel', methods: ['POST'])]
-    public function groupe_manuel(Request $request ,$id, campagneChoix $campagneChoix):Response
+    #[Route('/groupe_manuel/{campagne_id}', name: 'app_campagne_choix_groupe_manuel', methods: ['POST'])]
+    #[ParamConverter('campagneChoix', campagneChoix::class, options: ['id' => 'campagne_id'])]
+    public function groupe_manuel(Request $request ,$campagne_id, CampagneChoix $campagneChoix, GroupeRepository $groupeRepository, EtudiantRepository $etudiantRepository):Response
     {
 
-        dump($request);
+
+
+
+        $etudiants = $request->get('selection_etudiant');
+        $groupe_id = $request->get('choixGroupes');
+
+
+        $groupe_selected =  $groupeRepository->findOneById($groupe_id);
+
+        foreach($etudiants as $etudiant){
+            $etudiant_selected = $etudiantRepository->findOneById($etudiant);
+            $groupe_selected->addEtudiant($etudiant_selected);
+        }
+
+        $groupeRepository->save($groupe_selected, true);
         
         return $this->redirectToRoute('app_campagne_groupe_choix', [
-            'id' => $id,
+            'id' => $campagne_id,
             'choix' => '3'
         ], Response::HTTP_SEE_OTHER);
     }

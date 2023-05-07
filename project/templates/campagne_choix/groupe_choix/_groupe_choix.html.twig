@@ -1,88 +1,94 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-	<div class="row">
-		<div class="col-8">
-			<h5>Choix des étudiants</h5>
-			{#first section#}
-			<ul class="nav nav-tabs" id="firstTab" role="tablist">
-				{% for bloc_ue in campagne_choix.blocOptions %}
-					<li class="nav-item first_section" role="{{ bloc_ue.id}}">
-						<button class="nav-link" id="tab-{{ bloc_ue.id }}" data-bs-toggle="tab" data-bs-target="#tab-pane-{{ bloc_ue.id }}" type="button" role="tab" aria-controls="tab-pane-{{ bloc_ue.id }}" aria-selected="false">{{ bloc_ue.blocUE.category.label }} - {{ bloc_ue.parcours.label }}
-						</button>
-					</li>
-				{% endfor %}
-			</ul>
-			{#first section elements#}
-			<div class="tab-content" id="firstTabContent">
-				{% for bloc_ue in campagne_choix.blocOptions %}
-					<div
-						class="tab-pane" id="tab-pane-{{ bloc_ue.id }}" role="tabpanel" aria-labelledby="tab-{{ bloc_ue.id }}" tabindex="0">
-						{#second section#}
-						<ul class="nav nav-tabs" id="firstTab{{ bloc_ue.id }}" role="tablist">
-							{% for ue in bloc_ue.ues %}
-								<li class="nav-item" role="{{ ue.id }}">
-									<button class="nav-link btn-selection btn_ue" id="tab-{{ ue.id }}" 
-									data-bs-toggle="tab" 
-									data-bs-target="#{{ ue.id }}-tab-pane" 
-									data-url="{{ path('app_campagne_choix_get_etudiant',{ 'campagne_id':campagne_choix.id,'ue_id': ue.id }) }}"
-									data-parcours = {{ bloc_ue.parcours.label }}
-									type="button" role="tab" 
-									aria-controls="{{ ue.id }}-tab-pane" 
-									aria-selected="false">{{ ue.label }}</button>
-								</li>
-							{% endfor %}
-						</ul>
+	<form method="post" action="{{ path('app_campagne_choix_groupe_manuel',{ 'campagne_id':campagne_choix.id}) }}">
+		<div class="row">
+			<div class="col-8">
+				<h5>Choix des étudiants</h5>
+				{#first section#}
+				<ul class="nav nav-tabs" id="firstTab" role="tablist">
+					{% for bloc_ue in campagne_choix.blocOptions %}
+						<li class="nav-item first_section" role="{{ bloc_ue.id}}">
+							<button class="nav-link" id="tab-{{ bloc_ue.id }}" data-bs-toggle="tab" data-bs-target="#tab-pane-{{ bloc_ue.id }}" type="button" role="tab" aria-controls="tab-pane-{{ bloc_ue.id }}" aria-selected="false">{{ bloc_ue.blocUE.category.label }}
+								-
+								{{ bloc_ue.parcours.label }}
+							</button>
+						</li>
+					{% endfor %}
+				</ul>
+				{#first section elements#}
+				<div class="tab-content" id="firstTabContent">
+					{% for bloc_ue in campagne_choix.blocOptions %}
+						<div
+							class="tab-pane" id="tab-pane-{{ bloc_ue.id }}" role="tabpanel" aria-labelledby="tab-{{ bloc_ue.id }}" tabindex="0">
+							{#second section#}
+							<ul class="nav nav-tabs" id="firstTab{{ bloc_ue.id }}" role="tablist">
+								{% for ue in bloc_ue.ues %}
+									<li class="nav-item" role="{{ ue.id }}">
+										<button class="nav-link btn-selection btn_ue" id="tab-{{ ue.id }}" data-bs-toggle="tab" data-bs-target="#{{ ue.id }}-tab-pane" data-url="{{ path('app_campagne_choix_get_etudiant',{ 'campagne_id':campagne_choix.id,'ue_id': ue.id }) }}" data-parcours={{ bloc_ue.parcours.label }} type="button" role="tab" aria-controls="{{ ue.id }}-tab-pane" aria-selected="false">{{ ue.label }}</button>
+									</li>
+								{% endfor %}
+							</ul>
+						</div>
+					{% endfor %}
+				</div>
+				{#second section elements#}
+				<table class="table" id="etudiant_container">
+					<thead>
+						<th>Selectionner</th>
+						<th>Nom</th>
+						<th>Prenom</th>
+						<th>Parcours</th>
+						<th>Ordre</th>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<div class="col-12">
+					<button type="button" id="choixGroupeBtn" class="btn btn-primary float-right" data-bs-toggle="modal" data-bs-target="" disabled>Choix du groupe
+						<i class="fas fa-arrow-right"></i>
+					</button>
+				</div>
+			</div>
+			<div class="col-4">
+				<h5>Constitution des groupes</h5>
+			</div>
+		</div>
+
+		<a href="{{ path('app_bloc_ue_index') }}">back to list</a>
+
+		{% for bloc_ue in campagne_choix.blocOptions %}
+			{% for ue in bloc_ue.ues %}
+				<!-- Modal -->
+				<div class="modal fade" id="choixGroupeModal{{ue.id}}" tabindex="-1" aria-labelledby="choixGroupeModalLabel" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h1 class="modal-title fs-5" id="choixGroupeModalLabel">Choix du groupe</h1>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+
+							<div class="choixGroupeModal_body p-3">
+								
+									{% for groupe in ue.groupes %}
+									<div class="form-check">
+										<input class="form-check-input" type="radio" name="choixGroupes" value="{{groupe.id}}">
+										<label class="form-check-label" for="flexRadioDefault1">
+											{{groupe.label}}
+										</label>
+										</div>
+									{% endfor %}
+								
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+								<button type="submit" class="btn btn-primary">Valider</button>
+							</div>
+
+						</div>
 					</div>
-				{% endfor %}
-			</div>
-			{#second section elements#}
-			<table class="table" id="etudiant_container">
-				<thead>
-					<th>Selectionner</th>
-					<th>Nom</th>
-					<th>Prenom</th>
-					<th>Parcours</th>
-					<th>Ordre</th>
-				</thead>
-				<tbody></tbody>
-			</table>
-			<div class="col-12">
-				<button id="choixGroupeBtn" class="btn btn-primary float-right" data-bs-toggle="modal" data-bs-target="#choixGroupeModal" disabled>Choix du groupe
-					<i class="fas fa-arrow-right"></i>
-				</button>
-			</div>
-		</div>
-		<div class="col-4">
-			<h5>Constitution des groupes</h5>
-		</div>
-	</div>
-	<input type="hidden" id="choixUE" name="choixUE" value="">
-	<input type="hidden" id="nbGroupes" name="nbGroupes" value="">
-	<input type="hidden" id="choixGroupes" name="choixGroupes" value="">
-	<a href="{{ path('app_bloc_ue_index') }}">back to list</a>
-
-	<!-- Modal -->
-	<div class="modal fade" id="choixGroupeModal" tabindex="-1" aria-labelledby="choixGroupeModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h1 class="modal-title fs-5" id="choixGroupeModalLabel">Choix du groupe</h1>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
-				<form method="post" action="{{ path('app_campagne_choix_groupe_manuel',{ 'id':campagne_choix.id}) }}">
-				<div class="choixGroupeModal_body p-3">
-				
-					
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-					<button type="submit" class="btn btn-primary">Valider</button>
-				</div>
-				</form>
-			</div>
-		</div>
-	</div>
-
+			{% endfor %}
+		{% endfor %}
+	</form>
 {% endblock %}
 
 {% block javascripts %}
