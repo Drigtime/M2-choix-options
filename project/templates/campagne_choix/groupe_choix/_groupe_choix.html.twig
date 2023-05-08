@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-	<form method="post" action="{{ path('app_campagne_choix_groupe_manuel',{ 'campagne_id':campagne_choix.id}) }}">
+	<form method="post" action="{{ path('app_campagne_choix_groupe_manuel',{ 'campagne_id':campagne_choix.id }) }}">
+		<input type="hidden" id="campagne_id" value="{{campagne_choix.id}}">
 		<div class="row">
 			<div class="col-8">
 				<h5>Choix des étudiants</h5>
@@ -50,6 +51,15 @@
 			</div>
 			<div class="col-4">
 				<h5>Constitution des groupes</h5>
+				<table class="table" id="groupe_container">
+					<thead>
+						<th>Supprimer</th>
+						<th>Nom</th>
+						<th>Prenom</th>
+					</thead>
+					<tbody></tbody>
+				</table>
+				
 			</div>
 		</div>
 
