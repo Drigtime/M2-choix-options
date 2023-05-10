@@ -3,49 +3,84 @@
 {% block title %}Etudiant index{% endblock %}
 
 {% block body %}
-    <h1>Import des etudiants</h1>
-     {{ form_start(form, {'attr':{'novalidate':'novalidate'}})}}
-    {{form_label(form.fileImport)}}
-    {{form_widget(form.fileImport)}}
-    {{form_errors(form.fileImport)}}
-    <input type="submit" class="btn btn-primary" value="Valider">
-     {{ form_end(form)}}
+    <div class="d-flex">
+        <div class="flex-grow-1">
+            <h4>Import des etudiants</h4>
+        </div>
+        <div class="flex-shrink-0">
+            <a href="{{ path('app_etudiant_new') }}" class="btn btn-sm btn-primary">
+                <i class="fas fa-plus"></i>
+                Créer un étudiant
+            </a>
+        </div>
+    </div>
 
+    {{ form_start(form, {'attr':{'novalidate':'novalidate'}}) }}
 
+    <div class="card my-3">
+        <div class="card-body">
+            {{ form_label(form.fileImport) }}
+            <div class="input-group">
+                {{ form_widget(form.fileImport) }}
+                <input type="submit" class="btn btn-primary" value="Valider">
+            </div>
+            {{ form_errors(form.fileImport) }}
+        </div>
+    </div>
 
-    <table class="table">
-        <thead>
+    {{ form_end(form) }}
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
             <tr>
                 <th>Nom</th>
                 <th>Prenom</th>
                 <th>Email</th>
-                <th>actions</th>
+                <th></th>
             </tr>
-        </thead>
-        <tbody>
-        {% for etudiant in etudiants %}
-            <tr>
-                <td>{{ etudiant.Nom }}</td>
-                <td>{{ etudiant.Prenom }}</td>
-                <td>{{ etudiant.Mail }}</td>
-                <td>
-                    <a href="{{ path('app_etudiant_show', {'id': etudiant.id}) }}">Details</a>
-                    <a href="{{ path('app_etudiant_edit', {'id': etudiant.id}) }}">Modifier</a>
-                    <a href="{{ path('app_etudiant_suppr', {'id': etudiant.id}) }}">Supprimer</a>
-                    <a href="{{ path('app_etudiant_renvoyer', {'mail': etudiant.mail}) }}">Renvoie mail</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-        {# display navigation #}
+            </thead>
+            <tbody>
+            {% for etudiant in etudiants %}
+                <tr>
+                    <td>{{ etudiant.Nom }}</td>
+                    <td>{{ etudiant.Prenom }}</td>
+                    <td>{{ etudiant.Mail }}</td>
+                    <td class="text-end">
+                        <div class="btn-group">
+                            <a href="{{ path('app_etudiant_show', {'id': etudiant.id}) }}"
+                               class="btn btn-sm btn-primary"
+                               title="Voir l'étudiant">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{{ path('app_etudiant_edit', {'id': etudiant.id}) }}"
+                               class="btn btn-sm btn-primary"
+                               title="Modifier l'étudiant">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{{ path('app_etudiant_renvoyer', {'mail': etudiant.mail}) }}"
+                               class="btn btn-sm btn-primary" title="Renvoyer le mail de confirmation">
+                                <i class="fas fa-envelope"></i>
+                            </a>
+                            <a href="{{ path('app_etudiant_suppr', {'id': etudiant.id}) }}"
+                               class="btn btn-sm btn-danger"
+                               title="Supprimer l'étudiant">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">no records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {# display navigation #}
     <div class="navigation d-flex justify-content-center">
         {{ knp_pagination_render(etudiants) }}
     </div>
-
-    <a href="{{ path('app_etudiant_new') }}">Create new</a>
 {% endblock %}

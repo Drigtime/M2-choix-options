@@ -5,12 +5,15 @@ namespace App\Controller;
 use App\Entity\Main\AnneeFormation;
 use App\Entity\Main\Etudiant;
 use App\Entity\Main\EtudiantUE;
+use App\Entity\Main\Groupe;
 use App\Entity\Main\Parcours;
+use App\Entity\Main\UE;
 use App\Form\MoveEtudiantType;
 use App\Form\PassageAnnee\Step_1\AnneeFormationType as Step1AnneeFormationType;
 use App\Form\PassageAnnee\Step_2\AnneeFormationType as Step2AnneeFormationType;
 use App\Repository\AnneeFormationRepository;
 use App\Repository\EtudiantRepository;
+use App\Repository\GroupeRepository;
 use App\Repository\ParcoursRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,18 +29,21 @@ class PassageAnneeController extends AbstractController
     private AnneeFormationRepository $anneeFormationRepository;
     private ParcoursRepository $parcoursRepository;
     private EtudiantRepository $etudiantRepository;
+    private GroupeRepository $groupeRepository;
 
     public function __construct(
         AnneeFormationRepository $anneeFormationRepository,
         ParcoursRepository       $parcoursRepository,
-        EtudiantRepository       $etudiantRepository)
+        EtudiantRepository       $etudiantRepository,
+        GroupeRepository         $groupeRepository)
     {
         $this->anneeFormationRepository = $anneeFormationRepository;
         $this->parcoursRepository = $parcoursRepository;
         $this->etudiantRepository = $etudiantRepository;
+        $this->groupeRepository = $groupeRepository;
     }
 
-    #[Route('/passage_annee', name: 'app_passage_annee')]
+    #[Route('/admin', name: 'app_passage_annee')]
     public function index(): Response
     {
         $anneeFormation = $this->anneeFormationRepository->findAll();
@@ -408,24 +414,18 @@ class PassageAnneeController extends AbstractController
     public function moveEtudiantToParcours(Etudiant $etudiant, Parcours $parcours): Etudiant
     {
         $etudiant->getResponseCampagnes()->clear();
+        $etudiant->getGroupes()->clear();
         $etudiant->getEtudiantUEs()->clear();
-
         $etudiant->setParcours($parcours);
 
         foreach ($parcours->getBlocUEs() as $blocUE) {
             $mandatoryUEs = $blocUE->getMandatoryUEs();
-            $optionalUEs = $blocUE->getOptionalUEs();
+            $optionalUEs = $blocUE->getOptionalUEs()->slice(0, $blocUE->getNbUEsOptional());
 
-            foreach ($mandatoryUEs as $blocUeUe) {
-                $etudiant->addEtudiantUE(new EtudiantUE($etudiant, $blocUeUe->getUe()));
-            }
-
-            $nbUEsOptional = $blocUE->getNbUEsOptional();
-            if ($nbUEsOptional > 0) {
-                $optionalUEs = $optionalUEs->slice(0, $nbUEsOptional);
-                foreach ($optionalUEs as $blocUeUe) {
-                    $etudiant->addEtudiantUE(new EtudiantUE($etudiant, $blocUeUe->getUe()));
-                }
+            $ues = array_map(fn($blocUeUe) => $blocUeUe->getUe(), array_merge($mandatoryUEs->toArray(), $optionalUEs));
+            foreach ($ues as $ue) {
+                $this->addStudentToUeGroup($ue, $etudiant);
+                $etudiant->addEtudiantUE(new EtudiantUE($etudiant, $ue));
             }
         }
 
@@ -436,13 +436,9 @@ class PassageAnneeController extends AbstractController
     public function moveStudents(Request $request, EntityManagerInterface $entityManager): Response
     {
         $students = $request->request->all()['students'];
-        $etudiants = [];
-        foreach ($students as $student) {
-            $etudiants[] = $this->etudiantRepository->find($student);
-        }
+        $etudiants = $this->etudiantRepository->findBy(['id' => $students]);
 
         $form = $this->createForm(MoveEtudiantType::class);
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -466,5 +462,32 @@ class PassageAnneeController extends AbstractController
             'form' => $form->createView(),
             'students' => $students,
         ]);
+    }
+
+    /**
+     * @param $blocUeUe
+     * @param mixed $etudiant
+     * @return void
+     */
+    public function addStudentToUeGroup(UE $ue, Etudiant $etudiant): void
+    {
+        $groups = $ue->getGroupes();
+        $group = null;
+
+        foreach ($groups as $g) {
+            if ($g->getEtudiants()->count() < $ue->getEffectif()) {
+                $group = $g;
+                break;
+            }
+        }
+
+        if (!$group) {
+            $group = new Groupe();
+            $group->setUe($ue);
+            $group->setLabel($ue->getLabel() . "-Groupe-" . ($ue->getGroupes()->count() + 1));
+        }
+
+        $group->addEtudiant($etudiant);
+        $this->groupeRepository->save($group);
     }
 }

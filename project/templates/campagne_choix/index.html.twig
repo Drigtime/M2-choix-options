@@ -25,43 +25,46 @@
     <div class="badge bg-primary">
         {{ campagne_choixes.getTotalItemCount }} campagne(s) de choix
     </div>
-    <table class="table">
-        <thead class="table-light">
-        <tr>
-            <th>{{ knp_pagination_sortable(campagne_choixes, 'ID', 'cc.id') }}</th>
-            <th>{{ knp_pagination_sortable(campagne_choixes, 'Parcours', 'ccp.label') }}</th>
-            <th>{{ knp_pagination_sortable(campagne_choixes, 'Date de début', 'cc.dateDebut') }}</th>
-            <th>{{ knp_pagination_sortable(campagne_choixes, 'Date de fin', 'cc.dateFin') }}</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for campagne_choix in campagne_choixes %}
-            <tr {% if loop.index is odd %}class="color"{% endif %}>
-                <td>{{ campagne_choix.id }}</td>
-                <td>
-                    {% for parcours in campagne_choix.parcours %}
-                        <span class="badge bg-primary">{{ parcours.anneeFormation ~ ' - ' ~ parcours.label }}</span>
-                    {% endfor %}
-                </td>
-                <td>{{ campagne_choix.dateDebut ? campagne_choix.dateDebut|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ campagne_choix.dateFin ? campagne_choix.dateFin|date('Y-m-d H:i:s') : '' }}</td>
-                <td class="text-end">
-                    <div class="btn-group">
-                        <a href="{{ path('app_campagne_choix_show', {'id': campagne_choix.id}) }}"
-                           class="btn btn-sm btn-primary">
-                            <i class="fa fa-eye"></i>
-                        </a>
-                        <a href="{{ path('app_campagne_choix_edit', {'id': campagne_choix.id}) }}"
-                           class="btn btn-sm btn-primary">
-                            <i class="fa fa-edit"></i>
-                        </a>
-                    </div>
-                </td>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead class="table-light">
+            <tr>
+                <th>{{ knp_pagination_sortable(campagne_choixes, 'ID', 'cc.id') }}</th>
+                <th>{{ knp_pagination_sortable(campagne_choixes, 'Parcours', 'ccp.label') }}</th>
+                <th>{{ knp_pagination_sortable(campagne_choixes, 'Date de début', 'cc.dateDebut') }}</th>
+                <th>{{ knp_pagination_sortable(campagne_choixes, 'Date de fin', 'cc.dateFin') }}</th>
+                <th></th>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            {% for campagne_choix in campagne_choixes %}
+                <tr {% if loop.index is odd %}class="color"{% endif %}>
+                    <td>{{ campagne_choix.id }}</td>
+                    <td>
+                        {% for parcours in campagne_choix.parcours %}
+                            <span class="badge bg-primary">{{ parcours.anneeFormation ~ ' - ' ~ parcours.label }}</span>
+                        {% endfor %}
+                    </td>
+                    <td>{{ campagne_choix.dateDebut ? campagne_choix.dateDebut|date('Y-m-d H:i:s') : '' }}</td>
+                    <td>{{ campagne_choix.dateFin ? campagne_choix.dateFin|date('Y-m-d H:i:s') : '' }}</td>
+                    <td class="text-end">
+                        <div class="btn-group">
+                            <a href="{{ path('app_campagne_choix_show', {'id': campagne_choix.id}) }}"
+                               class="btn btn-sm btn-primary">
+                                <i class="fa fa-eye"></i>
+                            </a>
+                            <a href="{{ path('app_campagne_choix_edit', {'id': campagne_choix.id}) }}"
+                               class="btn btn-sm btn-primary">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
     {# display navigation #}
     <div class="navigation d-flex justify-content-center">

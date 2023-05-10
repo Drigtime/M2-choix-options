@@ -24,51 +24,54 @@
     <div class="badge bg-primary">
         {{ ues.getTotalItemCount }} unité(s) d'enseignement
     </div>
-    <table class="table">
-        <thead class="table-light">
-        <tr>
-            <th>{{ knp_pagination_sortable(ues, 'ID', 'u.id') }}</th>
-            <th>{{ knp_pagination_sortable(ues, 'Nom', 'u.label') }}</th>
-            <th>{{ knp_pagination_sortable(ues, 'Effectif', 'u.effectif') }}</th>
-            <th>{{ knp_pagination_sortable(ues, 'Nombre de groupes', 'u.nbrGroupe') }}</th>
-            <th>Categories de bloc UE</th>
-            <th>{{ knp_pagination_sortable(ues, 'Actif', 'u.active') }}</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for ue in ues %}
-            <tr {% if loop.index is odd %}class="color"{% endif %}>
-                <td>{{ ue.id }}</td>
-                <td>{{ ue.label }}</td>
-                <td>{{ ue.effectif }}</td>
-                <td>{{ ue.nbrGroupe }}</td>
-                <td>
-                    {% for categorie in ue.blocUECategories %}
-                        <span class="badge bg-primary">
-{#                            <a href="{{ path('app_bloc_ue_show', {'id': ue.blocUECategory.id}) }}" #}
-                            {#                               class="text-white text-decoration-none">{{ ue.blocUECategory.label }}</a> #}
-                            {{ categorie.label }}
-                        </span>
-                    {% endfor %}
-                </td>
-                <td>{{ ue.active ? 'Oui' : 'Non' }}</td>
-                <td class="text-end">
-                    <div class="btn-group">
-                        <a href="{{ path('app_ue_show', {'id': ue.id}) }}"
-                           class="btn btn-sm btn-primary">
-                            <i class="fa fa-eye"></i>
-                        </a>
-                        <a href="{{ path('app_ue_edit', {'id': ue.id}) }}"
-                           class="btn btn-sm btn-primary">
-                            <i class="fa fa-edit"></i>
-                        </a>
-                    </div>
-                </td>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead class="table-light">
+            <tr>
+                <th>{{ knp_pagination_sortable(ues, 'ID', 'u.id') }}</th>
+                <th>{{ knp_pagination_sortable(ues, 'Nom', 'u.label') }}</th>
+                <th>{{ knp_pagination_sortable(ues, 'Effectif', 'u.effectif') }}</th>
+                <th>{{ knp_pagination_sortable(ues, 'Nombre de groupes', 'u.nbrGroupe') }}</th>
+                <th>Categories de bloc UE</th>
+                <th>{{ knp_pagination_sortable(ues, 'Actif', 'u.active') }}</th>
+                <th></th>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            {% for ue in ues %}
+                <tr {% if loop.index is odd %}class="color"{% endif %}>
+                    <td>{{ ue.id }}</td>
+                    <td>{{ ue.label }}</td>
+                    <td>{{ ue.effectif }}</td>
+                    <td>{{ ue.nbrGroupe }}</td>
+                    <td>
+                        {% for categorie in ue.blocUECategories %}
+                            <span class="badge bg-primary">
+{#                            <a href="{{ path('app_bloc_ue_show', {'id': ue.blocUECategory.id}) }}" #}
+                                {#                               class="text-white text-decoration-none">{{ ue.blocUECategory.label }}</a> #}
+                                {{ categorie.label }}
+                        </span>
+                        {% endfor %}
+                    </td>
+                    <td>{{ ue.active ? 'Oui' : 'Non' }}</td>
+                    <td class="text-end">
+                        <div class="btn-group">
+                            <a href="{{ path('app_ue_show', {'id': ue.id}) }}"
+                               class="btn btn-sm btn-primary">
+                                <i class="fa fa-eye"></i>
+                            </a>
+                            <a href="{{ path('app_ue_edit', {'id': ue.id}) }}"
+                               class="btn btn-sm btn-primary">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
     {# display navigation #}
     <div class="navigation d-flex justify-content-center">

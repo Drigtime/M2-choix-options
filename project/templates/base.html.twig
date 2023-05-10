@@ -2,6 +2,8 @@
 <html lang="fr" class="h-100" data-lt-installed="true">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>
         {% block title %}
             {{ 'title.base'|trans }}
@@ -79,13 +81,13 @@
             <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                 <div class="sb-sidenav-menu">
                     <div class="nav">
-                        <a class="nav-link{% if app.request.attributes.get('_route') == 'app_default' %} active{% endif %}"
-                           href="{{ path('app_default') }}">
-                            <div class="sb-nav-link-icon">
-                                <i class="fa-solid fa-home"></i>
-                            </div>
-                            Accueil
-                        </a>
+{#                        <a class="nav-link{% if app.request.attributes.get('_route') == 'app_default' %} active{% endif %}"#}
+{#                           href="{{ path('app_default') }}">#}
+{#                            <div class="sb-nav-link-icon">#}
+{#                                <i class="fa-solid fa-home"></i>#}
+{#                            </div>#}
+{#                            Accueil#}
+{#                        </a>#}
                         {% if is_granted("ROLE_ADMIN") %}
                             <a class="nav-link{% if app.request.attributes.get('_route') == 'app_passage_annee' %} active{% endif %}"
                                href="{{ path('app_passage_annee') }}">

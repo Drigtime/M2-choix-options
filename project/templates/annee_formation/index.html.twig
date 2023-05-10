@@ -24,35 +24,38 @@
     <div class="badge bg-primary">
         {{ annee_formations.getTotalItemCount }} année(s) de formation
     </div>
-    <table class="table">
-        <thead class="table-light">
-        <tr>
-            <th>{{ knp_pagination_sortable(annee_formations, 'ID', 'a.id') }}</th>
-            <th>{{ knp_pagination_sortable(annee_formations, 'Nom', 'a.label') }}</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for annee_formation in annee_formations %}
-            <tr {% if loop.index is odd %}class="color"{% endif %}>
-                <td>{{ annee_formation.id }}</td>
-                <td>{{ annee_formation.label }}</td>
-                <td class="text-end">
-                    <div class="btn-group">
-                        <a href="{{ path('app_annee_formation_show', {'id': annee_formation.id}) }}"
-                           class="btn btn-sm btn-primary">
-                            <i class="fa fa-eye"></i>
-                        </a>
-                        <a href="{{ path('app_annee_formation_edit', {'id': annee_formation.id}) }}"
-                           class="btn btn-sm btn-primary">
-                            <i class="fa fa-edit"></i>
-                        </a>
-                    </div>
-                </td>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead class="table-light">
+            <tr>
+                <th>{{ knp_pagination_sortable(annee_formations, 'ID', 'a.id') }}</th>
+                <th>{{ knp_pagination_sortable(annee_formations, 'Nom', 'a.label') }}</th>
+                <th></th>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            {% for annee_formation in annee_formations %}
+                <tr {% if loop.index is odd %}class="color"{% endif %}>
+                    <td>{{ annee_formation.id }}</td>
+                    <td>{{ annee_formation.label }}</td>
+                    <td class="text-end">
+                        <div class="btn-group">
+                            <a href="{{ path('app_annee_formation_show', {'id': annee_formation.id}) }}"
+                               class="btn btn-sm btn-primary">
+                                <i class="fa fa-eye"></i>
+                            </a>
+                            <a href="{{ path('app_annee_formation_edit', {'id': annee_formation.id}) }}"
+                               class="btn btn-sm btn-primary">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
     {# display navigation #}
     <div class="navigation d-flex justify-content-center">

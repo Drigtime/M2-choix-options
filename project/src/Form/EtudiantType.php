@@ -2,21 +2,25 @@
 
 namespace App\Form;
 
-use App\Entity\Etudiant;
+use App\Entity\Main\Etudiant;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\File;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class EtudiantType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('Nom')
-            ->add('Prenom')
-            ->add('Mail');
+            ->add('nom')
+            ->add('prenom')
+            ->add('mail', EmailType::class, [
+                'label' => 'Email',
+                'attr' => [
+                    'placeholder' => 'Email'
+                ]
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

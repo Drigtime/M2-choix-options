@@ -23,35 +23,38 @@
     <div class="badge bg-primary">
         {{ bloc_ue_categories.getTotalItemCount }} catégorie(s) de bloc UE
     </div>
-    <table class="table">
-        <thead class="table-light">
-        <tr>
-            <th>{{ knp_pagination_sortable(bloc_ue_categories, 'ID', 'b.id') }}</th>
-            <th>{{ knp_pagination_sortable(bloc_ue_categories, 'Libellé', 'b.label') }}</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for bloc_ue_category in bloc_ue_categories %}
-            <tr {% if loop.index is odd %}class="color"{% endif %}>
-                <td>{{ bloc_ue_category.id }}</td>
-                <td>{{ bloc_ue_category.label }}</td>
-                <td class="text-end">
-                    <div class="btn-group">
-                        <a href="{{ path('app_bloc_ue_category_show', {'id': bloc_ue_category.id}) }}"
-                           class="btn btn-sm btn-primary">
-                            <i class="fa fa-eye"></i>
-                        </a>
-                        <a href="{{ path('app_bloc_ue_category_edit', {'id': bloc_ue_category.id}) }}"
-                           class="btn btn-sm btn-primary">
-                            <i class="fa fa-edit"></i>
-                        </a>
-                    </div>
-                </td>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead class="table-light">
+            <tr>
+                <th>{{ knp_pagination_sortable(bloc_ue_categories, 'ID', 'b.id') }}</th>
+                <th>{{ knp_pagination_sortable(bloc_ue_categories, 'Libellé', 'b.label') }}</th>
+                <th></th>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            {% for bloc_ue_category in bloc_ue_categories %}
+                <tr {% if loop.index is odd %}class="color"{% endif %}>
+                    <td>{{ bloc_ue_category.id }}</td>
+                    <td>{{ bloc_ue_category.label }}</td>
+                    <td class="text-end">
+                        <div class="btn-group">
+                            <a href="{{ path('app_bloc_ue_category_show', {'id': bloc_ue_category.id}) }}"
+                               class="btn btn-sm btn-primary">
+                                <i class="fa fa-eye"></i>
+                            </a>
+                            <a href="{{ path('app_bloc_ue_category_edit', {'id': bloc_ue_category.id}) }}"
+                               class="btn btn-sm btn-primary">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
     {# display navigation #}
     <div class="navigation d-flex justify-content-center">
