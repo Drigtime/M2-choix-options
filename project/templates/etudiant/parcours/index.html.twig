@@ -1,20 +1,73 @@
-{% extends 'base.html.twig' %}
+{# {% extends 'base.html.twig' %}
 
-{% block title %}Hello ParcoursController!{% endblock %}
+{% block title %}Parcours
+{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+<h1>Votre parcours</h1>
+    {% for blocUE in etudiant.parcours.blocUEs %}
+        <h3>{{blocUE.category.label}}</h3>
+        {% for blocUeUe in blocUE.mandatoryUEs %}
+            <p>{{blocUeUe.UE.label}}</p>    
+        {% endfor %}
+        {% for blocUeUe in blocUE.optionalUEs %}
+            {% for groupe in UEsGroupes %}
+                {% if blocUeUe.UE.id == groupe.UE.id %}
+                    <p>{{blocUeUe.UE.label}} - Groupe {{groupe.label}}</p>   
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    {% endfor %}
+{% endblock %} #}
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+{% extends 'base.html.twig' %}
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/var/www/html/src/Controller/Etudiant/ParcoursController.php'|file_link(0) }}">src/Controller/Etudiant/ParcoursController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/var/www/html/templates/etudiant/parcours/index.html.twig'|file_link(0) }}">templates/etudiant/parcours/index.html.twig</a></code></li>
-    </ul>
-</div>
+{% block title %}Parcours
+{% endblock %}
+
+{% block body %}
+	<h1>Votre parcours</h1>
+	<div class="accordion" id="parcoursAccordion">
+		{% for blocUE in etudiant.parcours.blocUEs %}
+			<div class="accordion-item">
+				<h2 class="accordion-header" id="heading{{blocUE.category.id}}">
+					<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{blocUE.category.id}}" aria-expanded="true" aria-controls="collapse{{blocUE.category.id}}">
+						{{blocUE.category.label}}
+					</button>
+				</h2>
+				<div id="collapse{{blocUE.category.id}}" class="accordion-collapse collapse" aria-labelledby="heading{{blocUE.category.id}}" data-bs-parent="#parcoursAccordion">
+					<div class="accordion-body">
+						<h3>UEs obligatoires</h3>
+						{% for blocUeUe in blocUE.mandatoryUEs %}
+							<p>{{blocUeUe.UE.label}}</p>
+						{% endfor %}
+						<h3>UEs optionnelles</h3>
+						{# {% for blocUeUe in blocUE.optionalUEs %}
+						                            {% for groupe in UEsGroupes %}
+						                                {% if blocUeUe.UE.id == groupe.UE.id %}
+						                                    <p>{{blocUeUe.UE.label}} - Groupe {{groupe.label}}</p>
+						                                {% endif %}
+						                            {% endfor %}
+						                            <p>{{ blocUeUe.UE.label }} : Non retenu</p>
+						                        {% endfor %} #}
+						{% for blocUeUe in blocUE.optionalUEs %}
+							{% set grouped = false %}
+							{% for groupe in UEsGroupes %}
+								{% if blocUeUe.UE.id == groupe.UE.id %}
+									<p>{{blocUeUe.UE.label}}
+										- Groupe
+										{{groupe.label}}</p>
+									{% set grouped = true %}
+								{% endif %}
+							{% endfor %}
+							{% if not grouped %}
+								<p>{{ blocUeUe.UE.label }}
+									: Non retenu</p>
+							{% endif %}
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
 {% endblock %}

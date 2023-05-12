@@ -2,6 +2,7 @@
 
 namespace App\Controller\Etudiant;
 
+use App\Repository\EtudiantRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -9,10 +10,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class ParcoursController extends AbstractController
 {
     #[Route('/etudiant/parcours', name: 'app_etudiant_parcours')]
-    public function index(): Response
+    public function index(EtudiantRepository $etudiantRepository): Response
     {
+        $etudiant = $etudiantRepository->findOneBy(['mail' => $this->getUser()->getUserIdentifier()]);
+        $groupes = $etudiant->getGroupes();
+
         return $this->render('etudiant/parcours/index.html.twig', [
-            'controller_name' => 'ParcoursController',
+            'etudiant' => $etudiant,
+            'UEsGroupes' => $groupes,
         ]);
     }
 }
