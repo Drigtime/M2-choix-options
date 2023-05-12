@@ -26,12 +26,12 @@
 {% endblock %}
 
 {% block body %}
-	<h1>Votre parcours</h1>
+	<h1 class="text-center mt-5 mb-4">Votre parcours</h1>
 	<div class="accordion" id="parcoursAccordion">
 		{% for blocUE in etudiant.parcours.blocUEs %}
 			<div class="accordion-item">
 				<h2 class="accordion-header" id="heading{{blocUE.category.id}}">
-					<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{blocUE.category.id}}" aria-expanded="true" aria-controls="collapse{{blocUE.category.id}}">
+					<button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{blocUE.category.id}}" aria-expanded="true" aria-controls="collapse{{blocUE.category.id}}">
 						{{blocUE.category.label}}
 					</button>
 				</h2>
@@ -39,22 +39,18 @@
 					<div class="accordion-body">
 						<h3>UEs obligatoires</h3>
 						{% for blocUeUe in blocUE.mandatoryUEs %}
-							<p>{{blocUeUe.UE.label}}</p>
+							{% for groupe in UEsGroupes %}
+								{% if blocUeUe.UE.id == groupe.UE.id %}
+									<p class="mb-2">{{groupe.label}}</p>
+								{% endif %}
+							{% endfor %}
 						{% endfor %}
-						<h3>UEs optionnelles</h3>
-						{# {% for blocUeUe in blocUE.optionalUEs %}
-						                            {% for groupe in UEsGroupes %}
-						                                {% if blocUeUe.UE.id == groupe.UE.id %}
-						                                    <p>{{blocUeUe.UE.label}} - Groupe {{groupe.label}}</p>
-						                                {% endif %}
-						                            {% endfor %}
-						                            <p>{{ blocUeUe.UE.label }} : Non retenu</p>
-						                        {% endfor %} #}
+						<h3 class="mt-3">UEs optionnelles</h3>
 						{% for blocUeUe in blocUE.optionalUEs %}
 							{% set grouped = false %}
 							{% for groupe in UEsGroupes %}
 								{% if blocUeUe.UE.id == groupe.UE.id %}
-									<p>{{blocUeUe.UE.label}}
+									<p class="mb-2">{{blocUeUe.UE.label}}
 										- Groupe
 										{{groupe.label}}</p>
 									{% set grouped = true %}
