@@ -27,11 +27,8 @@ services:
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     container_name: 'phpmyadmin'
-    environment:
-      - PMA_HOST=${DB_SERVER}
-      - PMA_PORT=${DB_PORT}
-      - PMA_USER=${MYSQL_USER}
-      - PMA_PASSWORD=${MYSQL_PASS}
+    volumes:
+      - ./docker/phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
     ports:
       - '${APP_DB_ADMIN_PORT}:80'
 
