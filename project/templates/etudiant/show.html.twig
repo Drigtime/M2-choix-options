@@ -3,10 +3,31 @@
 {% block title %}Etudiant{% endblock %}
 
 {% block body %}
-    <h1>Etudiant</h1>
+    <div class="d-flex">
+        <div class="flex-grow-1">
+            <h4>Étudiant</h4>
+        </div>
+        <div class="flex-shrink-0">
+            <div class="d-flex gap-2">
+                {{ include('etudiant/_delete_form.html.twig') }}
 
-    <table class="table">
-        <tbody>
+                <a href="{{ path('app_etudiant_edit', {'id': etudiant.id}) }}"
+                   class="btn btn-sm btn-primary">
+                    <i class="fas fa-edit"></i>
+                    Modifier
+                </a>
+
+                <a href="{{ path('app_etudiant_index') }}" class="btn btn-sm btn-primary">
+                    <i class="fas fa-arrow-left"></i>
+                    {{ 'utils.back_to_list'|trans }} des étudiants
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table">
+            <tbody>
             <tr>
                 <th>Id</th>
                 <td>{{ etudiant.id }}</td>
@@ -23,12 +44,7 @@
                 <th>Email</th>
                 <td>{{ etudiant.Mail }}</td>
             </tr>
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_etudiant_index') }}">back to list</a>
-
-    <a href="{{ path('app_etudiant_edit', {'id': etudiant.id}) }}">edit</a>
-
-    {{ include('etudiant/_delete_form.html.twig') }}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}
