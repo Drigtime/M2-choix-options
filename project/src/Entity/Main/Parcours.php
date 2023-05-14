@@ -193,4 +193,14 @@ class Parcours
 
         return $this;
     }
+
+    public function hasActiveCampagneChoix(): bool
+    {
+        foreach ($this->getCampagneChoixes() as $campagneChoix) {
+            if ($campagneChoix->isActif()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

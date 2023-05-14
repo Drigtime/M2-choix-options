@@ -42,92 +42,148 @@
         </tbody>
     </table>
 
-    <h5>Liste des blocs UE</h5>
-    <div class="row g-3">
-        {% for blocUE in parcour.blocUEs %}
-            <div class="col-12 col-md-6 col-xxl-4">
-                <div class="card">
-                    <div class="card-header">
-                        {{ blocUE.category.label }}
-                    </div>
-                    <div class="card-body p-2">
-                        <div class="tab-pane {{ loop.first ? 'show active' }}"
-                             id="nav-ue-{{ blocUE.id }}-{{ loop.index }}"
-                             role="tabpanel"
-                             aria-labelledby="nav-ue-{{ blocUE.id }}-{{ loop.index }}-tab"
-                             tabindex="0">
-                            <div class="accordion" id="accordion-panels-stay-open-{{ blocUE.id }}-{{ loop.index }}">
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header"
-                                        id="panels-stay-open-heading-{{ blocUE.id }}-{{ loop.index }}-1">
-                                        <button class="accordion-button p-2" type="button" data-bs-toggle="collapse"
-                                                data-bs-target="#panels-stay-open-collapse-{{ blocUE.id }}-{{ loop.index }}-1"
-                                                aria-expanded="true"
-                                                aria-controls="panels-stay-open-collapse-{{ blocUE.id }}-{{ loop.index }}-1">
-                                            UEs obligatoires
-                                        </button>
-                                    </h2>
-                                    <div id="panels-stay-open-collapse-{{ blocUE.id }}-{{ loop.index }}-1"
-                                         class="accordion-collapse collapse show"
-                                         aria-labelledby="panels-stay-open-heading-{{ blocUE.id }}-{{ loop.index }}-1">
-                                        <div class="accordion-body p-2">
-                                            {% set mandatoryUEs = blocUE.blocUeUes|filter((blocUeUe) => blocUeUe.isOptional != true) %}
-                                            {% if mandatoryUEs|length > 0 %}
-                                                {% for blocUeUe in mandatoryUEs %}
-                                                    <div>
-                                                        <a href="{{ path('app_ue_show', {'id': blocUeUe.ue.id}) }}">
-                                                            {{ blocUeUe.ue.label }}
-                                                        </a>
-                                                    </div>
-                                                {% endfor %}
-                                            {% else %}
-                                                <div class="text-muted">
-                                                    Aucune UE obligatoire
-                                                </div>
-                                            {% endif %}
-                                        </div>
+    <div class="accordion mb-3" id="accordionPanelsStayOpenExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
+                        aria-controls="panelsStayOpen-collapseOne">
+                    Liste des blocs UE
+                </button>
+            </h2>
+            <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show"
+                 aria-labelledby="panelsStayOpen-headingOne">
+                <div class="accordion-body">
+                    <div class="row g-3">
+                        {% for blocUE in parcour.blocUEs %}
+                            <div class="col-12 col-md-6 col-xxl-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        {{ blocUE.category.label }}
                                     </div>
-                                </div>
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header"
-                                        id="panels-stay-open-heading-{{ blocUE.id }}-{{ loop.index }}-2">
-                                        <button class="accordion-button p-2" type="button" data-bs-toggle="collapse"
-                                                data-bs-target="#panels-stay-open-collapse-{{ blocUE.id }}-{{ loop.index }}-2"
-                                                aria-expanded="true"
-                                                aria-controls="panels-stay-open-collapse-{{ blocUE.id }}-{{ loop.index }}-2">
-                                            UEs optionnelles
-                                            {% if blocUE.nbUEsOptional > 0 %}
-                                                - {{ blocUE.nbUEsOptional }} UE(s) a choisir
-                                            {% endif %}
-                                        </button>
-                                    </h2>
-                                    <div id="panels-stay-open-collapse-{{ blocUE.id }}-{{ loop.index }}-2"
-                                         class="accordion-collapse collapse show"
-                                         aria-labelledby="panels-stay-open-heading-{{ blocUE.id }}-{{ loop.index }}-2">
-                                        <div class="accordion-body p-2">
-                                            {% set optionalUEs = blocUE.blocUeUes|filter((blocUeUe) => blocUeUe.isOptional) %}
-                                            {% if optionalUEs|length > 0 %}
-                                                {% for blocUeUe in blocUE.blocUeUes|filter((blocUeUe) => blocUeUe.isOptional) %}
-                                                    <div>
-                                                        <a href="{{ path('app_ue_show', {'id': blocUeUe.ue.id}) }}">
-                                                            {{ blocUeUe.ue.label }}
-                                                        </a>
+                                    <div class="card-body p-2">
+                                        <div class="tab-pane {{ loop.first ? 'show active' }}"
+                                             id="nav-ue-{{ blocUE.id }}-{{ loop.index }}"
+                                             role="tabpanel"
+                                             aria-labelledby="nav-ue-{{ blocUE.id }}-{{ loop.index }}-tab"
+                                             tabindex="0">
+                                            <div class="accordion"
+                                                 id="accordion-panels-stay-open-{{ blocUE.id }}-{{ loop.index }}">
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header"
+                                                        id="panels-stay-open-heading-{{ blocUE.id }}-{{ loop.index }}-1">
+                                                        <button class="accordion-button p-2" type="button"
+                                                                data-bs-toggle="collapse"
+                                                                data-bs-target="#panels-stay-open-collapse-{{ blocUE.id }}-{{ loop.index }}-1"
+                                                                aria-expanded="true"
+                                                                aria-controls="panels-stay-open-collapse-{{ blocUE.id }}-{{ loop.index }}-1">
+                                                            UEs obligatoires
+                                                        </button>
+                                                    </h2>
+                                                    <div id="panels-stay-open-collapse-{{ blocUE.id }}-{{ loop.index }}-1"
+                                                         class="accordion-collapse collapse show"
+                                                         aria-labelledby="panels-stay-open-heading-{{ blocUE.id }}-{{ loop.index }}-1">
+                                                        <div class="accordion-body p-2">
+                                                            {% set mandatoryUEs = blocUE.mandatoryUEs %}
+                                                            {% if mandatoryUEs|length > 0 %}
+                                                                {% for blocUeUe in mandatoryUEs %}
+                                                                    <div>
+                                                                        <a href="{{ path('app_ue_show', {'id': blocUeUe.ue.id}) }}">
+                                                                            {{ blocUeUe.ue.label }}
+                                                                        </a>
+                                                                    </div>
+                                                                {% endfor %}
+                                                            {% else %}
+                                                                <div class="text-muted">
+                                                                    Aucune UE obligatoire
+                                                                </div>
+                                                            {% endif %}
+                                                        </div>
                                                     </div>
-                                                {% endfor %}
-                                            {% else %}
-                                                <div class="text-muted">
-                                                    Aucune UE optionnelle
                                                 </div>
-                                            {% endif %}
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header"
+                                                        id="panels-stay-open-heading-{{ blocUE.id }}-{{ loop.index }}-2">
+                                                        <button class="accordion-button p-2" type="button"
+                                                                data-bs-toggle="collapse"
+                                                                data-bs-target="#panels-stay-open-collapse-{{ blocUE.id }}-{{ loop.index }}-2"
+                                                                aria-expanded="true"
+                                                                aria-controls="panels-stay-open-collapse-{{ blocUE.id }}-{{ loop.index }}-2">
+                                                            UEs optionnelles
+                                                            {% if blocUE.nbUEsOptional > 0 %}
+                                                                - {{ blocUE.nbUEsOptional }} UE(s) a choisir
+                                                            {% endif %}
+                                                        </button>
+                                                    </h2>
+                                                    <div id="panels-stay-open-collapse-{{ blocUE.id }}-{{ loop.index }}-2"
+                                                         class="accordion-collapse collapse show"
+                                                         aria-labelledby="panels-stay-open-heading-{{ blocUE.id }}-{{ loop.index }}-2">
+                                                        <div class="accordion-body p-2">
+                                                            {% set optionalUEs = blocUE.optionalUEs %}
+                                                            {% if optionalUEs|length > 0 %}
+                                                                {% for blocUeUe in optionalUEs %}
+                                                                    <div>
+                                                                        <a href="{{ path('app_ue_show', {'id': blocUeUe.ue.id}) }}">
+                                                                            {{ blocUeUe.ue.label }}
+                                                                        </a>
+                                                                    </div>
+                                                                {% endfor %}
+                                                            {% else %}
+                                                                <div class="text-muted">
+                                                                    Aucune UE optionnelle
+                                                                </div>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
-        {% endfor %}
+        </div>
+    </div>
+    <div class="accordion mb-3" id="accordionPanelsStayOpenExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true"
+                        aria-controls="panelsStayOpen-collapseTwo">
+                    Liste des étudiants
+                </button>
+            </h2>
+            <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show"
+                 aria-labelledby="panelsStayOpen-headingTwo">
+                <div class="accordion-body p-2">
+                    <div class="table-responsive">
+                        <table class="table m-0">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nom</th>
+                                <th>Prénom</th>
+                                <th>E-Mail</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for etudiant in parcour.etudiants %}
+                                <tr>
+                                    <td>{{ etudiant.id }}</td>
+                                    <td>{{ etudiant.nom }}</td>
+                                    <td>{{ etudiant.prenom }}</td>
+                                    <td>{{ etudiant.mail }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 {% endblock %}

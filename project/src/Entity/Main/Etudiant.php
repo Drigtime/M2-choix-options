@@ -35,7 +35,7 @@ class Etudiant
     #[ORM\OneToMany(mappedBy: 'etudiant', targetEntity: EtudiantUE::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $etudiantUEs;
 
-    #[ORM\OneToMany(mappedBy: 'etudiant', targetEntity: ResponseCampagne::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'etudiant', targetEntity: ResponseCampagne::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $responseCampagnes;
 
     // statut n'est pas un champ de la base de données mais un champ virtuel qui permet de savoir si l'étudiant est admis ou non à la fin de l'année
