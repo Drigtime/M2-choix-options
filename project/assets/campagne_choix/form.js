@@ -53,7 +53,7 @@ $(document).ready(function () {
             selectBlocUECategory.append(option);
         });
         // check if the selectedOption is still available in selectBlocUECategory, if so restore the selected option
-        const selectedOptionsAvailable = blocUEsByCategories.find((blocUECategory) => blocUECategory.id === selectedOption);
+        const selectedOptionsAvailable = blocUEsByCategories.find((blocUECategory) => blocUECategory.id === Number(selectedOption));
         if (selectedOptionsAvailable) {
             selectBlocUECategory.val(selectedOption);
         }
@@ -105,6 +105,7 @@ $(document).ready(function () {
 
         $('[data-bloc-ue-category]').each(function () {
             updateSelectBlocUECategoryOptions($(this));
+            $(this).trigger("change");
         });
 
         if (blocUEsByCategories.length > 0) {

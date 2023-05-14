@@ -24,7 +24,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
                     var choix = {"blocOptionsId": blocOptionsId, "ordre": sortable.toArray()};
                     var campagneId = document.getElementById('campagneId');
                     $.ajax({
-                        url: "/"+ campagneId.dataset.campagneId +"/edit",
+                        url: "/etudiant/options/"+ campagneId.dataset.campagneId +"/edit",
                         type: "POST",
                         data: JSON.stringify(choix),
                         contentType: "application/json",

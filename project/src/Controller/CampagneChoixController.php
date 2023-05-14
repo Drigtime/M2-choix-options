@@ -84,6 +84,11 @@ class CampagneChoixController extends AbstractController
     #[Route('/{id}/edit', name: 'app_campagne_choix_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, CampagneChoix $campagneChoix, CampagneChoixRepository $campagneChoixRepository): Response
     {
+        if ($campagneChoix->isFinished()) {
+            $this->addFlash('warning', 'Impossible de modifier une campagne terminée');
+            return $this->redirectToRoute('app_campagne_choix_index', [], Response::HTTP_SEE_OTHER);
+        }
+
         $form = $this->createForm(CampagneChoixType::class, $campagneChoix);
         $form->handleRequest($request);
 
