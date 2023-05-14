@@ -2,6 +2,7 @@ import {Modal} from "bootstrap";
 import $ from "jquery";
 import DataTable from 'datatables.net-bs5';
 import languageFR from 'datatables.net-plugins/i18n/fr-FR.json';
+import {showError, showSuccess} from '../toast';
 
 // for every checkbox in the document that have data-check-all attribute, add a click event listener to check or uncheck all checkboxes in the container
 $(document).on('click', '[data-check-all]', function () {
@@ -102,6 +103,17 @@ $(document).on('click', '[data-move]', function (e) {
             modal.show();
             modalDiv.querySelector('form').addEventListener('submit', function (formEvent) {
                 formEvent.preventDefault();
+                const submitButton = formEvent.submitter;
+                // save content of the button
+                const submitButtonContent = submitButton.innerHTML;
+                // disable the button
+                submitButton.disabled = true;
+                // add a spinner to the button
+                submitButton.innerHTML = `
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <span>Déplacement...</span>
+                    `;
+
                 $.ajax({
                     url: url,
                     method: $(this).attr('method'),
@@ -112,9 +124,10 @@ $(document).on('click', '[data-move]', function (e) {
                         const target = $(e.currentTarget).data('ajax-target');
                         if (target) {
                             $(target).html(data);
+                            const $dataTables = $('.dt');
 
                             // reinitialize the datatable
-                            $('.dt').DataTable({
+                            $dataTables.DataTable({
                                 "columnDefs": [
                                     {"orderable": false, "targets": 0},
                                     {"searchable": false, "targets": 0},
@@ -127,12 +140,29 @@ $(document).on('click', '[data-move]', function (e) {
                                 "order": [[2, "asc"]],
                                 "language": languageFR
                             });
+                            $dataTables.css('width', '100%');
                         }
                         modal.hide();
                     },
                     error: function (data) {
                         modal._element.innerHTML = data.responseText;
                     },
+                    complete: function (data) {
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = submitButtonContent;
+
+                        if (data.status === 200) {
+                            showSuccess({
+                                title: 'Déplacement',
+                                message: 'Déplacement effectué avec succès',
+                            })
+                        } else {
+                            showError({
+                                title: 'Déplacement',
+                                message: 'Une erreur est survenue lors du déplacement',
+                            })
+                        }
+                    }
                 });
             });
         },

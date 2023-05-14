@@ -33,7 +33,8 @@
     {% endif %}
     <!-- Navbar Search-->
     {% if is_granted('ROLE_ADMIN') %}
-        <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0" action="{{ path('app_default') }}">
+        <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0"
+              action="{{ path('app_default') }}">
             <div class="input-group">
                 <input class="form-control" type="text" name="_switch_user" placeholder="Impersonation..."
                        aria-label="Usurper..." aria-describedby="btnNavbarImpersonate"/>
@@ -61,7 +62,8 @@
                     </li>
                     {% if is_granted('IS_IMPERSONATOR') %}
                         <li>
-                            <a class="dropdown-item" href="{{ impersonation_exit_path(path('app_default') ) }}">Annuler l'impersonation</a>
+                            <a class="dropdown-item" href="{{ impersonation_exit_path(path('app_default') ) }}">Annuler
+                                l'impersonation</a>
                         </li>
                     {% endif %}
                     <li>
@@ -81,13 +83,13 @@
             <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                 <div class="sb-sidenav-menu">
                     <div class="nav">
-{#                        <a class="nav-link{% if app.request.attributes.get('_route') == 'app_default' %} active{% endif %}"#}
-{#                           href="{{ path('app_default') }}">#}
-{#                            <div class="sb-nav-link-icon">#}
-{#                                <i class="fa-solid fa-home"></i>#}
-{#                            </div>#}
-{#                            Accueil#}
-{#                        </a>#}
+                        {#                        <a class="nav-link{% if app.request.attributes.get('_route') == 'app_default' %} active{% endif %}" #}
+                        {#                           href="{{ path('app_default') }}"> #}
+                        {#                            <div class="sb-nav-link-icon"> #}
+                        {#                                <i class="fa-solid fa-home"></i> #}
+                        {#                            </div> #}
+                        {#                            Accueil #}
+                        {#                        </a> #}
                         {% if is_granted("ROLE_ADMIN") %}
                             <a class="nav-link{% if app.request.attributes.get('_route') == 'app_passage_annee' %} active{% endif %}"
                                href="{{ path('app_passage_annee') }}">
@@ -170,6 +172,28 @@
                     <div class="row">
                         <div class="col-md-12">
                             {% block body %}{% endblock %}
+                        </div>
+                    </div>
+                </div>
+                <div aria-live="polite" aria-atomic="true">
+                    <div class="toast-container position-fixed bottom-0 end-0 me-4">
+                        <div id="toastSuccess" class="toast">
+                            <div class="toast-header bg-primary text-white">
+                                <strong class="toast-title me-auto"></strong>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="toast-body">
+                            </div>
+                        </div>
+                        <div id="toastError" class="toast bottom-0 end-0">
+                            <div class="toast-header bg-danger text-white">
+                                <strong class="toast-title me-auto"></strong>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="toast-body">
+                            </div>
                         </div>
                     </div>
                 </div>
