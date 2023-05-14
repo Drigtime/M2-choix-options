@@ -49,7 +49,7 @@ class ChoixOptionsController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_etudiant_choix_options_edit', methods: ['GET', 'POST'])]
+    #[Route('/etudiant/options/{id}/edit', name: 'app_etudiant_choix_options_edit', methods: ['GET', 'POST'])]
     public function edit(Request                    $request,
                          CampagneChoix              $campagne,
                          ResponseCampagneRepository $responseCampagneRepository,
@@ -113,7 +113,7 @@ class ChoixOptionsController extends AbstractController
 
         return $this->render('etudiant/choix_options/edit.html.twig', [
             'parcours' => $etudiant->getParcours(),
-            'form' => $form,
+            'form' => $form->createView(),
             'campagne' => $campagne,
         ]);
     }
