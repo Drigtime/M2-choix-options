@@ -3,9 +3,29 @@
 {% block title %}Nouveau Groupe{% endblock %}
 
 {% block body %}
-    <h1>Créer un nouveau groupe</h1>
+    <div class="d-flex">
+        <div class="flex-grow-1">
+            <h4>Créer un nouveau groupe</h4>
+        </div>
+        <div class="flex-shrink-0">
+            <div class="d-flex gap-2">
+                <a href="{{ path('app_groupe_index') }}" class="btn btn-sm btn-primary">
+                    <i class="fas fa-arrow-left"></i>
+                    {{ 'utils.back_to_list'|trans }} des groupes
+                </a>
+            </div>
+        </div>
+    </div>
 
     {{ include('groupe/_form.html.twig') }}
+{% endblock %}
 
-    <a href="{{ path('app_groupe_index') }}">Retour</a>
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('groupe_form') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('groupe_form') }}
 {% endblock %}
