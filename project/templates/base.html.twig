@@ -91,62 +91,68 @@
                         {#                            Accueil #}
                         {#                        </a> #}
                         {% if is_granted("ROLE_ADMIN") %}
-                            <a class="nav-link{% if app.request.attributes.get('_route') == 'app_passage_annee' %} active{% endif %}"
+                            <div class="sb-sidenav-menu-heading">Configuration</div>
+                            <a class="nav-link{% if 'app_campagne_choix' in app.request.attributes.get('_route') %} active{% endif %}"
+                               href="{{ path('app_campagne_choix_index') }}">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-list-ol"></i></div>
+                                Campagnes de choix
+                            </a>
+                            <a class="nav-link{% if 'app_parcours' in app.request.attributes.get('_route') %} active{% endif %}"
+                               href="{{ path('app_parcours_index') }}">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-road"></i></div>
+                                Parcours
+                            </a>
+                            {#                            <a class="nav-link" href="{{ path('app_bloc_ue_index') }}"> #}
+                            {#                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div> #}
+                            {#                                Bloc UE #}
+                            {#                            </a> #}
+                            <a class="nav-link{% if 'app_bloc_ue_category' in app.request.attributes.get('_route') %} active{% endif %}"
+                               href="{{ path('app_bloc_ue_category_index') }}">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-layer-group"></i></div>
+                                Catégories de bloc UE
+                            </a>
+                            <a class="nav-link{% if 'app_ue' in app.request.attributes.get('_route') %} active{% endif %}"
+                               href="{{ path('app_ue_index') }}">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-book"></i></div>
+                                Unités d'enseignement
+                            </a>
+                            <a class="nav-link{% if 'app_annee_formation' in app.request.attributes.get('_route') %} active{% endif %}"
+                               href="{{ path('app_annee_formation_index') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-calendar-days"></i></div>
+                                Années de formation
+                            </a>
+                            <a class="nav-link{% if 'app_passage_annee' in app.request.attributes.get('_route') %} active{% endif %}"
                                href="{{ path('app_passage_annee') }}">
                                 <div class="sb-nav-link-icon">
                                     <i class="fa-solid fa-person-walking-dashed-line-arrow-right"></i>
                                 </div>
                                 Passage d'année
                             </a>
-                            <div class="sb-sidenav-menu-heading">Configuration</div>
-                            <a class="nav-link{% if app.request.attributes.get('_route') == 'app_parcours_index' %} active{% endif %}"
-                               href="{{ path('app_parcours_index') }}">
-                                <div class="sb-nav-link-icon"><i class="fa-solid fa-road"></i></div>
-                                Parcours
-                            </a>
-                            <a class="nav-link{% if app.request.attributes.get('_route') == 'app_campagne_choix_index' %} active{% endif %}"
-                               href="{{ path('app_campagne_choix_index') }}">
-                                <div class="sb-nav-link-icon"><i class="fa-solid fa-list-ol"></i></div>
-                                Campagnes de choix
-                            </a>
-                            {#                            <a class="nav-link" href="{{ path('app_bloc_ue_index') }}"> #}
-                            {#                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div> #}
-                            {#                                Bloc UE #}
-                            {#                            </a> #}
-                            <a class="nav-link{% if app.request.attributes.get('_route') == 'app_bloc_ue_category_index' %} active{% endif %}"
-                               href="{{ path('app_bloc_ue_category_index') }}">
-                                <div class="sb-nav-link-icon"><i class="fa-solid fa-layer-group"></i></div>
-                                Catégories de bloc UE
-                            </a>
-                            <a class="nav-link{% if app.request.attributes.get('_route') == 'app_ue_index' %} active{% endif %}"
-                               href="{{ path('app_ue_index') }}">
-                                <div class="sb-nav-link-icon"><i class="fa-solid fa-book"></i></div>
-                                Unités d'enseignement
-                            </a>
-                            <a class="nav-link{% if app.request.attributes.get('_route') == 'app_annee_formation_index' %} active{% endif %}"
-                               href="{{ path('app_annee_formation_index') }}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-calendar-days"></i></div>
-                                Années de formation
-                            </a>
-                            <a class="nav-link{% if app.request.attributes.get('_route') == 'app_groupe_index' %} active{% endif %}"
+                            <div class="sb-sidenav-menu-heading">Étudiants</div>
+                            <a class="nav-link{% if 'app_groupe' in app.request.attributes.get('_route') %} active{% endif %}"
                                href="{{ path('app_groupe_index') }}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-users-gear"></i></div>
                                 Gestion des groupes
                             </a>
+                            <a class="nav-link{% if 'app_changement_parcours' in app.request.attributes.get('_route') %} active{% endif %}"
+                               href="{{ path('app_changement_parcours') }}">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-users-gear"></i></div>
+                                Changement de parcours
+                            </a>
                             <div class="sb-sidenav-menu-heading">Gestion des utilisateurs</div>
-                            <a class="nav-link{% if app.request.attributes.get('_route') == 'app_etudiant_index' %} active{% endif %}"
+                            <a class="nav-link{% if 'app_etudiant' in app.request.attributes.get('_route') %} active{% endif %}"
                                href="{{ path('app_etudiant_index') }}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-users-gear"></i></div>
                                 Import/export des étudiants
                             </a>
                         {% endif %}
                         {% if is_granted("ROLE_ADMIN") == false %}
-                            <a class="nav-link{% if app.request.attributes.get('_route') == 'app_etudiant_parcours' %} active{% endif %}"
+                            <a class="nav-link{% if 'app_etudiant_parcours' in app.request.attributes.get('_route') %} active{% endif %}"
                                href="{{ path('app_etudiant_parcours') }}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-road"></i></div>
                                 Parcours
                             </a>
-                            <a class="nav-link{% if app.request.attributes.get('_route') == 'app_etudiant_choix_options' %} active{% endif %}"
+                            <a class="nav-link{% if 'app_etudiant_choix_options' in app.request.attributes.get('_route') %} active{% endif %}"
                                href="{{ path('app_etudiant_choix_options') }}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-list-ol"></i></div>
                                 Campagne de choix

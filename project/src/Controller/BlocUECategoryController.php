@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/admin/bloc_ue/category')]
+#[Route('/admin/bloc_ue_category')]
 class BlocUECategoryController extends AbstractController
 {
     #[Route('/', name: 'app_bloc_ue_category_index', methods: ['GET'])]

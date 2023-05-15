@@ -9,6 +9,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class DefaultController extends AbstractController
 {
     #[Route('/', name: 'app_default')]
+    #[Route('/admin')]
+    #[Route('/etudiant')]
     public function index(): Response
     {
         $user = $this->getUser();
@@ -21,7 +23,7 @@ class DefaultController extends AbstractController
         // check if the user is an admin
         if ($this->isGranted('ROLE_ADMIN')) {
             // redirect to the admin dashboard
-            return $this->redirectToRoute('app_passage_annee');
+            return $this->redirectToRoute('app_campagne_choix_index');
         } else if ($this->isGranted('ROLE_USER')) {
             // redirect to the user dashboard
             return $this->redirectToRoute('app_etudiant_parcours');

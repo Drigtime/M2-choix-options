@@ -43,7 +43,7 @@ class PassageAnneeController extends AbstractController
         $this->groupeRepository = $groupeRepository;
     }
 
-    #[Route('/admin', name: 'app_passage_annee')]
+    #[Route('/admin/changement_parcours', name: 'app_changement_parcours')]
     public function index(): Response
     {
         $anneeFormation = $this->anneeFormationRepository->findAll();
@@ -53,7 +53,7 @@ class PassageAnneeController extends AbstractController
         ]);
     }
 
-    #[Route('/passage_annee/workflow', name: 'app_passage_annee_workflow_new')]
+    #[Route('/admin/passage_annee', name: 'app_passage_annee')]
     public function new(Session $session): Response
     {
         $session->remove('passage_annee_form');
@@ -71,8 +71,8 @@ class PassageAnneeController extends AbstractController
     }
 
     // $anneeFormation is a string like "M2" or "M1"
-    #[Route('/passage_annee/workflow/step_1', name: 'app_passage_annee_workflow_step_1', methods: ['GET', 'POST'])]
-    #[Route('/passage_annee/workflow/step_2', name: 'app_passage_annee_workflow_step_2', methods: ['GET', 'POST'])]
+    #[Route('/admin/passage_annee/workflow/step_1', name: 'app_passage_annee_workflow_step_1', methods: ['GET', 'POST'])]
+    #[Route('/admin/passage_annee/workflow/step_2', name: 'app_passage_annee_workflow_step_2', methods: ['GET', 'POST'])]
     public function newStep1(Request $request, SessionInterface $session): Response
     {
         $routeName = $request->attributes->get('_route');
@@ -165,8 +165,8 @@ class PassageAnneeController extends AbstractController
         ]);
     }
 
-    #[Route('/passage_annee/workflow/step_1_1', name: 'app_passage_annee_workflow_step_1_2', methods: ['GET', 'POST'])]
-    #[Route('/passage_annee/workflow/step_2_1', name: 'app_passage_annee_workflow_step_2_2', methods: ['GET', 'POST'])]
+    #[Route('/admin/passage_annee/workflow/step_1_1', name: 'app_passage_annee_workflow_step_1_2', methods: ['GET', 'POST'])]
+    #[Route('/admin/passage_annee/workflow/step_2_1', name: 'app_passage_annee_workflow_step_2_2', methods: ['GET', 'POST'])]
     public function newStep11(Request $request, SessionInterface $session): Response
     {
         $anneeFormation = $request->attributes->get('_route') === 'app_passage_annee_workflow_step_1_2' ? AnneeFormation::M2 : AnneeFormation::M1;
@@ -265,7 +265,7 @@ class PassageAnneeController extends AbstractController
 
     }
 
-    #[Route('/passage_annee/workflow/step_3', name: 'app_passage_annee_workflow_step_3', methods: ['GET', 'POST'])]
+    #[Route('/admin/passage_annee/workflow/step_3', name: 'app_passage_annee_workflow_step_3', methods: ['GET', 'POST'])]
     public function newStep3(Request $request, SessionInterface $session): Response
     {
         $passageAnneForm = $session->get('passage_annee_form');
@@ -318,7 +318,7 @@ class PassageAnneeController extends AbstractController
         ]);
     }
 
-    #[Route('/passage_annee/workflow/submit', name: 'app_passage_annee_workflow_submit')]
+    #[Route('/admin/passage_annee/workflow/submit', name: 'app_passage_annee_workflow_submit')]
     public function savePassageAnnee(SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
         $passageAnneForm = $session->get('passage_annee_form');
@@ -386,7 +386,7 @@ class PassageAnneeController extends AbstractController
         }
     }
 
-    #[Route('/passage_annee/move_student/{id}', name: 'app_passage_annee_move_student')]
+    #[Route('/admin/passage_annee/move_student/{id}', name: 'app_passage_annee_move_student')]
     public function moveStudent(Etudiant $etudiant, Request $request): Response
     {
         $form = $this->createForm(MoveEtudiantType::class, $etudiant)->handleRequest($request);
@@ -432,7 +432,7 @@ class PassageAnneeController extends AbstractController
         return $etudiant;
     }
 
-    #[Route('/passage_annee/move_students', name: 'app_passage_annee_move_students')]
+    #[Route('/admin/passage_annee/move_students', name: 'app_passage_annee_move_students')]
     public function moveStudents(Request $request, EntityManagerInterface $entityManager): Response
     {
         $students = $request->request->all()['students'];
