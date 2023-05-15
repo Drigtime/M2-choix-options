@@ -76,7 +76,7 @@
     <div class="accordion mb-3">
         <div class="accordion-item">
             <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                <button class="accordion-button p-2" type="button" data-bs-toggle="collapse"
                         data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
                         aria-controls="panelsStayOpen-collapseOne">
                     Liste des blocs UE
@@ -86,59 +86,50 @@
                  aria-labelledby="panelsStayOpen-headingOne">
                 <div class="accordion-body p-2">
                     {% if campagne_choix.blocOptions|length > 0 %}
-                        <div class="row">
-                            {% set blocOptionsByCategory = {} %}
-
-                            {# Regrouper les blocOptions par blocUECategory #}
-                            {% for blocOption in campagne_choix.blocOptions %}
-                                {% set category = blocOption.blocUE.category.label %}
-                                {% if blocOptionsByCategory[category] is not defined %}
-                                    {% set blocOptionsByCategory = blocOptionsByCategory|merge({ (category): [] }) %}
-                                {% endif %}
-                                {% set blocOptionsByCategory = blocOptionsByCategory|merge({ (category): blocOptionsByCategory[category]|merge([blocOption]) }) %}
-                            {% endfor %}
-
-                            {# Boucler sur le dictionnaire et afficher les blocs fusionnés #}
-                            {% for category, blocOptions in blocOptionsByCategory %}
-                                <div class="col-12 col-md-6 col-lg-4 col-xl-4">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            {{ category }}
-                                        </div>
-                                        <div class="card-body">
-                                            {% set uesByParcours = {} %}
-                                            {# Regrouper les ues par parcours #}
-                                            {% for blocOption in blocOptions %}
-                                                {% for ue in blocOption.ues %}
-                                                    {% set parcoursLabel = blocOption.parcours.label %}
-                                                    {% if uesByParcours[parcoursLabel] is not defined %}
-                                                        {% set uesByParcours = uesByParcours|merge({ (parcoursLabel): {'parcours': blocOption.parcours, 'blocUE': blocOption.blocUE, 'ues': []} }) %}
-                                                    {% endif %}
-                                                    {% set uesByParcours = uesByParcours|merge({ (parcoursLabel): {'parcours': blocOption.parcours, 'blocUE': blocOption.blocUE, 'ues': uesByParcours[parcoursLabel].ues|merge([ue])} }) %}
-                                                {% endfor %}
-                                            {% endfor %}
-                                            {# Afficher les ues séparées par parcours #}
-                                            {% for parcoursLabel, blocOption in uesByParcours %}
-                                                <div>{{ blocOption.parcours.anneeFormation.label }}
-                                                    - {{ blocOption.parcours.label }}
-                                                    - {{ blocOption.blocUE.nbUEsOptional }} UE(s) optionnelle(s) à
-                                                    choisir
+                        <nav>
+                            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                {% for parcours in campagne_choix.parcours %}
+                                    <button class="nav-link py-1 {{ loop.first ? 'active' : '' }}"
+                                            id="nav-parcours-bloc-option-tab-{{ loop.index }}"
+                                            data-bs-toggle="tab"
+                                            data-bs-target="#nav-parcours-bloc-option-{{ loop.index }}" type="button" role="tab"
+                                            aria-controls="nav-parcours-bloc-option-{{ loop.index }}"
+                                            aria-selected="{{ loop.first ? 'true' : 'false' }}">
+                                        {{ parcours.label }}
+                                    </button>
+                                {% endfor %}
+                            </div>
+                        </nav>
+                        <div class="tab-content" id="nav-tabContent">
+                            {% for parcours in campagne_choix.parcours %}
+                                {% set parcoursIndex = loop.index %}
+                                <div class="tab-pane fade {{ loop.first ? 'show active' : '' }} p-3 border border-top-0"
+                                     id="nav-parcours-bloc-option-{{ loop.index }}"
+                                     role="tabpanel"
+                                     aria-labelledby="nav-parcours-bloc-option-tab-{{ loop.index }}" tabindex="0">
+                                    <div class="row g-3">
+                                        {% for blocOption in campagne_choix.blocOptions|filter(blocOption => blocOption.parcours.id == parcours.id) %}
+                                            <div class="col-md-4 col-lg-3">
+                                                <div class="card">
+                                                    <div class="card-header px-2 py-1">
+                                                        {{ blocOption.blocUE.category.label }}
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <ul>
+                                                            {% for UE in blocOption.UEs %}
+                                                                <li>{{ UE.label }}</li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </div>
                                                 </div>
-                                                <ul>
-                                                    {% for ue in blocOption.ues %}
-                                                        <li>
-                                                            <a href="{{ path('app_ue_show', {'id': ue.id}) }}">{{ ue.label }}</a>
-                                                        </li>
-                                                    {% endfor %}
-                                                </ul>
-                                            {% endfor %}
-                                        </div>
+                                            </div>
+                                        {% endfor %}
                                     </div>
                                 </div>
                             {% endfor %}
                         </div>
                     {% else %}
-                        <div class="alert alert-primary">
+                        <div class="alert alert-primary m-0">
                             Aucun bloc d'UE n'a été créé pour ce parcours.
                         </div>
                     {% endif %}
@@ -150,7 +141,7 @@
     <div class="accordion mb-3">
         <div class="accordion-item">
             <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                <button class="accordion-button p-2" type="button" data-bs-toggle="collapse"
                         data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true"
                         aria-controls="panelsStayOpen-collapseTwo">
                     Choix des étudiants
@@ -162,7 +153,7 @@
                     <nav>
                         <div class="nav nav-tabs" id="nav-tab" role="tablist">
                             {% for parcours in campagne_choix.parcours %}
-                                <button class="nav-link {{ loop.first ? 'active' : '' }}"
+                                <button class="nav-link py-1 {{ loop.first ? 'active' : '' }}"
                                         id="nav-parcours-tab-{{ loop.index }}"
                                         data-bs-toggle="tab"
                                         data-bs-target="#nav-parcours-{{ loop.index }}" type="button" role="tab"
@@ -210,19 +201,35 @@
                                                                     <div>
                                                                         {{ blocOption.blocUE.category.label }}
                                                                     </div>
-                                                                    <ol>
-                                                                        {% set choixes = campagne.choixes|filter(choix => choix.blocOption.id == blocOption.id) %}
-                                                                        {% for choix in choixes|sort((a, b) => a.ordre <=> b.ordre) %}
-                                                                            <li>
-                                                                                <a href="{{ path('app_ue_show', {'id': choix.ue.id}) }}">
-                                                                                    {{ choix.ue.label }}
-                                                                                </a>
-                                                                            </li>
-                                                                        {% endfor %}
-                                                                    </ol>
+                                                                    {% set choixes = campagne.choixes|filter(choix => choix.blocOption.id == blocOption.id) %}
+                                                                    {% if choixes|length > 0 %}
+                                                                        <ol>
+                                                                            {% for choix in choixes|sort((a, b) => a.ordre <=> b.ordre) %}
+                                                                                <li>
+                                                                                    <a href="{{ path('app_ue_show', {'id': choix.ue.id}) }}">
+                                                                                        {{ choix.ue.label }}
+                                                                                    </a>
+                                                                                </li>
+                                                                            {% endfor %}
+                                                                        </ol>
+                                                                    {% else %}
+                                                                        <div class="alert alert-primary p-2">
+                                                                            Les UEs de ce bloc n'ont pas encore été
+                                                                            choisies.
+                                                                        </div>
+                                                                        <ul>
+                                                                            {% for ue in blocOption.ues %}
+                                                                                <li>
+                                                                                    <a href="{{ path('app_ue_show', {'id': ue.id}) }}">
+                                                                                        {{ ue.label }}
+                                                                                    </a>
+                                                                                </li>
+                                                                            {% endfor %}
+                                                                        </ul>
+                                                                    {% endif %}
                                                                 {% endfor %}
                                                             {% else %}
-                                                                <div class="alert alert-primary">
+                                                                <div class="alert alert-primary m-0">
                                                                     Aucun choix n'a été enregistré pour cet étudiant.
                                                                 </div>
                                                             {% endif %}
