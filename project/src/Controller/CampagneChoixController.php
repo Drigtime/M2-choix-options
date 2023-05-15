@@ -105,6 +105,7 @@ class CampagneChoixController extends AbstractController
                     $blocOption->addUE($blocUeUe->getUE());
                 }
             }
+            $campagneChoix->getResponseCampagnes()->clear();
             $campagneChoixRepository->save($campagneChoix, true);
 
             return $this->redirectToRoute('app_campagne_choix_index', [], Response::HTTP_SEE_OTHER);

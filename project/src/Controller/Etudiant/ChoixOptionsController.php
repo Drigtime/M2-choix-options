@@ -2,6 +2,7 @@
 
 namespace App\Controller\Etudiant;
 
+use App\Entity\Main\BlocOption;
 use App\Entity\Main\CampagneChoix;
 use App\Entity\Main\Choix;
 use App\Entity\Main\ResponseCampagne;
@@ -11,7 +12,6 @@ use App\Repository\ChoixRepository;
 use App\Repository\EtudiantRepository;
 use App\Repository\ResponseCampagneRepository;
 use App\Repository\UERepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,13 +28,13 @@ class ChoixOptionsController extends AbstractController
         $campagnes = $etudiant->getParcours()->getCampagneChoixes();
         $reponsesCampagnes = $etudiant->getResponseCampagnes();
 
-        $campagnes = array_filter($campagnes->toArray(), function($campagne) {
+        $campagnes = array_filter($campagnes->toArray(), function ($campagne) {
             return $campagne->getDateFin() > new \DateTime();
         });
 
         //trie les responseCampagnes pour avoir que les responseCampagnes de campagnes encore actives
-        $reponsesCampagnes = array_filter($reponsesCampagnes->toArray(), function($reponseCampagne) use ($campagnes) {
-            foreach($campagnes as $campagne) {
+        $reponsesCampagnes = array_filter($reponsesCampagnes->toArray(), function ($reponseCampagne) use ($campagnes) {
+            foreach ($campagnes as $campagne) {
                 if ($reponseCampagne->getCampagne() == $campagne) {
                     return true;
                 }
@@ -67,23 +67,28 @@ class ChoixOptionsController extends AbstractController
         }
 
         if ($request->isXmlHttpRequest()) {
-            $jsonData = $request->getContent();
-            $data = json_decode($jsonData, true);
+            try {
+                $jsonData = $request->getContent();
+                $data = json_decode($jsonData, true);
 
-            foreach ($data['ordre'] as $i => $ueId) {
-                $choix = $choixRepository->findOneBy(['responseCampagne' => $responseCampagne, 'UE' => $ueRepository->findOneBy(['id' => $ueId]), 'blocOption' => $blocOptionRepository->findOneBy(['id' => $data['blocOptionsId']])]);
-                $choix->setOrdre($i + 1);
+                foreach ($data['ordre'] as $i => $ueId) {
+                    $choix = $choixRepository->findOneBy(['responseCampagne' => $responseCampagne, 'UE' => $ueRepository->findOneBy(['id' => $ueId]), 'blocOption' => $blocOptionRepository->findOneBy(['id' => $data['blocOptionsId']])]);
+                    $choix->setOrdre($i + 1);
 
-                $choixRepository->save($choix, true);
+                    $choixRepository->save($choix, true);
+                }
+
+                return new JsonResponse([
+                    'success' => true,
+                    'message' => 'Choix enregistrés avec succès',
+                    'data' => $data
+                ], Response::HTTP_OK);
+            } catch (\Exception $e) {
+                return new JsonResponse([
+                    'success' => false,
+                    'message' => 'Erreur lors de l\'enregistrement des choix',
+                ], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-
-            $response = array(
-                'success' => true,
-                'message' => 'Requête AJAX réussie !',
-                'data' => $data
-            );
-
-            return new JsonResponse($response);
         }
 
         if ($responseCampagne == null) {
@@ -93,7 +98,8 @@ class ChoixOptionsController extends AbstractController
             $responseCampagneRepository->save($responseCampagne, true);
         }
 
-        foreach ($campagne->getBlocOptions() as $blocOption) {
+        $blocOptions = $blocOptionRepository->findBy(['parcours' => $etudiant->getParcours(), 'campagneChoix' => $campagne]);
+        foreach ($blocOptions as $blocOption) {
             foreach ($blocOption->getUEs() as $index => $ue) {
                 $choix = $choixRepository->findOneBy(['responseCampagne' => $responseCampagne, 'UE' => $ue, 'blocOption' => $blocOption]);
                 if ($choix == null) {

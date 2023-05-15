@@ -133,7 +133,7 @@ class EtudiantController extends AbstractController
             }
         }
 
-        return $this->renderForm('etudiant/new.html.twig', [
+        return $this->render('etudiant/new.html.twig', [
             'etudiant' => $etudiant,
             'form' => $form,
         ]);
@@ -159,7 +159,7 @@ class EtudiantController extends AbstractController
             return $this->redirectToRoute('app_etudiant_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('etudiant/edit.html.twig', [
+        return $this->render('etudiant/edit.html.twig', [
             'etudiant' => $etudiant,
             'form' => $form,
         ]);
