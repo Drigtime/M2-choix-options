@@ -28,7 +28,7 @@
 {% block body %}
 	<h1 class="text-center mt-5 mb-4">Votre parcours</h1>
 	<div class="accordion" id="parcoursAccordion">
-		{% for blocUE in etudiant.parcours.blocUEs %}
+		{% for blocUE in etudiant.parcours.blocUEs|sort((a, b) => a.category.label <=> b.category.label) %}
 			<div class="accordion-item">
 				<h2 class="accordion-header" id="heading{{blocUE.category.id}}">
 					<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{blocUE.category.id}}" aria-expanded="true" aria-controls="collapse{{blocUE.category.id}}">
