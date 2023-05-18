@@ -22,9 +22,11 @@ Encore
      * and one CSS file (e.g. app.scss) if your JavaScript imports CSS.
      */
     .addEntry('app', './assets/app.js')
+    .addEntry('parcours_index', './assets/parcours/index.js')
     .addEntry('parcours_form', './assets/parcours/form.js')
     .addEntry('parcours_show', './assets/parcours/show.js')
     .addEntry('bloc_ue_form', './assets/bloc_ue/form.js')
+    .addEntry('campagne_choix_index', './assets/campagne_choix/index.js')
     .addEntry('campagne_choix_form', './assets/campagne_choix/form.js')
     .addEntry('campagne_choix_show', './assets/campagne_choix/show.js')
     .addEntry('campagne_choix_tab', './assets/campagne_choix/tab.js')
@@ -33,6 +35,7 @@ Encore
     .addEntry('passage_annee_form_step_2', './assets/passage_annee/form_step_2.js')
     .addEntry('etudiant_choix_edit', './assets/etudiant_choix/edit.js')
     .addEntry('etudiant_groupe_manuel', './assets/campagne_choix/groupe_manuel.js')
+    .addEntry('groupe_form', './assets/groupe/form.js')
 
     .addStyleEntry('login', './assets/styles/login.css')
 

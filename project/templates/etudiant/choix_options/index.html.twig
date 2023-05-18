@@ -4,18 +4,18 @@
 
 {% block body %}
     <h4>Liste des campagnes de choix d'options</h4>
-    <div class="row">
+    <div class="row mt-2 g-3">
         {% for campagne in campagnes %}
-            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-4">
-                <div class="card my-3">
+            <div class="col-xl-6 col-xxl-4">
+                <div class="card">
                     <div class="card-header">
-                        <h5>Campagne du {{ campagne.dateDebut|date("m/d/Y") }}
+                        <h5 class="m-0">Campagne du {{ campagne.dateDebut|date("m/d/Y") }}
                             au {{ campagne.dateFin|date("m/d/Y") }}</h5>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body d-flex flex-column gap-3">
                         {% set reponseCampage = reponsesCampagnes|filter(reponse => reponse.campagne.id == campagne.id)|first %}
-                        {% for blocOption in campagne.blocOptions|filter(blocOption => blocOption.parcours == parcours) %}
-                            <div class="card sub-card my-3">
+                        {% for blocOption in campagne.blocOptions|filter(blocOption => blocOption.parcours == parcours)|sort((a, b) => a.blocUE.category.label <=> b.blocUE.category.label) %}
+                            <div class="card">
                                 <div class="card-header">
                                     <h6>{{ blocOption.blocUE.category.label }}</h6>
                                     Nombre d'UE à choisir : {{ blocOption.blocUE.nbUEsOptional }}
@@ -41,7 +41,7 @@
                     <div class="card-footer">
                         <div class="btn-group">
                             <a href="{{ path('app_etudiant_choix_options_edit', {'id': campagne.id}) }}"
-                               class="btn btn-primary">
+                               class="btn btn-sm btn-primary">
                                 <i class="fa fa-edit"></i>
                                 {% if reponseCampage %}
                                     Modifier mes choix

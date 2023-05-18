@@ -25,47 +25,93 @@
     <div class="badge bg-primary">
         {{ campagne_choixes.getTotalItemCount }} campagne(s) de choix
     </div>
-    <table class="table">
-        <thead class="table-light">
-        <tr>
-            <th>{{ knp_pagination_sortable(campagne_choixes, 'ID', 'cc.id') }}</th>
-            <th>{{ knp_pagination_sortable(campagne_choixes, 'Parcours', 'ccp.label') }}</th>
-            <th>{{ knp_pagination_sortable(campagne_choixes, 'Date de début', 'cc.dateDebut') }}</th>
-            <th>{{ knp_pagination_sortable(campagne_choixes, 'Date de fin', 'cc.dateFin') }}</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for campagne_choix in campagne_choixes %}
-            <tr {% if loop.index is odd %}class="color"{% endif %}>
-                <td>{{ campagne_choix.id }}</td>
-                <td>
-                    {% for parcours in campagne_choix.parcours %}
-                        <span class="badge bg-primary">{{ parcours.anneeFormation ~ ' - ' ~ parcours.label }}</span>
-                    {% endfor %}
-                </td>
-                <td>{{ campagne_choix.dateDebut ? campagne_choix.dateDebut|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ campagne_choix.dateFin ? campagne_choix.dateFin|date('Y-m-d H:i:s') : '' }}</td>
-                <td class="text-end">
-                    <div class="btn-group">
-                        <a href="{{ path('app_campagne_choix_show', {'id': campagne_choix.id}) }}"
-                           class="btn btn-sm btn-primary">
-                            <i class="fa fa-eye"></i>
-                        </a>
-                        <a href="{{ path('app_campagne_choix_edit', {'id': campagne_choix.id}) }}"
-                           class="btn btn-sm btn-primary">
-                            <i class="fa fa-edit"></i>
-                        </a>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead class="table-light">
+            <tr>
+                <th>{{ knp_pagination_sortable(campagne_choixes, 'ID', 'cc.id') }}</th>
+                <th>{{ knp_pagination_sortable(campagne_choixes, 'Parcours', 'ccp.label') }}</th>
+                <th>{{ knp_pagination_sortable(campagne_choixes, 'Date de début', 'cc.dateDebut') }}</th>
+                <th>{{ knp_pagination_sortable(campagne_choixes, 'Date de fin', 'cc.dateFin') }}</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for campagne_choix in campagne_choixes %}
+                <tr class="{{ campagne_choix.isFinished ? 'table-success' : '' }}{{ campagne_choix.isActif ? 'table-primary' : '' }}{{ campagne_choix.isNotStarted ? 'table-warning' : '' }}">
+                    <td>{{ campagne_choix.id }}</td>
+                    <td>
+                        {% for parcours in campagne_choix.parcours %}
+                            <span class="badge bg-primary">{{ parcours.anneeFormation ~ ' - ' ~ parcours.label }}</span>
+                        {% endfor %}
+                    </td>
+                    <td>{{ campagne_choix.dateDebut ? campagne_choix.dateDebut|date('Y-m-d H:i:s') : '' }}</td>
+                    <td>{{ campagne_choix.dateFin ? campagne_choix.dateFin|date('Y-m-d H:i:s') : '' }}</td>
+                    <td class="text-end">
+                        <div class="btn-group">
+                            <a href="{{ path('app_campagne_choix_show', {'id': campagne_choix.id}) }}"
+                               class="btn btn-sm btn-primary">
+                                <i class="fa fa-eye"></i>
+                            </a>
+                            {% if not campagne_choix.isFinished %}
+                                <a href="{{ path('app_campagne_choix_edit', {'id': campagne_choix.id}) }}"
+                                   data-can-be-edited="{{ campagne_choix.canBeEdited }}"
+                                   data-cant-be-edited-reason="{{ campagne_choix.cantBeEditedReason|json_encode }}"
+                                   class="btn btn-sm btn-primary">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="5">
+                    <div>
+                        Code couleur :
+                        <span class="badge text-black-50" style="background: #d1e7dd">Campagne terminée</span>
+                        <span class="badge text-black-50" style="background: #d3e5e7">Campagne active</span>
+                        <span class="badge text-black-50" style="background: #fff3cd">Campagne à venir</span>
                     </div>
                 </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            </tfoot>
+        </table>
+    </div>
+
+    {# Code couleur #}
 
     {# display navigation #}
     <div class="navigation d-flex justify-content-center">
         {{ knp_pagination_render(campagne_choixes) }}
     </div>
 
+    <div class="modal fade" id="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel"></h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-primary">Continuer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('campagne_choix_index') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('campagne_choix_index') }}
 {% endblock %}

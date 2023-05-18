@@ -186,4 +186,48 @@ class CampagneChoix
         return $this;
     }
 
+    public function isActif(): bool
+    {
+        $now = new \DateTime();
+        return $now >= $this->getDateDebut() && $now <= $this->getDateFin();
+    }
+
+    public function isFinished(): bool
+    {
+        $now = new \DateTime();
+        return $now > $this->getDateFin();
+    }
+
+    public function isNotStarted(): bool
+    {
+        $now = new \DateTime();
+        return $now < $this->getDateDebut();
+    }
+
+    public function canBeEdited(): bool
+    {
+        return $this->isNotStarted() && $this->getResponseCampagnes()->isEmpty();
+    }
+
+    public function cantBeEditedReason(): array
+    {
+        $reason = [];
+
+        if ($this->isFinished()) {
+            $reason[] = 'La campagne est terminée';
+
+            return $reason;
+        }
+
+        if ($this->isActif()) {
+            $reason[] = 'La campagne est en cours';
+        }
+
+        if (!$this->getResponseCampagnes()->isEmpty()) {
+            $reason[] = 'La campagne a déjà des réponses';
+        }
+
+        return $reason;
+    }
+
 }

@@ -3,9 +3,17 @@
 {% block title %}Nouvel étudiant{% endblock %}
 
 {% block body %}
-    <h1>Ajouter un étudiant</h1>
+    <div class="d-flex">
+        <div class="flex-grow-1">
+            <h4>Création d'un étudiant</h4>
+        </div>
+        <div class="flex-shrink-0">
+            <a href="{{ path('app_etudiant_index') }}" class="btn btn-sm btn-primary">
+                <i class="fas fa-arrow-left"></i>
+                {{ 'utils.back_to_list'|trans }} des étudiants
+            </a>
+        </div>
+    </div>
 
     {{ include('etudiant/_form.html.twig') }}
-
-    <a href="{{ path('app_etudiant_index') }}">back to list</a>
 {% endblock %}

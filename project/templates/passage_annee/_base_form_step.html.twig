@@ -18,7 +18,7 @@
         </div>
 
         {% set passageAnneeData = app.session.get('passage_annee_form') %}
-        {{ dump(app.session.get('passage_annee_form')) }}
+{#        {{ dump(app.session.get('passage_annee_form')) }}#}
 
         <div class="bg-light rounded-lg">
             <nav class="nav nav-pills nav-justified">
@@ -32,7 +32,7 @@
                         Étape 1.1 - M2 redoublants
                     </a>
                 {% endif %}
-                <a class="nav-link {{ app.current_route == 'app_passage_annee_workflow_step_2' ? 'active' }}"
+                <a class="nav-link {{ app.current_route == 'app_passage_annee_workflow_step_2' ? 'active' }} {{ passageAnneeData['form_step_M2_1_data'] is empty ? 'disabled' : '' }}"
                    href="{{ path('app_passage_annee_workflow_step_2') }}">
                     Étape 2 - M1
                 </a>
@@ -42,7 +42,7 @@
                         Étape 2.1 - M1 redoublants
                     </a>
                 {% endif %}
-                <a class="nav-link {{ app.current_route == 'app_passage_annee_workflow_step_3' ? 'active' }}"
+                <a class="nav-link {{ app.current_route == 'app_passage_annee_workflow_step_3' ? 'active' }} {{ passageAnneeData['form_step_M1_1_data'] is empty ? 'disabled' : '' }}"
                    href="{{ path('app_passage_annee_workflow_step_3') }}">
                     Étape 3 - M1 parcours
                 </a>

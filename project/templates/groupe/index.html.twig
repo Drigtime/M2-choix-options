@@ -19,47 +19,55 @@
         'cc.id': 'ID',
         'cc.label': 'Libellé',
         'ccue.label': 'UE',
+        'ccue.effectif': 'Effectif',
     }) }}
 
     <div class="badge bg-primary">
         {{ groupes.getTotalItemCount }} Groupes
     </div>
-    <table class="table">
-        <thead class="table-light">
-        <tr>
-            <th>{{ knp_pagination_sortable(groupes, 'ID', 'cc.id') }}</th>
-            <th>{{ knp_pagination_sortable(groupes, 'Label', 'cc.label') }}</th>
-            <th>{{ knp_pagination_sortable(groupes, 'UE', 'ccue.label') }}</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for groupe in groupes %}
-            <tr {% if loop.index is odd %}class="color"{% endif %}>
-                <td>{{ groupe.id }}</td>
-                <td>{{ groupe.label }}</td>
-                <td>
-                <a href="{{ path('app_ue_show', {'id': groupe.ue.id}) }}">
-                {{ groupe.ue }}
-                </a>
-                </td>
-                
-                <td class="text-end">
-                    <div class="btn-group">
-                        <a href="{{ path('app_groupe_show', {'id': groupe.id}) }}"
-                           class="btn btn-sm btn-primary">
-                            <i class="fa fa-eye"></i>
-                        </a>
-                        <a href="{{ path('app_groupe_edit', {'id': groupe.id}) }}"
-                           class="btn btn-sm btn-primary">
-                            <i class="fa fa-edit"></i>
-                        </a>
-                    </div>
-                </td>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead class="table-light">
+            <tr>
+                <th>{{ knp_pagination_sortable(groupes, 'ID', 'cc.id') }}</th>
+                <th>{{ knp_pagination_sortable(groupes, 'Nom', 'cc.label') }}</th>
+                <th>{{ knp_pagination_sortable(groupes, 'UE', 'ccue.label') }}</th>
+                <th>{{ knp_pagination_sortable(groupes, 'Effectif', 'ccue.effectif') }}</th>
+                <th></th>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            {% for groupe in groupes %}
+                <tr {% if loop.index is odd %}class="color"{% endif %}>
+                    <td>{{ groupe.id }}</td>
+                    <td>{{ groupe.label }}</td>
+                    <td>
+                        <a href="{{ path('app_ue_show', {'id': groupe.ue.id}) }}">
+                            {{ groupe.ue }}
+                        </a>
+                    </td>
+                    <td>
+                        {{ groupe.etudiants|length }}/{{ groupe.ue.effectif }}
+                    </td>
+
+                    <td class="text-end">
+                        <div class="btn-group">
+                            <a href="{{ path('app_groupe_show', {'id': groupe.id}) }}"
+                               class="btn btn-sm btn-primary">
+                                <i class="fa fa-eye"></i>
+                            </a>
+                            <a href="{{ path('app_groupe_edit', {'id': groupe.id}) }}"
+                               class="btn btn-sm btn-primary">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
     {# display navigation #}
     <div class="navigation d-flex justify-content-center">

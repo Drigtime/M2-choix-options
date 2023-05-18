@@ -17,22 +17,22 @@ class UserImportType extends AbstractType
             // ->add('Nom')
             // ->add('Prenom')
             // ->add('Email')
-            ->add('fileImport',FileType::class ,[
-            'label'=>'Import File(XLS OR CSV file)',
-            'mapped'=>false,
-            'required'=>true,
-            'constraints'=>[
-                new File([
-                    'mimeTypes'=>[
-                        'text/csv',
-                        'application/vnd.ms-excel',
-                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-                    ],
-                    'mimeTypesMessage'=>'Veuillez importer un fichier csv ou xls valide'
-                ])
-            ]
-            ])
-        ;
+            ->add('fileImport', FileType::class, [
+                'label' => 'Importer les nouveaux étudiants',
+                'mapped' => false,
+                'required' => true,
+                'constraints' => [
+                    new File([
+                        'mimeTypes' => [
+                            'text/csv'
+                        ],
+                        'mimeTypesMessage' => 'Veuillez importer un fichier csv valide'
+                    ])
+                ],
+                'attr' => [
+                    'accept' => '.csv'
+                ]
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
