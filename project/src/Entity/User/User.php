@@ -34,7 +34,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean')]
     private bool $isVerified = false;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: ResetPasswordToken::class)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: ResetPasswordToken::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $resetPasswordTokens;
 
     public function __construct()

@@ -3,6 +3,8 @@
 namespace App\Form;
 
 use App\Entity\Main\Etudiant;
+use App\Entity\Main\Parcours;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -20,6 +22,11 @@ class EtudiantType extends AbstractType
                 'attr' => [
                     'placeholder' => 'Email'
                 ]
+            ])
+            ->add('parcours', EntityType::class, [
+                'label' => 'Parcours',
+                'class' => Parcours::class,
+                'placeholder' => 'Choisir un parcours',
             ]);
     }
 

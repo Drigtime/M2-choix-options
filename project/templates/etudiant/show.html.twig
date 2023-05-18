@@ -34,15 +34,45 @@
             </tr>
             <tr>
                 <th>Nom</th>
-                <td>{{ etudiant.Nom }}</td>
+                <td>{{ etudiant.nom }}</td>
             </tr>
             <tr>
                 <th>Prenom</th>
-                <td>{{ etudiant.Prenom }}</td>
+                <td>{{ etudiant.prenom }}</td>
             </tr>
             <tr>
                 <th>Email</th>
-                <td>{{ etudiant.Mail }}</td>
+                <td>{{ etudiant.mail }}</td>
+            </tr>
+            <tr>
+                <th>Parcours</th>
+                <td>
+                    {% if etudiant.parcours %}
+                        <a href="{{ path('app_parcours_show', {'id': etudiant.parcours.id}) }}">{{ etudiant.parcours }}</a>
+                    {% else %}
+                        <div class="alert alert-info">
+                            L'étudiant n'a pas de parcours.
+                        </div>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Groupes</th>
+                <td>
+                    {% if etudiant.groupes|length > 0 %}
+                        <ul>
+                            {% for groupe in etudiant.groupes %}
+                                <li>
+                                    <a href="{{ path('app_groupe_show', {'id': groupe.id}) }}">{{ groupe.label }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div class="alert alert-info">
+                            L'étudiant ne fait partie d'aucun groupe.
+                        </div>
+                    {% endif %}
+                </td>
             </tr>
             </tbody>
         </table>

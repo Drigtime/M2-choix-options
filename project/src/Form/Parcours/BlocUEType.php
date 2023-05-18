@@ -49,7 +49,7 @@ class BlocUEType extends AbstractType
                             $blocUeUesOptional = $blocUeUes->filter(function (BlocUeUe $blocUeUe) {
                                 return $blocUeUe->isOptional();
                             });
-                            if ($nbUEsOptional >= $blocUeUesOptional->count()) {
+                            if ($nbUEsOptional >= $blocUeUesOptional->count() && $blocUeUesOptional->count() > 0) {
                                 $context->buildViolation($this->translator->trans('form.blocUE.nbUEsOptional.error.max'))
                                     ->addViolation();
                             } elseif ($nbUEsOptional == 0 && $blocUeUesOptional->count() > 0) {

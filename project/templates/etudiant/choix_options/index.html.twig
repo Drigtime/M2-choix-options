@@ -54,7 +54,9 @@
                 </div>
             </div>
         {% else %}
-            <p>Aucune campagne de choix</p>
+            <div class="alert alert-info">
+                Il n'y a pas de campagne de choix d'options en cours.
+            </div>
         {% endfor %}
     </div>
 {% endblock %}
