@@ -3,21 +3,30 @@
 namespace App\Controller;
 
 use App\Entity\Main\Etudiant;
+use App\Entity\User\ResetPasswordToken;
 use App\Entity\User\User;
 use App\Form\EtudiantType;
 use App\Form\UserImportType;
 use App\Repository\EtudiantRepository;
+use App\Repository\PasswordTokenRepository;
 use App\Repository\UserRepository;
+use App\Service\MailerService;
+use App\Service\MoveStudentService;
+use DateTime;
+use Knp\Component\Pager\PaginatorInterface;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Reader\Csv;
+use PhpOffice\PhpSpreadsheet\Reader\Exception;
+use PhpOffice\PhpSpreadsheet\Reader\Xls;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Doctrine\ORM\EntityManagerInterface;
-use App\Service\MailerService;
-use Knp\Component\Pager\PaginatorInterface;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
 #[Route('/admin/etudiant')]
 class EtudiantController extends AbstractController
@@ -27,63 +36,115 @@ class EtudiantController extends AbstractController
     }
 
     #[Route('/', name: 'app_etudiant_index', methods: ['GET', 'POST'])]
-    public function index(Request $request, EtudiantRepository $etudiantRepository, UserRepository $userRepository, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
+    public function index(Request                     $request,
+                          PaginatorInterface          $paginator,
+                          EtudiantRepository          $etudiantRepository,
+                          UserRepository              $userRepository,
+                          PasswordTokenRepository     $passwordTokenRepository,
+                          UserPasswordHasherInterface $userPasswordHasher,
+                          TokenGeneratorInterface     $tokenGenerator,
+                          MoveStudentService          $moveStudentService): Response
     {
         $form = $this->createForm(UserImportType::class);
         $form->handleRequest($request);
 
-
         if ($form->isSubmitted() && $form->isValid()) {
-            $file = $form->get('fileImport');
+            $file = $form->get('fileImport')->getData();
+            $parcours = $form->get('parcours')->getData();
 
-
+            if ($file == null || $parcours == null) {
+                $this->addFlash('danger', 'Le formulaire n\'est pas valide');
+                return $this->redirectToRoute('app_etudiant_index');
+            }
 
             if (!$file instanceof UploadedFile) {
-                throw new FileException('Pas de fichier importé');
+                $this->addFlash('danger', 'Le fichier n\'a pas été trouvé');
+                return $this->redirectToRoute('app_etudiant_index');
             }
 
-            // Check if the file is a CSV or XLS file
-            $mimeTypeGuesser = \Symfony\Component\Mime\MimeTypes::getDefault();
-            $mimeType = $mimeTypeGuesser->guessMimeType($file->getPathname());
-            //gestion csv
-            if (!in_array($mimeType, ['text/csv'])) {
-                $fileImport = $file->getData();
-                $fileImport = fopen($fileImport, 'r');
+            $fileMimeType = $file->getMimeType();
 
-                if ($fileImport) {
-                    while (($data = fgetcsv($fileImport)) !== false) {
-                        if ($data[0] != 'nom') {
-                            $user_exist = $userRepository->findOneByMail($data[2]);
+            $reader = match ($fileMimeType) {
+                'application/vnd.ms-excel' => new Xls(),
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => new Xlsx(),
+                'text/csv', 'text/plain' => new Csv(),
+                default => null,
+            };
 
-                            if($user_exist == null){
-                                $etudiant = new Etudiant();
-                                $etudiant->setNom($data[0]);
-                                $etudiant->setPrenom($data[1]);
-                                $etudiant->setMail($data[2]);
-                                $etudiantRepository->save($etudiant, true);
-    
-                                $user = new User();
-                                $user->setEmail($data[2]);
-                                $user->setPassword('default');
-                                $userRepository->save($user, true);
-                                // generate a signed url and email it to the user
-                                $this->mailerService->sendEmailConfirmation('app_verify_email', $user);
-                            }
+            if ($reader == null) {
+                $this->addFlash('danger', 'Le fichier doit être un fichier Excel ou CSV');
+                return $this->redirectToRoute('app_etudiant_index');
+            }
 
-                        }
+            try {
+                // Validate columns, there must be 3 columns in the file (nom, prenom, mail)
+                $reader->setReadDataOnly(true);
+                $spreadsheet = $reader->load($file);
+                $worksheet = $spreadsheet->getActiveSheet();
+                $highestRow = $worksheet->getHighestRow();
+                $highestColumn = $worksheet->getHighestColumn();
+
+                $highestColumnIndex = Coordinate::columnIndexFromString($highestColumn);
+                if ($highestColumnIndex != 3) {
+                    $this->addFlash('danger', 'Le fichier doit contenir 3 colonnes (nom, prenom, mail)');
+                    return $this->redirectToRoute('app_etudiant_index');
+                }
+
+                // Read rows
+                for ($row = 1; $row <= $highestRow; ++$row) {
+                    $nom = $worksheet->getCell([1, $row])->getValue();
+                    $prenom = $worksheet->getCell([2, $row])->getValue();
+                    $mail = $worksheet->getCell([3, $row])->getValue();
+
+                    // validate email
+                    if (!filter_var($mail, FILTER_VALIDATE_EMAIL)) {
+                        $this->addFlash('danger', 'Le mail ' . $mail . ' n\'est pas valide');
+                        return $this->redirectToRoute('app_etudiant_index');
+                    }
+
+                    // Check if the user already exists
+                    $user = $userRepository->findOneByMail($mail);
+                    if ($user == null) {
+                        // Create a new user
+                        $user = new User();
+                        $user->setEmail($mail);
+                        $user->setRoles(['ROLE_USER']);
+
+                        // générer un mot de passe aléatoire de 10 caractères
+                        $password = substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 10);
+                        $user->setPassword($userPasswordHasher->hashPassword($user, $password));
+
+                        $userRepository->save($user, true);
+
+                        // Create a new student
+                        $etudiant = new Etudiant();
+                        $etudiant->setNom($nom);
+                        $etudiant->setPrenom($prenom);
+                        $etudiant->setMail($mail);
+
+                        $moveStudentService->moveEtudiantToParcours($etudiant, $parcours);
+
+                        $etudiantRepository->save($etudiant, true);
+
+                        $newResetPasswordTokens = new ResetPasswordToken();
+                        $newResetPasswordTokens->setUser($user);
+                        $newResetPasswordTokens->setToken($tokenGenerator->generateToken());
+                        $newResetPasswordTokens->setCreatedAt(new DateTime());
+                        $newResetPasswordTokens->setExpiredAt(new DateTime('+100 years'));
+
+                        $passwordTokenRepository->save($newResetPasswordTokens, true);
+
+                        $this->mailerService->sendEmailAccountCreated($user, $etudiant, $newResetPasswordTokens);
                     }
                 }
-            }
-            //gestion xls
-            elseif (!in_array($mimeType, ['application/vnd.ms-excel'])) {
-                
-            } else {
-                throw new FileException('Invalid file format. Only CSV and XLS files are allowed.');
+            } catch (Exception) {
+                $this->addFlash('danger', 'Une erreur est survenue lors de l\'importation du fichier');
+                return $this->redirectToRoute('app_etudiant_index');
             }
 
-            return $this->redirectToRoute('app_etudiant_index', [], Response::HTTP_SEE_OTHER);
+            $this->addFlash('success', 'Les étudiants ont bien été importés');
+            return $this->redirectToRoute('app_etudiant_index');
         }
-
 
         $query = $etudiantRepository->findAll();
 
@@ -100,42 +161,54 @@ class EtudiantController extends AbstractController
     }
 
     #[Route('/new', name: 'app_etudiant_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EtudiantRepository $etudiantRepository, UserRepository $userRepository): Response
+    public function new(Request                     $request,
+                        EtudiantRepository          $etudiantRepository,
+                        UserRepository              $userRepository,
+                        PasswordTokenRepository     $passwordTokenRepository,
+                        MoveStudentService          $moveStudentService,
+                        UserPasswordHasherInterface $userPasswordHasher,
+                        TokenGeneratorInterface     $tokenGenerator): Response
     {
         $etudiant = new Etudiant();
-        $user = new User();
 
         $form = $this->createForm(EtudiantType::class, $etudiant);
         $form->handleRequest($request);
-
-        
 
         if ($form->isSubmitted() && $form->isValid()) {
 
             $user_exist = $userRepository->findOneByMail($etudiant->getMail());
 
-            if($user_exist == null){
+            if ($user_exist == null) {
+                $etudiantRepository->save($etudiant, true);
+                $user = new User();
+                $user->setEmail($etudiant->getMail());
+                $user->setRoles(['ROLE_USER']);
 
-            $etudiantRepository->save($etudiant, true);
-            $user = new User();
-            $user->setEmail($etudiant->getMail());
-            $user->setPassword('default');
-            $userRepository->save($user, true);
-            // generate a signed url and email it to the user
-            $this->mailerService->sendEmailConfirmation('app_verify_email', $user);
-        
+                // générer un mot de passe aléatoire de 10 caractères
+                $password = substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 10);
+                $user->setPassword($userPasswordHasher->hashPassword($user, $password));
 
+                $userRepository->save($user, true);
 
-            return $this->redirectToRoute('app_etudiant_index', [], Response::HTTP_SEE_OTHER);
-            }
-            else{
-                dump('email deja utilisé');
+                $newResetPasswordTokens = new ResetPasswordToken();
+                $newResetPasswordTokens->setUser($user);
+                $newResetPasswordTokens->setToken($tokenGenerator->generateToken());
+                $newResetPasswordTokens->setCreatedAt(new DateTime());
+                $newResetPasswordTokens->setExpiredAt(new DateTime('+100 years'));
+
+                $passwordTokenRepository->save($newResetPasswordTokens, true);
+
+                $this->mailerService->sendEmailAccountCreated($user, $etudiant, $newResetPasswordTokens);
+
+                return $this->redirectToRoute('app_etudiant_index', [], Response::HTTP_SEE_OTHER);
+            } else {
+                $this->addFlash('danger', 'Un compte existe déjà avec cette adresse mail');
             }
         }
 
         return $this->render('etudiant/new.html.twig', [
             'etudiant' => $etudiant,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -161,39 +234,74 @@ class EtudiantController extends AbstractController
 
         return $this->render('etudiant/edit.html.twig', [
             'etudiant' => $etudiant,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
     #[Route('/{id}', name: 'app_etudiant_delete', methods: ['POST'])]
     public function delete(Request $request, Etudiant $etudiant, EtudiantRepository $etudiantRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $etudiant->getId(), $request->request->get('_token'))) {
-            $etudiantRepository->remove($etudiant, true);
+        try {
+            if ($this->isCsrfTokenValid('delete' . $etudiant->getId(), $request->request->get('_token'))) {
+                $etudiantRepository->remove($etudiant, true);
+            }
+
+            $this->addFlash('success', 'L\'étudiant a bien été supprimé');
+        } catch (Exception) {
+            $this->addFlash('danger', 'Une erreur est survenue lors de la suppression de l\'étudiant');
         }
 
         return $this->redirectToRoute('app_etudiant_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/{id}/delete', name: 'app_etudiant_suppr', methods: ['GET', 'POST'])]
-    public function suppr(Request $request, Etudiant $etudiant, EtudiantRepository $etudiantRepository): Response
+    #[Route('/{id}/delete', name: 'app_etudiant_ajax_delete', methods: ['POST'])]
+    public function ajaxDelete(Request $request, Etudiant $etudiant, EtudiantRepository $etudiantRepository, UserRepository $userRepository): JsonResponse
     {
+        $response = [
+            'redirect' => $this->generateUrl('app_etudiant_index')
+        ];
 
-        $etudiantRepository->remove($etudiant, true);
+        try {
+            if ($this->isCsrfTokenValid('delete' . $etudiant->getId(), $request->request->get('_token'))) {
+                $user = $userRepository->findOneByEmail($etudiant->getMail());
+                if ($user != null) {
+                    $userRepository->remove($user, true);
+                }
+                $etudiantRepository->remove($etudiant, true);
+            }
 
+            $this->addFlash('success', 'L\'étudiant a bien été supprimé');
+            $response['status'] = 'ok';
+        } catch (Exception) {
+            $this->addFlash('danger', 'Une erreur est survenue lors de la suppression de l\'étudiant');
+            $response['status'] = 'error';
+        }
 
-        return $this->redirectToRoute('app_etudiant_index', [], Response::HTTP_SEE_OTHER);
+        return new JsonResponse($response, Response::HTTP_OK);
     }
 
-    #[Route('/{mail}/renvoie', name: 'app_etudiant_renvoyer', methods: ['GET', 'POST'])]
-    public function renvoie(Request $request,$mail, UserRepository $userRepository): Response
+    #[Route('/{id}/renvoie', name: 'app_etudiant_renvoyer', methods: ['GET', 'POST'])]
+    public function renvoie(Etudiant                $etudiant,
+                            UserRepository          $userRepository,
+                            PasswordTokenRepository $passwordTokenRepository,
+                            TokenGeneratorInterface $tokenGenerator): Response
     {
+        $user = $userRepository->findOneByEmail($etudiant->getMail());
 
+        if ($user != null) {
+            $newResetPasswordTokens = new ResetPasswordToken();
+            $newResetPasswordTokens->setUser($user);
+            $newResetPasswordTokens->setToken($tokenGenerator->generateToken());
+            $newResetPasswordTokens->setCreatedAt(new DateTime());
+            $newResetPasswordTokens->setExpiredAt(new DateTime('+100 years'));
 
-        $user = $userRepository->findOneByEmail($mail);
+            $passwordTokenRepository->save($newResetPasswordTokens, true);
 
-        if($user != null){
-            $this->mailerService->sendEmailConfirmation('app_verify_email', $user);
+            $this->mailerService->sendEmailAccountCreated($user, $etudiant, $newResetPasswordTokens);
+
+            $this->addFlash('success', 'L\'email a bien été renvoyé');
+        } else {
+            $this->addFlash('danger', 'Une erreur est survenue lors de l\'envoi de l\'email');
         }
 
         return $this->redirectToRoute('app_etudiant_index', [], Response::HTTP_SEE_OTHER);

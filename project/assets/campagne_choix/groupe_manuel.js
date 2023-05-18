@@ -1,6 +1,5 @@
 import $ from "jquery";
 
-
 $(document).ready(function() {
     console.log('js ready')
     $(".btn-selection").click(function() {

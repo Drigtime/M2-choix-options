@@ -19,16 +19,77 @@
 
     <div class="card my-3">
         <div class="card-body">
-            {{ form_label(form.fileImport) }}
-            <div class="input-group">
-                {{ form_widget(form.fileImport) }}
-                <input type="submit" class="btn btn-primary" value="Valider">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="d-flex gap-2">
+                        {{ form_label(form.fileImport) }}
+                        <div>
+                            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                    data-bs-target="#importStudentHelpModal">
+                                <i class="fas fa-info-circle"></i>
+                            </button>
+                        </div>
+                    </div>
+                    {{ form_widget(form.fileImport) }}
+                    {{ form_errors(form.fileImport) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.parcours) }}
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-sm btn-primary">
+                        <i class="fas fa-upload"></i>
+                        Importer
+                    </button>
+                </div>
             </div>
-            {{ form_errors(form.fileImport) }}
+
         </div>
     </div>
 
     {{ form_end(form) }}
+
+    <div class="modal fade" id="importStudentHelpModal" tabindex="-1" aria-labelledby="importStudentHelpModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p>
+                        Le fichier peut être au format CSV, XLS ou XLSX et contenir les colonnes suivantes :
+                    </p>
+                    <ul>
+                        <li>Nom</li>
+                        <li>Prenom</li>
+                        <li>Mail</li>
+                    </ul>
+                    <p>
+                        Les colonnes doivent être dans cet ordre.
+                    </p>
+                    <p>
+                        Le fichier ne doit pas contenir d'entête.
+                    </p>
+                    <p>
+                        Exemple de fichier :
+                    </p>
+                    <table class="table table-bordered">
+                        <tr>
+                            <td>Dupont</td>
+                            <td>Jean</td>
+                            <td>jean.dupont@exemple.fr</td>
+                        </tr>
+                        <tr>
+                            <td>Durand</td>
+                            <td>Marie</td>
+                            <td>marie.durand@exemple.com</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-primary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="table-responsive">
         <table class="table">
@@ -37,15 +98,25 @@
                 <th>Nom</th>
                 <th>Prenom</th>
                 <th>Email</th>
+                <th>Parcours</th>
                 <th></th>
             </tr>
             </thead>
             <tbody>
             {% for etudiant in etudiants %}
                 <tr>
-                    <td>{{ etudiant.Nom }}</td>
-                    <td>{{ etudiant.Prenom }}</td>
-                    <td>{{ etudiant.Mail }}</td>
+                    <td>{{ etudiant.nom }}</td>
+                    <td>{{ etudiant.prenom }}</td>
+                    <td>{{ etudiant.mail }}</td>
+                    <td>
+                        {% if etudiant.parcours is not null %}
+                            <a href="{{ path('app_parcours_show', {'id': etudiant.parcours.id}) }}">
+                                {{ etudiant.parcours }}
+                            </a>
+                        {% else %}
+                            <span class="badge bg-danger">Aucun parcours</span>
+                        {% endif %}
+                    </td>
                     <td class="text-end">
                         <div class="btn-group">
                             <a href="{{ path('app_etudiant_show', {'id': etudiant.id}) }}"
@@ -58,11 +129,12 @@
                                title="Modifier l'étudiant">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <a href="{{ path('app_etudiant_renvoyer', {'mail': etudiant.mail}) }}"
+                            <a href="{{ path('app_etudiant_renvoyer', {'id': etudiant.id}) }}"
                                class="btn btn-sm btn-primary" title="Renvoyer le mail de confirmation">
                                 <i class="fas fa-envelope"></i>
                             </a>
-                            <a href="{{ path('app_etudiant_suppr', {'id': etudiant.id}) }}"
+                            <a href="#" data-href="{{ path('app_etudiant_ajax_delete', {'id': etudiant.id}) }}"
+                               data-delete-token="{{ csrf_token('delete' ~ etudiant.id) }}"
                                class="btn btn-sm btn-danger"
                                title="Supprimer l'étudiant">
                                 <i class="fas fa-trash"></i>
@@ -83,4 +155,37 @@
     <div class="navigation d-flex justify-content-center">
         {{ knp_pagination_render(etudiants) }}
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="deleteModalLabel">Supprimer un étudiant</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Etes-vous sûr de vouloir supprimer cet étudiant ?
+                </div>
+                <div class="modal-footer">
+                    <button id="modalCancelDeleteButton" type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal">Annuler
+                    </button>
+                    <button id="modalConfirmDeleteButton" type="button" class="btn btn-danger">Supprimer</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('etudiant_index') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('etudiant_index') }}
+{% endblock %}
+

@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Main\Etudiant;
 use App\Entity\User\ResetPasswordToken;
 use App\Entity\User\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -36,7 +37,7 @@ class MailerService
         $email = (new TemplatedEmail())
             ->from(new Address('choixoption@upjv.com', 'Choix Option UPJV'))
             ->to($user->getEmail())
-            ->subject('Please Confirm your Email')
+            ->subject('Confirmez votre adresse email')
             ->htmlTemplate('security/confirmation_email.twig')
             ->context([
                 'signedUrl' => $signatureComponents->getSignedUrl(),
@@ -50,6 +51,27 @@ class MailerService
             throw new TransportException($e->getMessage());
         }
     }
+
+    public function sendEmailAccountCreated(User $user, Etudiant $etudiant, ResetPasswordToken $resetPasswordToken): void
+    {
+        $email = (new TemplatedEmail())
+            ->from(new Address('choixoption@upjv.com', 'Choix Option UPJV'))
+            ->to($user->getEmail())
+            ->subject('Votre compte a été créé')
+            ->htmlTemplate('security/account_created.twig')
+            ->context([
+                'user' => $user,
+                'etudiant' => $etudiant,
+                'resetPasswordToken' => $resetPasswordToken,
+            ]);
+
+        try {
+            $this->mailer->send($email);
+        } catch (TransportExceptionInterface $e) {
+            throw new TransportException($e->getMessage());
+        }
+    }
+
 
     /**
      * @throws VerifyEmailExceptionInterface

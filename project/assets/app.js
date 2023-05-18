@@ -13,7 +13,6 @@ import 'bootstrap';
 
 import {Modal, Tooltip} from 'bootstrap';
 
-
 // set global jQuery variable
 global.$ = global.jQuery = $;
 

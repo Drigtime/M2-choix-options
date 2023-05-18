@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ParcoursController extends AbstractController
 {
-    #[Route('/etudiant', name: 'app_etudiant_parcours')]
+    #[Route('/etudiant/parcours', name: 'app_etudiant_parcours')]
     public function index(EtudiantRepository $etudiantRepository): Response
     {
         $etudiant = $etudiantRepository->findOneBy(['mail' => $this->getUser()->getUserIdentifier()]);

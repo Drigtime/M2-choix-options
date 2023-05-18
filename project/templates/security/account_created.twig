@@ -1,0 +1,15 @@
+<p>Bonjour {{ etudiant.prenom }},</p>
+
+<p>Votre compte a été créé avec succès par notre équipe d'administration.</p>
+<p>Veuillez trouver ci-dessous vos informations d'identification :</p>
+
+<p>Identifiant : {{ user.userIdentifier }}</p>
+
+Pour définir votre mot de passe et accéder à votre compte, veuillez cliquer sur le lien ci-dessous :
+
+<a href="{{ url('app_set_password', {'token': resetPasswordToken.token}) }}">{{ url('app_set_password', {'token': resetPasswordToken.token}) }}</a>
+
+<p>
+    Cordialement,<br>
+    Choix d'option UPJV
+</p>

@@ -28,7 +28,7 @@ class Etudiant
     #[ORM\ManyToOne(targetEntity: Parcours::class, inversedBy: 'etudiants')]
     private ?Parcours $parcours = null;
 
-    #[ORM\ManyToMany(targetEntity: Groupe::class, mappedBy: 'etudiants')]
+    #[ORM\ManyToMany(targetEntity: Groupe::class, mappedBy: 'etudiants', cascade: ['persist'])]
     private Collection $groupes;
 
     #[MaxDepth(1)]
