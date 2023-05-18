@@ -388,11 +388,8 @@ class CampagneChoixController extends AbstractController
         $etudiant_rejetés_id = array();
 
         foreach ($responses as $r) {
-
             $choixes = $r->getChoixes();
-
             foreach ($choixes as $choix) {
-
                 if ($choix->getUE() == $UE) {
                     $blocOption = $choix->getBlocOption();
                     $ues = $blocOption->getUEs();
@@ -403,11 +400,9 @@ class CampagneChoixController extends AbstractController
                                 $etudiants = $groupe->getEtudiants();
                                 foreach($etudiants as $etudiant){
                                     $etudiant_rejetés_id[] = $etudiant->getId();
-                                }
-                                
+                                } 
                             }
                         }
-                        
                     }
 
                     dump($choix);
@@ -419,6 +414,7 @@ class CampagneChoixController extends AbstractController
                         'ordre'=>$choix->getOrdre(),
                         'ue'=>$ue_id
                     );
+                    
                     if(!in_array($selected,$etudiant_sans_groupe)){
                         if(!in_array($etudiant->getId(),$etudiant_avec_groupe_id) && !in_array($etudiant->getId(),$etudiant_rejetés_id)){
                         $etudiant_sans_groupe[] = $selected;
@@ -436,10 +432,6 @@ class CampagneChoixController extends AbstractController
     #[ParamConverter('campagneChoix', campagneChoix::class, options: ['id' => 'campagne_id'])]
     public function groupe_manuel(Request $request, $campagne_id, CampagneChoix $campagneChoix, GroupeRepository $groupeRepository, EtudiantRepository $etudiantRepository): Response
     {
-
-
-
-
         $etudiants = $request->get('selection_etudiant');
         $groupe_id = $request->get('choixGroupes');
 
