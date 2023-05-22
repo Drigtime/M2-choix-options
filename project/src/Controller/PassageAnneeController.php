@@ -332,7 +332,7 @@ class PassageAnneeController extends AbstractController
             $studentIds = array_column($etudiants, 'id');
             $students = $this->etudiantRepository->findBy(['id' => $studentIds]);
             foreach ($students as $student) {
-                $this->etudiantRepository->save($moveStudentService->moveEtudiantToParcours($student, $this->parcoursRepository->find($parcoursId)));
+                $this->etudiantRepository->save($moveStudentService->moveEtudiantToParcours($student, $this->parcoursRepository->find($parcoursId), false), true);
             }
         }
 
@@ -391,7 +391,7 @@ class PassageAnneeController extends AbstractController
         $form = $this->createForm(MoveEtudiantType::class, $etudiant)->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->etudiantRepository->save($moveStudentService->moveEtudiantToParcours($etudiant, $form->get('parcours')->getData()), true);
+            $this->etudiantRepository->save($moveStudentService->moveEtudiantToParcours($etudiant, $form->get('parcours')->getData(), true), true);
 
             return $this->render('passage_annee/_list_annee.html.twig', [
                 'anneeFormation' => $this->anneeFormationRepository->findAll(),
@@ -420,8 +420,7 @@ class PassageAnneeController extends AbstractController
             $parcours = $form->get('parcours')->getData();
 
             foreach ($etudiants as $etudiant) {
-                $etudiant = $moveStudentService->moveEtudiantToParcours($etudiant, $parcours);
-                $this->etudiantRepository->save($etudiant);
+                $this->etudiantRepository->save($moveStudentService->moveEtudiantToParcours($etudiant, $parcours, true), true);
             }
 
             $entityManager->flush();

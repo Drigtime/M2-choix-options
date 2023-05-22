@@ -121,9 +121,7 @@ class EtudiantController extends AbstractController
                         $etudiant->setNom($nom);
                         $etudiant->setPrenom($prenom);
                         $etudiant->setMail($mail);
-
-                        $moveStudentService->moveEtudiantToParcours($etudiant, $parcours);
-
+                        $moveStudentService->moveEtudiantToParcours($etudiant, $parcours, false);
                         $etudiantRepository->save($etudiant, true);
 
                         $newResetPasswordTokens = new ResetPasswordToken();
@@ -131,7 +129,6 @@ class EtudiantController extends AbstractController
                         $newResetPasswordTokens->setToken($tokenGenerator->generateToken());
                         $newResetPasswordTokens->setCreatedAt(new DateTime());
                         $newResetPasswordTokens->setExpiredAt(new DateTime('+100 years'));
-
                         $passwordTokenRepository->save($newResetPasswordTokens, true);
 
                         $this->mailerService->sendEmailAccountCreated($user, $etudiant, $newResetPasswordTokens);
@@ -179,7 +176,7 @@ class EtudiantController extends AbstractController
             $user_exist = $userRepository->findOneByMail($etudiant->getMail());
 
             if ($user_exist == null) {
-                $etudiantRepository->save($etudiant, true);
+                $etudiantRepository->save($etudiant);
                 $user = new User();
                 $user->setEmail($etudiant->getMail());
                 $user->setRoles(['ROLE_USER']);
@@ -197,6 +194,9 @@ class EtudiantController extends AbstractController
                 $newResetPasswordTokens->setExpiredAt(new DateTime('+100 years'));
 
                 $passwordTokenRepository->save($newResetPasswordTokens, true);
+
+                $moveStudentService->moveEtudiantToParcours($etudiant, $etudiant->getParcours(), false);
+                $etudiantRepository->save($etudiant, true);
 
                 $this->mailerService->sendEmailAccountCreated($user, $etudiant, $newResetPasswordTokens);
 

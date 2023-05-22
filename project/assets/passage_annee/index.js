@@ -1,8 +1,26 @@
 import {Modal} from "bootstrap";
 import $ from "jquery";
-import DataTable from 'datatables.net-bs5';
+import 'datatables.net-bs5';
 import languageFR from 'datatables.net-plugins/i18n/fr-FR.json';
 import {showError, showSuccess} from '../toast';
+
+function initializeDataTable() {
+    const $dataTables = $('.dt');
+    $dataTables.DataTable({
+        "columnDefs": [
+            {"orderable": false, "targets": 0},
+            {"searchable": false, "targets": 0},
+            {"width": "0%", "targets": 0},
+            {"width": "0%", "targets": 1},
+            {"orderable": false, "targets": 4},
+            {"searchable": false, "targets": 4},
+            {"width": "0%", "targets": 4},
+        ],
+        "order": [[2, "asc"]],
+        "language": languageFR
+    });
+    $dataTables.css('width', '100%');
+}
 
 // for every checkbox in the document that have data-check-all attribute, add a click event listener to check or uncheck all checkboxes in the container
 $(document).on('click', '[data-check-all]', function () {
@@ -103,11 +121,18 @@ $(document).on('click', '[data-move]', function (e) {
             modal.show();
             modalDiv.querySelector('form').addEventListener('submit', function (formEvent) {
                 formEvent.preventDefault();
+                const cancelButton = formEvent.target.querySelector('[data-bs-dismiss="modal"]');
                 const submitButton = formEvent.submitter;
                 // save content of the button
                 const submitButtonContent = submitButton.innerHTML;
                 // disable the button
+                cancelButton.disabled = true;
                 submitButton.disabled = true;
+                // disable all inputs that are not hidden
+                formEvent.target.querySelectorAll('input:not([type="hidden"])').forEach(function (input) {
+                    input.disabled = true;
+                });
+
                 // add a spinner to the button
                 submitButton.innerHTML = `
                         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -124,23 +149,7 @@ $(document).on('click', '[data-move]', function (e) {
                         const target = $(e.currentTarget).data('ajax-target');
                         if (target) {
                             $(target).html(data);
-                            const $dataTables = $('.dt');
-
-                            // reinitialize the datatable
-                            $dataTables.DataTable({
-                                "columnDefs": [
-                                    {"orderable": false, "targets": 0},
-                                    {"searchable": false, "targets": 0},
-                                    {"width": "0%", "targets": 0},
-                                    {"width": "0%", "targets": 1},
-                                    {"orderable": false, "targets": 4},
-                                    {"searchable": false, "targets": 4},
-                                    {"width": "0%", "targets": 4},
-                                ],
-                                "order": [[2, "asc"]],
-                                "language": languageFR
-                            });
-                            $dataTables.css('width', '100%');
+                            initializeDataTable();
                         }
                         modal.hide();
                     },
@@ -148,8 +157,13 @@ $(document).on('click', '[data-move]', function (e) {
                         modal._element.innerHTML = data.responseText;
                     },
                     complete: function (data) {
+                        cancelButton.disabled = false;
                         submitButton.disabled = false;
                         submitButton.innerHTML = submitButtonContent;
+
+                        formEvent.target.querySelectorAll('input:not([type="hidden"])').forEach(function (input) {
+                            input.disabled = false;
+                        });
 
                         if (data.status === 200) {
                             showSuccess({
@@ -230,6 +244,24 @@ $(document).on('click', '[data-move-selected]', function (e) {
             modal.show();
             modalDiv.querySelector('form').addEventListener('submit', function (formEvent) {
                 formEvent.preventDefault();
+                const cancelButton = formEvent.target.querySelector('[data-bs-dismiss="modal"]');
+                const submitButton = formEvent.submitter;
+                // save content of the button
+                const submitButtonContent = submitButton.innerHTML;
+                // disable the button
+                cancelButton.disabled = true;
+                submitButton.disabled = true;
+
+                formEvent.target.querySelectorAll('input:not([type="hidden"])').forEach(function (input) {
+                    input.disabled = true;
+                });
+
+                // add a spinner to the button
+                submitButton.innerHTML = `
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <span>Déplacement...</span>
+                    `;
+
                 $.ajax({
                     url: url,
                     method: $(this).attr('method'),
@@ -240,27 +272,34 @@ $(document).on('click', '[data-move-selected]', function (e) {
                         const target = $(e.currentTarget).data('ajax-target');
                         if (target) {
                             $(target).html(data);
-
-                            // reinitialize the datatable
-                            $('.dt').DataTable({
-                                "columnDefs": [
-                                    {"orderable": false, "targets": 0},
-                                    {"searchable": false, "targets": 0},
-                                    {"width": "0%", "targets": 0},
-                                    {"width": "0%", "targets": 1},
-                                    {"orderable": false, "targets": 4},
-                                    {"searchable": false, "targets": 4},
-                                    {"width": "0%", "targets": 4},
-                                ],
-                                "order": [[2, "asc"]],
-                                "language": languageFR
-                            });
+                            initializeDataTable();
                         }
                         modal.hide();
                     },
                     error: function (data) {
                         modal._element.innerHTML = data.responseText;
                     },
+                    complete: function (data) {
+                        cancelButton.disabled = false;
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = submitButtonContent;
+
+                        formEvent.target.querySelectorAll('input:not([type="hidden"])').forEach(function (input) {
+                            input.disabled = false;
+                        });
+
+                        if (data.status === 200) {
+                            showSuccess({
+                                title: 'Déplacement',
+                                message: 'Déplacement effectué avec succès',
+                            })
+                        } else {
+                            showError({
+                                title: 'Déplacement',
+                                message: 'Une erreur est survenue lors du déplacement',
+                            })
+                        }
+                    }
                 });
             });
         },
@@ -275,18 +314,5 @@ $(document).on('show.bs.tab', function (event) {
 })
 
 $(document).ready(function () {
-    $('.dt').DataTable({
-        "autoWidth": false,
-        "columnDefs": [
-            {"orderable": false, "targets": 0},
-            {"searchable": false, "targets": 0},
-            {"width": "0%", "targets": 0},
-            {"width": "0%", "targets": 1},
-            {"orderable": false, "targets": 4},
-            {"searchable": false, "targets": 4},
-            {"width": "0%", "targets": 4},
-        ],
-        "order": [[2, "asc"]],
-        "language": languageFR
-    });
+    initializeDataTable();
 });

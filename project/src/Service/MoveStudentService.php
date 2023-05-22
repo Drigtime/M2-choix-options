@@ -7,15 +7,23 @@ use App\Entity\Main\EtudiantUE;
 use App\Entity\Main\Groupe;
 use App\Entity\Main\Parcours;
 use App\Entity\Main\UE;
+use App\Repository\GroupeRepository;
 
 class MoveStudentService
 {
+    private GroupeRepository $groupeRepository;
+
+    public function __construct(GroupeRepository $groupeRepository)
+    {
+        $this->groupeRepository = $groupeRepository;
+    }
+
     /**
      * @param Etudiant $etudiant
      * @param Parcours $parcours
      * @return Etudiant
      */
-    public function moveEtudiantToParcours(Etudiant $etudiant, Parcours $parcours): Etudiant
+    public function moveEtudiantToParcours(Etudiant $etudiant, Parcours $parcours, bool $optionalUE = false): Etudiant
     {
         $etudiant->getResponseCampagnes()->clear();
         $etudiant->getGroupes()->clear();
@@ -24,7 +32,7 @@ class MoveStudentService
 
         foreach ($parcours->getBlocUEs() as $blocUE) {
             $mandatoryUEs = $blocUE->getMandatoryUEs();
-            $optionalUEs = $blocUE->getOptionalUEs()->slice(0, $blocUE->getNbUEsOptional());
+            $optionalUEs = $optionalUE ? $blocUE->getOptionalUEs()->slice(0, $blocUE->getNbUEsOptional()) : [];
 
             $ues = array_map(fn($blocUeUe) => $blocUeUe->getUe(), array_merge($mandatoryUEs->toArray(), $optionalUEs));
             foreach ($ues as $ue) {
@@ -44,7 +52,7 @@ class MoveStudentService
      */
     public function addStudentToUeGroup(UE $ue, Etudiant $etudiant): void
     {
-        $groups = $ue->getGroupes();
+        $groups = $this->groupeRepository->findBy(['ue' => $ue]);
         $group = null;
 
         foreach ($groups as $g) {
@@ -57,7 +65,7 @@ class MoveStudentService
         if (!$group) {
             $group = new Groupe();
             $group->setUe($ue);
-            $group->setLabel($ue->getLabel() . "-Groupe-" . ($ue->getGroupes()->count() + 1));
+            $group->setLabel($ue->getLabel() . "-Groupe-" . (count($groups) + 1));
         }
 
         $group->addEtudiant($etudiant);
