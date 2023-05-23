@@ -8,7 +8,7 @@ $(document).ready(function() {
     var url = $(this).data("url");
     var parcours = $(this).data("parcours");
     let route_delete = "{{ path('app_campagne_choix_delete_etudiant_groupe', { campagne_id: 'campagne_id_', groupe_id: 'groupe_id_', 'etudiant_id': 'etudiant_id_' }) }}";
-
+      console.log(parcours)
     console.log(url)
               $.ajax({
                 url: url,
@@ -27,7 +27,7 @@ $(document).ready(function() {
                         '<td><input class="form-check-input selection_etudiant" type="checkbox" id="'+etudiant.id+'" value="'+etudiant.id+'" name="selection_etudiant[]"></td>'+
                         '<td>'+etudiant.nom+'</td>'+
                         '<td>'+etudiant.prenom+'</td>'+
-                        '<td>'+parcours+'</td>'+
+                        '<td>'+etudiant.parcours+'</td>'+
                         '<td>'+etudiant.ordre+'</td>'+
                         '</tr>');
                         $('#choixGroupeBtn').attr('data-bs-target',"#choixGroupeModal"+etudiant.ue);
@@ -39,6 +39,8 @@ $(document).ready(function() {
                         '<td><a href="/admin/campagne_choix/delete_etudiant_groupe/'+campagne_id+'/'+etudiant.groupe_id+'/'+etudiant.id+'"><i class="fa-solid fa-xmark"></i></a></td>'+
                         '<td>'+etudiant.nom+'</td>'+
                         '<td>'+etudiant.prenom+'</td>'+
+                        '<td>'+etudiant.groupe_label+'</td>'+
+                        '<td>'+etudiant.parcours+'</td>'+
                         '</tr>');
                     });
                 },
