@@ -6,6 +6,7 @@ use App\Entity\Main\BlocOption;
 use App\Entity\Main\CampagneChoix;
 use App\Entity\Main\Groupe;
 use App\Entity\Main\Etudiant;
+use App\Entity\Main\Parcours;
 use App\Entity\Main\UE;
 use App\Form\CampagneChoixType;
 use App\Form\GroupeType;
@@ -354,17 +355,18 @@ class CampagneChoixController extends AbstractController
         ]);
     }
 
-    #[Route('/list/{campagne_id}/{ue_id}', name: 'app_campagne_choix_get_etudiant', methods: ['POST'])]
+    #[Route('/list/{campagne_id}/{parcours_id}/{ue_id}', name: 'app_campagne_choix_get_etudiant', methods: ['POST'])]
     #[ParamConverter('campagneChoix', campagneChoix::class, options: ['id' => 'campagne_id'])]
     #[ParamConverter('UE', UE::class, options: ['id' => 'ue_id'])]
-    public function list(Request $request, $campagne_id, $ue_id, campagneChoix $campagneChoix, UE $UE): JsonResponse
+    #[ParamConverter('parcours', Parcours::class, options: ['id' => 'parcours_id'])]
+    public function list(Request $request, $campagne_id, $ue_id, $parcours_id, campagneChoix $campagneChoix, UE $UE, Parcours $parcours): JsonResponse
     {
+        dump($UE);
 
         $results = array();
         $responses = $campagneChoix->getResponseCampagnes();
 
-        dump($UE);
-        dump($ue_id);
+
 
         $etudiant_avec_groupe = array();
         $etudiant_sans_groupe = array();
@@ -375,20 +377,30 @@ class CampagneChoixController extends AbstractController
         $groupes = $UE->getGroupes();
 
         foreach ($groupes as $groupe) {
+            dump($groupe->getId());
             $etudiants = $groupe->getEtudiants();
+            
             foreach ($etudiants as $etudiant) {
-                $selected = array(
-                    'id' => $etudiant->getId(),
-                    "nom" => $etudiant->getNom(),
-                    "prenom" => $etudiant->getPrenom(),
-                    "groupe_id" => $groupe->getId()
-                );
-                if (!in_array($selected, $etudiant_avec_groupe)) {
-                    $etudiant_avec_groupe[] = $selected;
+                dump($etudiant);
+                if ($etudiant->getParcours() == $parcours) {
+                    $selected = array(
+                        'id' => $etudiant->getId(),
+                        "nom" => $etudiant->getNom(),
+                        "prenom" => $etudiant->getPrenom(),
+                        "groupe_id" => $groupe->getId(),
+                        "groupe_label" => $groupe->getLabel(),
+                        "parcours" => $etudiant->getParcours()->getLabel()
+                    );
+                    if (!in_array($selected, $etudiant_avec_groupe)) {
+                        $etudiant_avec_groupe[] = $selected;
+                        $etudiant_avec_groupe_id[] = $etudiant->getId();
+                    }
+                    
                 }
-                $etudiant_avec_groupe_id[] = $etudiant->getId();
             }
         }
+        dump($etudiant_avec_groupe_id);
+        dump($etudiant_avec_groupe);
 
 
         $etudiant_rejetés_id = array();
@@ -400,35 +412,40 @@ class CampagneChoixController extends AbstractController
                     $blocOption = $choix->getBlocOption();
                     $ues = $blocOption->getUEs();
                     foreach ($ues as $ue) {
-                        if($ue != $UE){
+                        if ($ue != $UE) {
                             $groupes = $ue->getGroupes();
-                            foreach($groupes as $groupe){
+                            foreach ($groupes as $groupe) {
                                 $etudiants = $groupe->getEtudiants();
-                                foreach($etudiants as $etudiant){
+                                foreach ($etudiants as $etudiant) {
                                     $etudiant_rejetés_id[] = $etudiant->getId();
-                                } 
+                                }
                             }
                         }
                     }
 
+
                     dump($choix);
                     $etudiant = $r->getEtudiant();
-                    $selected = array(
-                        'id'=>$etudiant->getId(),
-                        "nom" => $etudiant->getNom(),
-                        "prenom" => $etudiant->getPrenom(),
-                        'ordre'=>$choix->getOrdre(),
-                        'ue'=>$ue_id
-                    );
-                    
-                    if(!in_array($selected,$etudiant_sans_groupe)){
-                        if(!in_array($etudiant->getId(),$etudiant_avec_groupe_id) && !in_array($etudiant->getId(),$etudiant_rejetés_id)){
-                        $etudiant_sans_groupe[] = $selected;
+                    if ($etudiant->getParcours() == $parcours) {
+                        $selected = array(
+                            'id' => $etudiant->getId(),
+                            "nom" => $etudiant->getNom(),
+                            "prenom" => $etudiant->getPrenom(),
+                            'ordre' => $choix->getOrdre(),
+                            'ue' => $ue_id,
+                            'parcours'=>$etudiant->getParcours()->getLabel()
+                        );
+
+                        if (!in_array($selected, $etudiant_sans_groupe)) {
+                            if (!in_array($etudiant->getId(), $etudiant_avec_groupe_id) && !in_array($etudiant->getId(), $etudiant_rejetés_id)) {
+                                $etudiant_sans_groupe[] = $selected;
+                            }
                         }
                     }
                 }
             }
         }
+        
         array_push($results, $etudiant_avec_groupe, $etudiant_sans_groupe);
         return $this->json($results);
     }
