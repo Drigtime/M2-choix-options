@@ -23,13 +23,29 @@ $(document).ready(function () {
 
     $tableSelects.trigger('change');
 
-    $('table').DataTable({
-        language: languageFR,
-        // hide next/previous buttons if there is only one page
-        "initComplete": function(settings, json) {
-            if (this.api().page.info().pages <= 1) {
-                $('.pagination', this.api().table().container()).hide();
-            }
-        }
-    });
+    // const dt =  $('table').DataTable({
+    //     language: languageFR,
+    //     // hide next/previous buttons if there is only one page
+    //     "initComplete": function(settings, json) {
+    //         if (this.api().page.info().pages <= 1) {
+    //             $('.pagination', this.api().table().container()).hide();
+    //         }
+    //     }
+    // });
+    //
+    // // on form submit, if the table has multiple pages, their is only le displayed page that is submitted, so we need to add the hidden inputs for the other pages
+    // $('form').on('submit', function () {
+    //     const nbPages = dt.page.info().pages;
+    //     if (nbPages > 1) {
+    //         // get inputs from other pages and add them to the form in hidden state
+    //         for (let i = 1; i < nbPages; i++) {
+    //             const page = dt.page(i).nodes().to$();
+    //             page.find('input').each(function () {
+    //                 $(this).attr('type', 'hidden');
+    //                 $(this).attr('name', $(this).attr('name') + '[]');
+    //                 $(this).appendTo('form');
+    //             });
+    //         }
+    //     }
+    // });
 });
