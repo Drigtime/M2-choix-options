@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modification des dates d'une campagne de choix{% endblock %}
+
+{% block body %}
+    <div class="d-flex">
+        <div class="flex-grow-1">
+            <h4>Modification des dates d'une campagne de choix</h4>
+        </div>
+        <div class="flex-shrink-0">
+            <a href="{{ path('app_campagne_choix_index') }}" class="btn btn-sm btn-primary">
+                <i class="fas fa-arrow-left"></i>
+                {{ 'utils.back_to_list'|trans }}
+            </a>
+        </div>
+    </div>
+
+    {{ form_start(form) }}
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_row(form.dateDebut) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_row(form.dateFin) }}
+        </div>
+    </div>
+
+    <div class="text-end mb-3">
+        <button class="btn btn-sm btn-primary">
+            <i class="fas fa-save"></i>
+            {{ button_label|default('Enregistrer') }}
+        </button>
+    </div>
+    {{ form_end(form) }}
+{% endblock %}

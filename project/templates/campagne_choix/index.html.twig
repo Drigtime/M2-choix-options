@@ -51,14 +51,20 @@
                     <td class="text-end">
                         <div class="btn-group">
                             <a href="{{ path('app_campagne_choix_show', {'id': campagne_choix.id}) }}"
-                               class="btn btn-sm btn-primary">
+                               class="btn btn-sm btn-primary" title="Voir la campagne">
                                 <i class="fa fa-eye"></i>
                             </a>
                             {% if not campagne_choix.isFinished %}
+                                <a href="{{ path('app_campagne_choix_edit_date', {'id': campagne_choix.id}) }}"
+                                   data-can-be-edited="{{ campagne_choix.canBeEdited }}"
+                                   data-cant-be-edited-reason="{{ campagne_choix.cantBeEditedReason|json_encode }}"
+                                   class="btn btn-sm btn-primary" title="Modifier les dates de la campagne">
+                                    <i class="fa fa-clock"></i>
+                                </a>
                                 <a href="{{ path('app_campagne_choix_edit', {'id': campagne_choix.id}) }}"
                                    data-can-be-edited="{{ campagne_choix.canBeEdited }}"
                                    data-cant-be-edited-reason="{{ campagne_choix.cantBeEditedReason|json_encode }}"
-                                   class="btn btn-sm btn-primary">
+                                   class="btn btn-sm btn-primary" title="Modifier la campagne">
                                     <i class="fa fa-edit"></i>
                                 </a>
                             {% endif %}

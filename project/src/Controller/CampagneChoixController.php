@@ -8,6 +8,7 @@ use App\Entity\Main\Groupe;
 use App\Entity\Main\Etudiant;
 use App\Entity\Main\Parcours;
 use App\Entity\Main\UE;
+use App\Form\CampagneChoixDateType;
 use App\Form\CampagneChoixType;
 use App\Form\GroupeType;
 use App\Repository\CampagneChoixRepository;
@@ -118,6 +119,28 @@ class CampagneChoixController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}/edit_date', name: 'app_campagne_choix_edit_date', methods: ['GET', 'POST'])]
+    public function editDate(Request $request, CampagneChoix $campagneChoix, CampagneChoixRepository $campagneChoixRepository): Response
+    {
+        if ($campagneChoix->isFinished()) {
+            $this->addFlash('warning', 'Impossible de modifier une campagne terminée');
+            return $this->redirectToRoute('app_campagne_choix_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        $form = $this->createForm(CampagneChoixDateType::class, $campagneChoix);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $campagneChoixRepository->save($campagneChoix, true);
+
+            return $this->redirectToRoute('app_campagne_choix_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('campagne_choix/edit_date.html.twig', [
+            'campagne_choix' => $campagneChoix,
+            'form' => $form,
+        ]);
+    }
 
     #[Route('/{id}', name: 'app_campagne_choix_delete', methods: ['POST'])]
     public function delete(Request $request, CampagneChoix $campagneChoix, CampagneChoixRepository $campagneChoixRepository): Response
