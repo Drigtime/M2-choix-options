@@ -208,6 +208,7 @@ class Etudiant
     public function getUesRefused()
     {
         $uesRefused = [];
+        $uesAccepted = [];
         $campagnes = $this->getParcours()->getCampagneChoixes();
         foreach ($campagnes as $campagne) {
             if ($campagne->isFinished()) {
@@ -220,9 +221,18 @@ class Etudiant
                             if (!$groupe->getEtudiants()->contains($this)) {
                                 $uesRefused[] = $ue;
                             }
+                            if($groupe->getEtudiants()->contains($this)) {
+                                $uesAccepted[] = $ue;
+                            }
                         }
                     }
                 }
+            }
+        }
+        foreach ($uesAccepted as $ueAccepted) {
+            if (in_array($ueAccepted, $uesRefused)) {
+                $key = array_search($ueAccepted, $uesRefused);
+                unset($uesRefused[$key]);
             }
         }
         return $uesRefused;
