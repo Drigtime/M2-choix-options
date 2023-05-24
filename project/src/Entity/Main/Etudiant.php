@@ -41,6 +41,9 @@ class Etudiant
     // statut n'est pas un champ de la base de données mais un champ virtuel qui permet de savoir si l'étudiant est admis ou non à la fin de l'année
     private int $statut = 0;
 
+    #[ORM\Column(type: 'boolean')]
+    private int $redoublant = 0;
+
     public function __construct()
     {
         $this->groupes = new ArrayCollection();
@@ -193,6 +196,7 @@ class Etudiant
         return $this;
     }
 
+    // Statut n'est pas un champ de la base de données mais un champ virtuel utilisé dans le passage d'année
     public function getStatut(): int
     {
         return $this->statut;
@@ -203,5 +207,21 @@ class Etudiant
         $this->statut = $statut;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRedoublant(): bool
+    {
+        return $this->redoublant;
+    }
+
+    /**
+     * @param bool $redoublant
+     */
+    public function setRedoublant(bool $redoublant): void
+    {
+        $this->redoublant = $redoublant;
     }
 }

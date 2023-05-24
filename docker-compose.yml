@@ -16,6 +16,7 @@ services:
       - 'DATABASE_URL=mysql://${MYSQL_USER}:${MYSQL_PASS}@${DB_SERVER}:${DB_PORT}/${MYSQL_DB}'
       - 'USER_DATABASE_URL=mysql://${MYSQL_USER_USER}:${MYSQL_PASS_USER}@${DB_SERVER_USER}:${DB_PORT}/${MYSQL_DB_USER}'
       - 'MAILER_DSN=smtp://mailhog:1025'
+      - 'TZ=Europe/Paris'
     volumes:
       - ./project:/var/www/html
       - ./docker/server/apache/sites-enabled:/etc/apache2/sites-enabled
