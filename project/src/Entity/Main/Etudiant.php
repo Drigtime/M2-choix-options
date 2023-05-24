@@ -204,4 +204,27 @@ class Etudiant
 
         return $this;
     }
+
+    public function getUesRefused()
+    {
+        $uesRefused = [];
+        $campagnes = $this->getParcours()->getCampagneChoixes();
+        foreach ($campagnes as $campagne) {
+            if ($campagne->isFinished()) {
+                $blocOptions= $campagne->getBlocOptions();
+                foreach ($blocOptions as $blocOption) {
+                    $UEs = $blocOption->getUEs();
+                    foreach($UEs as $ue) {
+                        $groupes = $ue->getGroupes();
+                        foreach ($groupes as $groupe) {
+                            if (!$groupe->getEtudiants()->contains($this)) {
+                                $uesRefused[] = $ue;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return $uesRefused;
+    }
 }

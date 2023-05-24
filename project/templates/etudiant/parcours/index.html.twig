@@ -1,32 +1,10 @@
-{# {% extends 'base.html.twig' %}
-
-{% block title %}Parcours
-{% endblock %}
-
-{% block body %}
-<h1>Votre parcours</h1>
-    {% for blocUE in etudiant.parcours.blocUEs %}
-        <h3>{{blocUE.category.label}}</h3>
-        {% for blocUeUe in blocUE.mandatoryUEs %}
-            <p>{{blocUeUe.UE.label}}</p>    
-        {% endfor %}
-        {% for blocUeUe in blocUE.optionalUEs %}
-            {% for groupe in UEsGroupes %}
-                {% if blocUeUe.UE.id == groupe.UE.id %}
-                    <p>{{blocUeUe.UE.label}} - Groupe {{groupe.label}}</p>   
-                {% endif %}
-            {% endfor %}
-        {% endfor %}
-    {% endfor %}
-{% endblock %} #}
-
 {% extends 'base.html.twig' %}
 
 {% block title %}Parcours
 {% endblock %}
 
 {% block body %}
-	<h1 class="text-center mt-5 mb-4">Votre parcours</h1>
+	<h1 class="text-center mt-5 mb-4">{{etudiant.parcours.anneeFormation}} - {{etudiant.parcours.label}}</h1>
 	<div class="accordion" id="parcoursAccordion">
 		{% for blocUE in etudiant.parcours.blocUEs|sort((a, b) => a.category.label <=> b.category.label) %}
 			<div class="accordion-item">
@@ -48,6 +26,8 @@
 						<h3 class="mt-3">UEs optionnelles</h3>
 						{% for blocUeUe in blocUE.optionalUEs %}
 							{% set grouped = false %}
+							{% set refused = false %}
+							{% set responseDone = false %}
 							{% for groupe in UEsGroupes %}
 								{% if blocUeUe.UE.id == groupe.UE.id %}
 									<p class="mb-2">{{blocUeUe.UE.label}}
@@ -56,9 +36,36 @@
 									{% set grouped = true %}
 								{% endif %}
 							{% endfor %}
-							{% if not grouped %}
-								<p>{{ blocUeUe.UE.label }}
-									: Non retenu</p>
+							{% for UE in uesRefused %}
+								{% if blocUeUe.UE.id == UE.id %}
+									{% set refused = true %}
+								{% endif %}
+							{% endfor %}
+							{% for campagne in etudiant.parcours.campagneChoixes %}
+								{% for responseCampagne in campagne.responseCampagnes %}
+									{% if responseCampagne.etudiant == etudiant %}
+										{% for choix in responseCampagne.choixes %}
+											{% if blocUeUe.UE.id == choix.UE.id and not grouped and not refused %}
+												<p class="mb-2">{{blocUeUe.UE.label}}
+													- Ordre du choix : {{choix.ordre}} - Décision à venir</p>
+												{% set responseDone = true %}
+											{% endif %}
+										{% endfor %}
+									{% endif %}
+								{% endfor %}
+							{% endfor %}
+							{% for campagne in etudiant.parcours.campagneChoixes %}
+								{% for blocOption in campagne.blocOptions %}
+									{% for UE in blocOption.UES %}
+										{% if blocUeUe.UE.id == UE.id and not grouped and not refused and not responseDone and campagne.isActif %}
+											<p class="mb-2">{{blocUeUe.UE.label}} - Campagne ouverte pour cette UE, faites vos choix !</p>
+											{% set responseDone = true %}
+										{% endif %}
+									{% endfor %}
+								{% endfor %}
+							{% endfor %}
+							{% if blocUeUe and not grouped and not refused and not responseDone %}
+								<p class="mb-2">{{blocUeUe.UE.label}} - Pas encore de campagne ouverte pour cette UE</p> 
 							{% endif %}
 						{% endfor %}
 					</div>

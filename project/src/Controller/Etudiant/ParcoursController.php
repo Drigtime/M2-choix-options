@@ -14,10 +14,13 @@ class ParcoursController extends AbstractController
     {
         $etudiant = $etudiantRepository->findOneBy(['mail' => $this->getUser()->getUserIdentifier()]);
         $groupes = $etudiant->getGroupes();
+        $uesRefused = $etudiant->getUesRefused();
+        // dd($uesRefused);
 
         return $this->render('etudiant/parcours/index.html.twig', [
             'etudiant' => $etudiant,
             'UEsGroupes' => $groupes,
+            'uesRefused' => $uesRefused,
         ]);
     }
 }
