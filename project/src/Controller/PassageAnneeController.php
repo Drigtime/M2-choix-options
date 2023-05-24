@@ -323,16 +323,18 @@ class PassageAnneeController extends AbstractController
 
         $this->removeStudents(array_merge($passageAnneForm['form_step_M2_1_valides'], $passageAnneForm['form_step_M2_1_stops']));
         $this->updateStudentUEStatus($passageAnneForm['form_step_M2_1_redoublants'], $passageAnneForm['form_step_M2_2_data']);
+        $this->setAllStudentsToRedoublant($passageAnneForm['form_step_M2_1_redoublants']);
 
         $this->removeStudents($passageAnneForm['form_step_M1_1_stops']);
         $this->updateStudentUEStatus($passageAnneForm['form_step_M1_1_redoublants'], $passageAnneForm['form_step_M1_2_data']);
+        $this->setAllStudentsToRedoublant($passageAnneForm['form_step_M2_1_redoublants']);
 
         // Déplacer les étudiants de M1 vers leur parcours de M2 correspondant
         foreach ($passageAnneForm['form_step_M1_3_data'] as $parcoursId => $etudiants) {
             $studentIds = array_column($etudiants, 'id');
             $students = $this->etudiantRepository->findBy(['id' => $studentIds]);
             foreach ($students as $student) {
-                $this->etudiantRepository->save($moveStudentService->moveEtudiantToParcours($student, $this->parcoursRepository->find($parcoursId), false), true);
+                $this->etudiantRepository->save($moveStudentService->moveEtudiantToParcours($student, $this->parcoursRepository->find($parcoursId)), true);
             }
         }
 
@@ -437,5 +439,13 @@ class PassageAnneeController extends AbstractController
         ]);
     }
 
+    public function setAllStudentsToRedoublant($etudiants): void
+    {
+        foreach ($etudiants as $etudiant) {
+            $etudiant = $this->etudiantRepository->find($etudiant['id']);
+            $etudiant->setRedoublant(true);
+            $this->etudiantRepository->save($etudiant, true);
+        }
+    }
 
 }
