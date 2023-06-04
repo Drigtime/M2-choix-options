@@ -94,13 +94,18 @@
 							<div class="choixGroupeModal_body p-3">
 
 								{% for groupe in ue.groupes %}
-									<div class="form-check">
-										<input class="form-check-input" type="radio" name="choixGroupes" value="{{groupe.id}}">
-										<label class="form-check-label" for="flexRadioDefault1">
-											{{groupe.label}}
-										</label>
-									</div>
-								{% endfor %}
+    {% set groupMaxEffectifs = ue.effectif // ue.nbrGroupe %}
+    {% set remainingEffectifs = ue.effectif % ue.nbrGroupe %}
+    {% if loop.index <= remainingEffectifs %}
+        {% set groupMaxEffectifs = groupMaxEffectifs + 1 %}
+    {% endif %}
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="choixGroupes" value="{{ groupe.id }}">
+        <label class="form-check-label" for="flexRadioDefault1">
+            {{ groupe.label }} ({{ groupe.etudiants|length }}/{{ groupMaxEffectifs }})
+        </label>
+    </div>
+{% endfor %}
 
 							</div>
 							<div class="modal-footer">
