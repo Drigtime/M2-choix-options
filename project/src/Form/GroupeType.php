@@ -29,11 +29,8 @@ class GroupeType extends AbstractType
             ->add('etudiants', EntityType::class, [
                 'label' => 'Etudiants du groupe',
                 'class' => Etudiant::class,
-                'choice_label' => (function (Etudiant $etudiant) {
-                    $parcours = $etudiant->getParcours();
-                    return $parcours?->getAnneeFormation()->getLabel() . ' ' . $parcours?->getlabel() . ' - ' . $etudiant->getNom() . ' ' . $etudiant->getPrenom();
-                }),
                 'multiple' => true,
+                'required' => false,
             ]);
     }
 

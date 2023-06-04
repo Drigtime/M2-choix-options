@@ -54,13 +54,36 @@ class EtudiantRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-public function findOneById($value): ?Etudiant
-{
-    return $this->createQueryBuilder('u')
-        ->andWhere('u.id = :val')
-        ->setParameter('val', $value)
-        ->getQuery()
-        ->getOneOrNullResult()
-    ;
-}
+    public function findOneById($value): ?Etudiant
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.id = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findByFilters(array $filters): array
+    {
+        $qb = $this->createQueryBuilder('e')
+            ->leftJoin('e.parcours', 'p')
+        ;
+
+        if (isset($filters['nom']) && !empty($filters['nom'])) {
+            $qb->andWhere('e.nom LIKE :nom')
+                ->setParameter('nom', '%' . $filters['nom'] . '%');
+        }
+
+        if (isset($filters['prenom']) && !empty($filters['prenom'])) {
+            $qb->andWhere('e.prenom LIKE :prenom')
+                ->setParameter('prenom', '%' . $filters['prenom'] . '%');
+        }
+
+        if (isset($filters['parcours']) && !empty($filters['parcours'])) {
+            $qb->andWhere('p.id = :parcours')
+                ->setParameter('parcours', $filters['parcours']);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }

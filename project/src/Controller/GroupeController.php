@@ -7,6 +7,7 @@ use App\Entity\Main\Etudiant;
 use App\Form\GroupeType;
 use App\Repository\GroupeRepository;
 use App\Repository\EtudiantRepository;
+use App\Repository\ParcoursRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use App\Form\MoveGroupeEtudiantType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -62,7 +63,7 @@ class GroupeController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_groupe_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Groupe $groupe, GroupeRepository $groupeRepository): Response
+    public function edit(Request $request, Groupe $groupe, GroupeRepository $groupeRepository, ParcoursRepository $parcoursRepository): Response
     {
         $form = $this->createForm(GroupeType::class, $groupe);
         $form->handleRequest($request);
@@ -73,8 +74,11 @@ class GroupeController extends AbstractController
             return $this->redirectToRoute('app_groupe_index', [], Response::HTTP_SEE_OTHER);
         }
 
+        $parcours = $parcoursRepository->findAll();
+
         return $this->render('groupe/edit.html.twig', [
             'groupe' => $groupe,
+            'parcours' => $parcours,
             'form' => $form,
         ]);
     }

@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\Entity\Main\BlocUE;
 use App\Entity\Main\BlocUECategory;
 use App\Entity\Main\Parcours;
+use App\Repository\EtudiantRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -50,6 +52,29 @@ class ApiController extends AbstractController
             $json[] = [
                 'id' => $ue->getId(),
                 'label' => $ue->getLabel(),
+            ];
+        }
+
+        return $this->json($json);
+    }
+
+    #[Route('/api/etudiant/search', name: 'api_etudiant_search', options: ['expose' => true], methods: ['POST'])]
+    public function searchEtudiant(Request $request, EtudiantRepository $etudiantRepository): Response
+    {
+        $query = $request->request->all();
+
+        $etudiants = $etudiantRepository->findByFilters($query);
+
+        $json = [];
+
+        foreach ($etudiants as $etudiant) {
+            $json[] = [
+                'id' => $etudiant->getId(),
+                'label' => $etudiant->getFullName(),
+                'parcours' => [
+                    'id' => $etudiant->getParcours()->getId(),
+                    'label' => $etudiant->getParcours()->getLabel(),
+                ],
             ];
         }
 

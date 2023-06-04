@@ -53,7 +53,7 @@ class Etudiant
 
     public function __toString(): string
     {
-        return $this->getNom() . ' ' . $this->getPrenom();
+        return $this->getFullName();
     }
 
     public function getNom(): ?string
@@ -78,6 +78,11 @@ class Etudiant
         $this->prenom = $prenom;
 
         return $this;
+    }
+
+    public function getFullName(): string
+    {
+        return $this->getNom() . ' ' . $this->getPrenom();
     }
 
     public function getId(): ?int

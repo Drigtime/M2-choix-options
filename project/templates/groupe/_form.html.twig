@@ -1,14 +1,54 @@
 {{ form_start(form) }}
-    {{ form_row(form.label) }}
-    {{ form_row(form.ue) }}
-
-<div class="mb-3">
-    <div>
-        {{ form_label(form.etudiants) }}
-        <span id="currentEffectif" class="badge bg-secondary"></span>
+<div class="row">
+    <div class="col-md-6">
+        {{ form_row(form.label) }}
     </div>
-    {{ form_widget(form.etudiants) }}
-    {{ form_errors(form.etudiants) }}
+    <div class="col-md-6">
+        {{ form_row(form.ue) }}
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <div class="d-flex justify-content-between">
+            <div>
+                {{ form_label(form.etudiants) }}
+                <span id="currentEffectif" class="badge bg-secondary"></span>
+            </div>
+            <div>
+                <button type="button" class="btn btn-sm btn-primary" id="addEtudiant">
+                    <i class="fas fa-plus"></i>
+                    Ajouter un étudiant
+                </button>
+            </div>
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <td>Etudiant</td>
+                <td></td>
+            </tr>
+            </thead>
+            <tbody id="etudiants">
+            {% for etudiant in form.etudiants.vars.data %}
+                <tr>
+                    <td>
+                        {{ etudiant.nom }} {{ etudiant.prenom }}
+                    </td>
+                    <td class="text-end">
+                        <button type="button" class="btn btn-sm btn-danger removeEtudiant" data-id="{{ etudiant.id }}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="d-none">
+            {{ form_widget(form.etudiants) }}
+            {{ form_errors(form.etudiants) }}
+        </div>
+    </div>
 </div>
 
 <div class="text-end">
@@ -19,3 +59,35 @@
 </div>
 
 {{ form_end(form) }}
+
+<!-- Modal -->
+<div class="modal fade" id="addEtudiantModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="addEtudiantModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="addEtudiantModalLabel">Ajout d'étudiant</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="addEtudiantModalForm" class="d-flex flex-column flex-sm-row gap-sm-2">
+                    <select class="form-select" id="addEtudiantModalFormParcours">
+                        <option value="">Choisir un parcours</option>
+                        {% for parcour in parcours %}
+                            <option value="{{ parcour.id }}">{{ parcour.label }}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="search" class="form-control" id="addEtudiantModalFormNom" placeholder="Nom">
+                    <input type="search" class="form-control" id="addEtudiantModalFormPrenom" placeholder="Prénom">
+                    <button type="button" class="btn btn-primary" id="addEtudiantModalFormSearch" title="Rechercher">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <div id="addEtudiantModalFormResult" class="mt-3"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+            </div>
+        </div>
+    </div>
+</div>
