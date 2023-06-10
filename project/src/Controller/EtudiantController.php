@@ -4,36 +4,24 @@ namespace App\Controller;
 
 use App\Entity\Main\AnneeFormation;
 use App\Entity\Main\Etudiant;
-use App\Entity\Main\EtudiantUE;
-use App\Entity\Main\Parcours;
-use App\Entity\Main\ResponseCampagne;
 use App\Entity\User\ResetPasswordToken;
 use App\Entity\User\User;
 use App\Form\EtudiantType;
 use App\Form\UserImportType;
 use App\Repository\AnneeFormationRepository;
-use App\Repository\ChoixRepository;
 use App\Repository\EtudiantRepository;
 use App\Repository\PasswordTokenRepository;
-use App\Repository\UERepository;
 use App\Repository\UserRepository;
 use App\Service\ExportStudentService;
 use App\Service\MailerService;
 use App\Service\MoveStudentService;
 use DateTime;
-use Doctrine\Common\Collections\Collection;
 use Knp\Component\Pager\PaginatorInterface;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Reader\Csv;
 use PhpOffice\PhpSpreadsheet\Reader\Exception;
 use PhpOffice\PhpSpreadsheet\Reader\Xls;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Style\Fill;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx as WriterXlsx;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -47,9 +35,7 @@ use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 class EtudiantController extends AbstractController
 {
 
-    public function __construct(private readonly MailerService   $mailerService,
-                                private readonly ChoixRepository $choixRepository,
-                                private readonly UERepository    $UERepository)
+    public function __construct(private readonly MailerService   $mailerService)
     {
     }
 
