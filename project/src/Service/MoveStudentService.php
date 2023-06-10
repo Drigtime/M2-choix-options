@@ -65,7 +65,7 @@ class MoveStudentService
         if (!$group) {
             $group = new Groupe();
             $group->setUe($ue);
-            $group->setLabel($ue->getLabel() . "-Groupe-" . (count($groups) + 1));
+            $group->setLabel((count($groups) + 1));
         }
 
         $group->addEtudiant($etudiant);

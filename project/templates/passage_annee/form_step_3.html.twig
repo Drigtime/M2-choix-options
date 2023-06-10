@@ -25,7 +25,7 @@
                 <div class="form-group mb-3">
                     <label for="courses-list">Liste des parcours</label>
                     <select id="courses-list" class="form-control">
-                        {% for parcour in parcours %}
+                        {% for parcour in parcours|sort((a, b) => a.label > b.label) %}
                             <option value="{{ parcour.id }}">{{ parcour }}</option>
                         {% endfor %}
                     </select>
@@ -42,7 +42,7 @@
                 <div class="form-group">
                     <label for="students-list">Liste des étudiants</label>
                     <select id="students-list" class="form-control" multiple style="height: 500px">
-                        {% for etudiant in etudiants %}
+                        {% for etudiant in etudiants|sort((a, b) => a.nom > b.nom) %}
                             <option value="{{ etudiant.id }}">{{ etudiant }}</option>
                         {% endfor %}
                     </select>

@@ -344,7 +344,7 @@ class PassageAnneeController extends AbstractController
 
         $this->addFlash('success', 'Les étudiants ont bien été déplacés');
 
-        return $this->redirectToRoute('app_passage_annee');
+        return $this->redirectToRoute('app_changement_parcours');
     }
 
     public function updateStudentUEStatus(array $redoublants, array $stepData): void
@@ -362,6 +362,7 @@ class PassageAnneeController extends AbstractController
                 continue;
             }
 
+            $studentData = array_values($studentData);
             $etudiantUEs = $studentData[0]['etudiantUEs'];
             foreach ($student->getEtudiantUEs() as $etudiantUE) {
                 $ueId = $etudiantUE->getUE()->getId();

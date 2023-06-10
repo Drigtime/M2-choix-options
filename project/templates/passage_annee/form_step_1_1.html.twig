@@ -65,10 +65,10 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% for etudiant in form.etudiants %}
+                        {% for etudiant in form.etudiants|sort((a, b) => a.vars.value.nom > b.vars.value.nom) %}
                             {% if etudiant.vars.value.parcours == parcours %}
                                 <tr>
-                                    <td>{{ etudiant.vars.value.nom }} {{ etudiant.vars.value.prenom }}</td>
+                                    <td>{{ etudiant.vars.value.fullName }}</td>
                                     <td>
                                         {{ form_widget(etudiant.statut, {attr: {'class': 'form-select-sm'}}) }}
                                     </td>

@@ -22,11 +22,35 @@ function updateCurrentCourseList() {
     const students = courses[selectedCourse] || [];
 
     // Ajout des étudiants à la liste
-    students.forEach((student) => {
+    students
+        .forEach((student) => {
         const option = document.createElement("option");
         option.value = student.value;
         option.text = student.text;
         currentCourseList.appendChild(option);
+    });
+
+    updateStudentsList();
+}
+
+function updateStudentsList() {
+    // reorder students list
+    const students = Array.from(studentsList.options).sort((a, b) => {
+        if (a.text < b.text) {
+            return -1;
+        }
+        if (a.text > b.text) {
+            return 1;
+        }
+        return 0;
+    });
+
+    // clear students list
+    studentsList.innerHTML = "";
+
+    // add students to students list
+    students.forEach((student) => {
+        studentsList.appendChild(student);
     });
 }
 
@@ -73,11 +97,12 @@ function removeStudentsFromCourse() {
 
     // Suppression des étudiants de la liste correspondante
     courses[selectedCourse] = courses[selectedCourse].filter(
-        (student) => !selectedStudents.some((s) => Number(s.value) === student.value)
+        (student) =>  !selectedStudents.some((selectedStudent) => selectedStudent.value === student.value)
     );
 
     // Ajout des étudiants à la liste de gauche
-    selectedStudents.forEach((student) => {
+    selectedStudents
+        .forEach((student) => {
         const option = document.createElement("option");
         option.value = student.value;
         option.text = student.text;
