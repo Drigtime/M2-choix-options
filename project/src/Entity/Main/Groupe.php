@@ -29,6 +29,11 @@ class Groupe
         $this->etudiants = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        return $this->label; // TODO Ajouter "Groupe" devant ?
+    }
+
     public function getId(): ?int
     {
         return $this->id;

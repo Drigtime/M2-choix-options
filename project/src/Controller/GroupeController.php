@@ -3,13 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Main\Groupe;
-use App\Entity\Main\Etudiant;
 use App\Form\GroupeType;
-use App\Repository\GroupeRepository;
+use App\Form\MoveGroupeEtudiantType;
 use App\Repository\EtudiantRepository;
+use App\Repository\GroupeRepository;
 use App\Repository\ParcoursRepository;
 use Knp\Component\Pager\PaginatorInterface;
-use App\Form\MoveGroupeEtudiantType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -36,19 +35,26 @@ class GroupeController extends AbstractController
     }
 
     #[Route('/new', name: 'app_groupe_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, GroupeRepository $groupeRepository): Response
+    public function new(Request $request, GroupeRepository $groupeRepository, ParcoursRepository $parcoursRepository): Response
     {
         $groupe = new Groupe();
         $form = $this->createForm(GroupeType::class, $groupe);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $etudiants = $groupe->getEtudiants();
+            foreach ($etudiants as $etudiant) {
+                $groupe->getUe()->addEtudiantUE($etudiant);
+            }
             $groupeRepository->save($groupe, true);
 
             return $this->redirectToRoute('app_groupe_index', [], Response::HTTP_SEE_OTHER);
         }
 
+        $parcours = $parcoursRepository->findAll();
+
         return $this->render('groupe/new.html.twig', [
+            'parcours' => $parcours,
             'groupe' => $groupe,
             'form' => $form,
         ]);
@@ -69,6 +75,10 @@ class GroupeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $etudiants = $groupe->getEtudiants();
+            foreach ($etudiants as $etudiant) {
+                $groupe->getUe()->addEtudiantUE($etudiant);
+            }
             $groupeRepository->save($groupe, true);
 
             return $this->redirectToRoute('app_groupe_index', [], Response::HTTP_SEE_OTHER);

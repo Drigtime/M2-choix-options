@@ -7,6 +7,8 @@ use App\Entity\Main\Groupe;
 use App\Entity\Main\UE;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -15,8 +17,11 @@ class GroupeType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('label', null, [
-                'label' => 'Nom du groupe',
+            ->add('label', IntegerType::class, [
+                'label' => 'Numéro de groupe',
+                'attr' => [
+                    'min' => 1,
+                ],
             ])
             ->add('ue', EntityType::class, [
                 'label' => 'UE lié au groupe',
