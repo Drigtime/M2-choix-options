@@ -46,13 +46,15 @@
         </tr>
         <tr>
             <th>Groupes</th>
-            <td>
+            <td class="d-flex flex-wrap gap-2">
                 {% for groupe in ue.groupes %}
-                    <a href="{{ path('app_groupe_show', {'id': groupe.id}) }}">{{ groupe.label }}</a>
+                    <a href="{{ path('app_groupe_show', {'id': groupe.id}) }}" class="btn btn-primary"
+                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
+                        {{ groupe.label }}
+                    </a>
                 {% endfor %}
             </td>
         </tr>
         </tbody>
     </table>
-
 {% endblock %}
