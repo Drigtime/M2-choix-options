@@ -7,7 +7,6 @@ $(document).ready(function() {
     $('#etudiant_container tbody').empty();
     var url = $(this).data("url");
     var parcours = $(this).data("parcours");
-    let route_delete = "{{ path('app_campagne_choix_delete_etudiant_groupe', { campagne_id: 'campagne_id_', groupe_id: 'groupe_id_', 'etudiant_id': 'etudiant_id_' }) }}";
       console.log(parcours)
     console.log(url)
               $.ajax({
@@ -21,6 +20,7 @@ $(document).ready(function() {
                     var campagne_id = $('#campagne_id').val();
                     tableEtudiant.empty();
                     tableGroupe.empty();
+                    var ue = ''
                     $.each(data[1], function(index, etudiant) {
                       tableEtudiant.append(
                         '<tr>'+
@@ -30,7 +30,8 @@ $(document).ready(function() {
                         '<td>'+etudiant.parcours+'</td>'+
                         '<td>'+etudiant.ordre+'</td>'+
                         '</tr>');
-                        $('#choixGroupeBtn').attr('data-bs-target',"#choixGroupeModal"+etudiant.ue);
+                      ue = etudiant.ue;
+                        
                         
                     });
                     $.each(data[0], function(index, etudiant) {
@@ -43,6 +44,12 @@ $(document).ready(function() {
                         '<td>'+etudiant.parcours+'</td>'+
                         '</tr>');
                     });
+                    if(data[2] == 'obligatoire'){
+                      $('.choixGroupeBtn').attr('data-bs-target',"#choixGroupeModalObligatoire"+ue);
+                    }
+                    else{
+                      $('.choixGroupeBtn').attr('data-bs-target',"#choixGroupeModalOptionelle"+ue);
+                    }
                 },
                 error: function(xhr, textStatus, errorThrown) {
                     console.log("error request");
@@ -63,10 +70,10 @@ $(document).ready(function() {
   $(document).on('change', 'input[type="checkbox"][name="selection_etudiant[]"]', function() {
     if ($('input[type="checkbox"][name="selection_etudiant[]"]:checked').length > 0) {
       console.log('at last one')
-      $('#choixGroupeBtn').prop('disabled', false);
+      $('.choixGroupeBtn').prop('disabled', false);
     } else {
       console.log('none')
-      $('#choixGroupeBtn').prop('disabled', true);
+      $('.choixGroupeBtn').prop('disabled', true);
     }
 
   });
