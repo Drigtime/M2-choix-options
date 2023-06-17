@@ -34,7 +34,7 @@ class MoveStudentService
             $mandatoryUEs = $blocUE->getMandatoryUEs();
             $optionalUEs = $optionalUE ? $blocUE->getOptionalUEs()->slice(0, $blocUE->getNbUEsOptional()) : [];
 
-            $ues = array_map(fn($blocUeUe) => $blocUeUe->getUe(), array_merge($mandatoryUEs->toArray(), $optionalUEs));
+            $ues = array_map(fn ($blocUeUe) => $blocUeUe->getUe(), array_merge($mandatoryUEs->toArray(), $optionalUEs));
             foreach ($ues as $ue) {
                 $this->addStudentToUeGroup($ue, $etudiant);
                 $etudiant->addEtudiantUE(new EtudiantUE($etudiant, $ue));
@@ -43,7 +43,6 @@ class MoveStudentService
 
         return $etudiant;
     }
-
 
     /**
      * @param UE $ue
@@ -56,19 +55,21 @@ class MoveStudentService
         $group = null;
 
         foreach ($groups as $g) {
-            if ($g->getEtudiants()->count() < $ue->getEffectif()) {
+            if ($g->getEtudiants()->count() < ($ue->getEffectif() / $ue->getNbrGroupe())) {
                 $group = $g;
                 break;
             }
         }
 
-        if (!$group) {
+        if (!$group && count($groups) < $ue->getNbrGroupe()) {
             $group = new Groupe();
             $group->setUe($ue);
             $group->setLabel((count($groups) + 1));
         }
 
-        $group->addEtudiant($etudiant);
-        $etudiant->addGroupe($group);
+        if ($group) {
+            $group->addEtudiant($etudiant);
+            $etudiant->addGroupe($group);
+        }
     }
 }
