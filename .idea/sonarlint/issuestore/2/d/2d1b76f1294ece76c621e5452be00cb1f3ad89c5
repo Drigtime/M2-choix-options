@@ -1,0 +1,42 @@
+
+b	php:S1131¬"@Remove the useless trailing whitespaces at the end of this line.(ûƒĞ üÿÿÿÿ8§†ÚûŒ1
+b	php:S1131¿"@Remove the useless trailing whitespaces at the end of this line.(°ûĞñûÿÿÿÿ8§†ÚûŒ1
+b	php:S1131Æ"@Remove the useless trailing whitespaces at the end of this line.(ŸÏÁ‡ıÿÿÿÿ8§†ÚûŒ1
+b	php:S1131ä"@Remove the useless trailing whitespaces at the end of this line.(ÙÀ·ûüÿÿÿÿ8¨†ÚûŒ1
+b	php:S1131Í"@Remove the useless trailing whitespaces at the end of this line.(°ÚşÍøÿÿÿÿ8¨†ÚûŒ1
+vphp:S117²"URename this local variable "$UE" to match the regular expression ^[a-z][a-zA-Z0-9]*$.(ìªÖ×ÿÿÿÿÿ8¨†ÚûŒ1
+ƒphp:S117³"bRename this local variable "$effectif_defaut" to match the regular expression ^[a-z][a-zA-Z0-9]*$.( çİîùÿÿÿÿ8¨†ÚûŒ1
+php:S117·"^Rename this local variable "$parcours_id" to match the regular expression ^[a-z][a-zA-Z0-9]*$.(£ç¼´ıÿÿÿÿ8¨†ÚûŒ1
+{php:S117¾"ZRename this local variable "$BlocUEs" to match the regular expression ^[a-z][a-zA-Z0-9]*$.(üƒüÿÿÿÿ8¨†ÚûŒ1
+uphp:S117Â"YRename this local variable "$BlocUE" to match the regular expression ^[a-z][a-zA-Z0-9]*$.(Ìğ÷‚8¨†ÚûŒ1
+rphp:S117Ä"VRename this local variable "$UEs" to match the regular expression ^[a-z][a-zA-Z0-9]*$.(¾ÛÑø8©†ÚûŒ1
+„php:S117Å"cRename this local variable "$EtudiantsDecales" to match the regular expression ^[a-z][a-zA-Z0-9]*$.(¸¶¨úÿÿÿÿ8©†ÚûŒ1
+‰php:S117Ç"hRename this local variable "$EtudiantsUeOptionnels" to match the regular expression ^[a-z][a-zA-Z0-9]*$.(õªü®üÿÿÿÿ8©†ÚûŒ1
+‚php:S117ß"aRename this local variable "$effectif_total" to match the regular expression ^[a-z][a-zA-Z0-9]*$.(çü¨Çüÿÿÿÿ8©†ÚûŒ1
+}php:S117ö"\Rename this local variable "$index_max" to match the regular expression ^[a-z][a-zA-Z0-9]*$.(ë³½Åÿÿÿÿÿ8©†ÚûŒ1
+uphp:S117"YRename this parameter "$campagne_id" to match the regular expression ^[a-z][a-zA-Z0-9]*$.(›é¢ˆ8©†ÚûŒ1
+ophp:S117"SRename this parameter "$ue_id" to match the regular expression ^[a-z][a-zA-Z0-9]*$.(›é¢ˆ8©†ÚûŒ1
+uphp:S117"YRename this parameter "$parcours_id" to match the regular expression ^[a-z][a-zA-Z0-9]*$.(›é¢ˆ8©†ÚûŒ1
+lphp:S117"PRename this parameter "$UE" to match the regular expression ^[a-z][a-zA-Z0-9]*$.(›é¢ˆ8ª†ÚûŒ1
+ˆphp:S117Š"gRename this local variable "$etudiant_avec_groupe" to match the regular expression ^[a-z][a-zA-Z0-9]*$.(´àÖñıÿÿÿÿ8ª†ÚûŒ1
+ƒphp:S117‹"gRename this local variable "$etudiant_sans_groupe" to match the regular expression ^[a-z][a-zA-Z0-9]*$.(¡ÀÔ•8ª†ÚûŒ1
+‹php:S117"jRename this local variable "$etudiant_avec_groupe_id" to match the regular expression ^[a-z][a-zA-Z0-9]*$.(ÿˆïıùÿÿÿÿ8ª†ÚûŒ1
+ƒphp:S117­"gRename this local variable "$etudiant_rejetÃ©s_id" to match the regular expression ^[a-z][a-zA-Z0-9]*$.(—ò¥’8ª†ÚûŒ1
+uphp:S117ß"YRename this parameter "$campagne_id" to match the regular expression ^[a-z][a-zA-Z0-9]*$.(Ö‹²8ª†ÚûŒ1
+}php:S117â"\Rename this local variable "$groupe_id" to match the regular expression ^[a-z][a-zA-Z0-9]*$.(çÍúøúÿÿÿÿ8ª†ÚûŒ1
+~php:S117å"bRename this local variable "$groupe_selected" to match the regular expression ^[a-z][a-zA-Z0-9]*$.(İêòÀ8ª†ÚûŒ1
+…php:S117è"dRename this local variable "$etudiant_selected" to match the regular expression ^[a-z][a-zA-Z0-9]*$.(Áòùÿÿÿÿ8«†ÚûŒ1
+o	php:S1779"bReplace all non line feed end of line characters in this file "CampagneChoixController.php" by LF.
+N	php:S1751ê"1Refactor this loop to do more than one iteration.(úº„±8«†ÚûŒ1
+w	php:S3776®"URefactor this function to reduce its Cognitive Complexity from 136 to the 15 allowed.(Û¿Á¤ÿÿÿÿÿ8¬†ÚûŒ1
+q	php:S3776"TRefactor this function to reduce its Cognitive Complexity from 54 to the 15 allowed.(›é¢ˆ8­†ÚûŒ1
+f	php:S1192•"IDefine a constant instead of duplicating this literal "-Groupe-" 5 times.(×ÔşÛ8­†ÚûŒ1
+d	php:S1763ê"GDelete this unreachable code or refactor the code to make it reachable.(úº„±8­†ÚûŒ1
+K	php:S1125†")Remove the literal "false" boolean value.(Ğ²´Íÿÿÿÿÿ8­†ÚûŒ1
+L	php:S1066Ï"/Merge this if statement with the enclosing one.(şïÃ™8­†ÚûŒ1
+^	php:S1793ı"<Replace this "else if" keyword sequence by "elseif" keyword.(õ‚“úÿÿÿÿ8®†ÚûŒ1
+kphp:S127ß"ORefactor the code to avoid updating the loop counter "$i" within the loop body.(¿•”©8®†ÚûŒ1
+kphp:S127ß"ORefactor the code to avoid updating the loop counter "$i" within the loop body.(¿•”©8®†ÚûŒ1
+@php:S125Ï"Remove this commented out code.(ˆÍÔ¸ÿÿÿÿÿ8®†ÚûŒ1
+php:S138®"|This function "choix_groupe" has 176 lines, which is greater than the 150 lines authorized. Split it into smaller functions.(Û¿Á¤ÿÿÿÿÿ8®†ÚûŒ1
+Xphp:S131‰"7Add a "case default" clause to this "switch" statement.(€Üáöüÿÿÿÿ8®†ÚûŒ1
