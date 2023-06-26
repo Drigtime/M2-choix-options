@@ -8,7 +8,7 @@ use App\Entity\Main\Groupe;
 use App\Entity\Main\Etudiant;
 use App\Entity\Main\Parcours;
 use App\Entity\Main\UE;
-use App\Form\CampagneChoixDateType;
+use App\Entity\Main\EtudiantUE;
 use App\Form\CampagneChoixType;
 use App\Form\GroupeType;
 use App\Repository\CampagneChoixRepository;
@@ -119,28 +119,6 @@ class CampagneChoixController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit_date', name: 'app_campagne_choix_edit_date', methods: ['GET', 'POST'])]
-    public function editDate(Request $request, CampagneChoix $campagneChoix, CampagneChoixRepository $campagneChoixRepository): Response
-    {
-        if ($campagneChoix->isFinished()) {
-            $this->addFlash('warning', 'Impossible de modifier une campagne terminée');
-            return $this->redirectToRoute('app_campagne_choix_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        $form = $this->createForm(CampagneChoixDateType::class, $campagneChoix);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $campagneChoixRepository->save($campagneChoix, true);
-
-            return $this->redirectToRoute('app_campagne_choix_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('campagne_choix/edit_date.html.twig', [
-            'campagne_choix' => $campagneChoix,
-            'form' => $form,
-        ]);
-    }
 
     #[Route('/{id}', name: 'app_campagne_choix_delete', methods: ['POST'])]
     public function delete(Request $request, CampagneChoix $campagneChoix, CampagneChoixRepository $campagneChoixRepository): Response
@@ -274,7 +252,7 @@ class CampagneChoixController extends AbstractController
                                         $groupe->addEtudiant($result[$j]->getEtudiant());
                                         $EtudiantsUeOptionnels[$result[$j]->getEtudiant()->getId()] += 1;
                                         dump($EtudiantsUeOptionnels[$result[$j]->getEtudiant()->getId()]);
-                                        $groupe->setLabel($UE->getLabel() . "-Groupe-" . strval($indice));
+                                        $groupe->setLabel("Groupe " . strval($indice));
                                         $UE->addGroupe($groupe);
                                         $groupeRep->save($groupe, true);
                                         dump($groupe);
@@ -288,7 +266,7 @@ class CampagneChoixController extends AbstractController
                                     }
 
                                     if (count($groupe->getEtudiants()) >= $effectif) {
-                                        $groupe->setLabel($UE->getLabel() . "-Groupe-" . strval($indice));
+                                        $groupe->setLabel("Groupe " . strval($indice));
                                         $UE->addGroupe($groupe);
                                         $groupeRep->save($groupe, true);
                                         dump($groupe);
@@ -306,7 +284,7 @@ class CampagneChoixController extends AbstractController
                                         $groupe->addEtudiant($result[$j]->getEtudiant());
                                         $EtudiantsUeOptionnels[$result[$j]->getEtudiant()->getId()] += 1;
                                         dump($EtudiantsUeOptionnels[$result[$j]->getEtudiant()->getId()]);
-                                        $groupe->setLabel($UE->getLabel() . "-Groupe-" . strval($indice));
+                                        $groupe->setLabel("Groupe " . strval($indice));
                                         $UE->addGroupe($groupe);
                                         $groupeRep->save($groupe, true);
                                         dump($groupe);
@@ -320,7 +298,7 @@ class CampagneChoixController extends AbstractController
                                     }
 
                                     if (count($groupe->getEtudiants()) >= $effectif) {
-                                        $groupe->setLabel($UE->getLabel() . "-Groupe-" . strval($indice));
+                                        $groupe->setLabel("Groupe " . strval($indice));
                                         $UE->addGroupe($groupe);
                                         $groupeRep->save($groupe, true);
                                         dump($groupe);
@@ -350,7 +328,7 @@ class CampagneChoixController extends AbstractController
                                             dump($UE);
                                             for ($i = 1; $i <= $UE->getNbrGroupe(); $i++) {
                                                 $groupe = new Groupe();
-                                                $groupe->setLabel($UE->getLabel() . "-Groupe-" . strval($i));
+                                                $groupe->setLabel("Groupe " . strval($i));
                                                 $UE->addGroupe($groupe);
                                                 $groupeRep->save($groupe, true);
                                             }
@@ -468,8 +446,85 @@ class CampagneChoixController extends AbstractController
                 }
             }
         }
+
+        $type = 'optionelle';
         
-        array_push($results, $etudiant_avec_groupe, $etudiant_sans_groupe);
+        array_push($results, $etudiant_avec_groupe, $etudiant_sans_groupe,$type);
+        return $this->json($results);
+    }
+
+    #[Route('/list_obligatoire/{campagne_id}/{parcours_id}/{ue_id}', name: 'app_campagne_choix_get_etudiant_obligatoire', methods: ['POST'])]
+    #[ParamConverter('campagneChoix', campagneChoix::class, options: ['id' => 'campagne_id'])]
+    #[ParamConverter('UE', UE::class, options: ['id' => 'ue_id'])]
+    #[ParamConverter('parcours', Parcours::class, options: ['id' => 'parcours_id'])]
+    public function list_obligatoire(Request $request, $campagne_id, $ue_id, $parcours_id, campagneChoix $campagneChoix, UE $UE, Parcours $parcours): JsonResponse
+    {
+        dump($UE);
+
+        $results = array();
+        $responses = $campagneChoix->getResponseCampagnes();
+
+
+
+        $etudiant_avec_groupe = array();
+        $etudiant_sans_groupe = array();
+
+        $etudiant_avec_groupe_id = array();
+
+
+        $groupes = $UE->getGroupes();
+
+        foreach ($groupes as $groupe) {
+            dump($groupe->getId());
+            $etudiants = $groupe->getEtudiants();
+            
+            foreach ($etudiants as $etudiant) {
+                dump($etudiant);
+                if ($etudiant->getParcours() == $parcours) {
+                    $selected = array(
+                        'id' => $etudiant->getId(),
+                        "nom" => $etudiant->getNom(),
+                        "prenom" => $etudiant->getPrenom(),
+                        "groupe_id" => $groupe->getId(),
+                        "groupe_label" => $groupe->getLabel(),
+                        "parcours" => $etudiant->getParcours()->getLabel()
+                    );
+                    if (!in_array($selected, $etudiant_avec_groupe)) {
+                        $etudiant_avec_groupe[] = $selected;
+                        $etudiant_avec_groupe_id[] = $etudiant->getId();
+                    }
+                    
+                }
+            }
+        }
+        dump($etudiant_avec_groupe_id);
+        dump($etudiant_avec_groupe);
+
+
+        $etudiants = $parcours->getEtudiants();
+
+
+
+        foreach($etudiants as $etudiant){
+            $selected = array(
+                'id' => $etudiant->getId(),
+                "nom" => $etudiant->getNom(),
+                "prenom" => $etudiant->getPrenom(),
+                'ordre' => 0,
+                'ue' => $ue_id,
+                'parcours'=>$etudiant->getParcours()->getLabel()
+            );
+
+            if (!in_array($selected, $etudiant_sans_groupe)) {
+                if (!in_array($etudiant->getId(), $etudiant_avec_groupe_id)) {
+                    $etudiant_sans_groupe[] = $selected;
+                }
+            }
+
+        }
+
+        $type = 'obligatoire';
+        array_push($results, $etudiant_avec_groupe, $etudiant_sans_groupe,$type);
         return $this->json($results);
     }
 
@@ -483,13 +538,17 @@ class CampagneChoixController extends AbstractController
 
 
         $groupe_selected =  $groupeRepository->findOneById($groupe_id);
+        $ue_selected = $groupe_selected->getUe();
 
         foreach ($etudiants as $etudiant) {
             $etudiant_selected = $etudiantRepository->findOneById($etudiant);
+            $etudiant_selected->addEtudiantUE(new EtudiantUE($etudiant_selected, $ue_selected));
             $groupe_selected->addEtudiant($etudiant_selected);
         }
 
         $groupeRepository->save($groupe_selected, true);
+
+        $this->addFlash('success', 'Un ou plusieurs étudiants ont été ajoutés au groupe');
 
         return $this->redirectToRoute('app_campagne_groupe_choix', [
             'id' => $campagne_id,
@@ -506,6 +565,11 @@ class CampagneChoixController extends AbstractController
     {
         $groupe->removeEtudiant($etudiant);
         $groupeRepository->save($groupe, true);
+        $ue = $groupe->getUe();
+
+        $etudiant->removeEtudiantUE(new EtudiantUE($etudiant, $ue));
+
+        $this->addFlash('success', 'L\'étudiant a été retiré du groupe');
 
         return $this->redirectToRoute('app_campagne_groupe_choix', [
             'id' => $campagneChoix->getId(),
