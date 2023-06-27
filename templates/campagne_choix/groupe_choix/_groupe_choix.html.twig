@@ -19,15 +19,17 @@
 
 	<ul class="nav nav-tabs" id="choix" role="tablist" style="min-height:35px">
 		<li class="nav-item first_section" role="tab">
-			<button class="nav-link active" id="tab-optionelle" data-bs-toggle="tab"
+			<button class="nav-link active ue-type-tab" id="tab-optionelle" data-bs-toggle="tab"
 					data-bs-target="#tab-pane-optionelle" type="button" role="tab"
-					aria-controls="tab-pane-optionelle" aria-selected="false">UEs optionelles
+					aria-controls="tab-pane-optionelle" aria-selected="false">
+				UEs optionelles
 			</button>
 		</li>
 		<li class="nav-item first_section" role="tab">
-			<button class="nav-link" id="tab-obligatoire" data-bs-toggle="tab"
+			<button class="nav-link ue-type-tab" id="tab-obligatoire" data-bs-toggle="tab"
 					data-bs-target="#tab-pane-obligatoire" type="button" role="tab"
-					aria-controls="tab-pane-obligatoire" aria-selected="false">UEs obligatoires
+					aria-controls="tab-pane-obligatoire" aria-selected="false">
+				UEs obligatoires
 			</button>
 		</li>
 	</ul>
@@ -226,7 +228,7 @@
 																id="tab-ue{{ ue.id }}"
 																data-bs-toggle="tab"
 																data-bs-target="#tab-pane-ue{{ ue.id }}"
-																data-url="{{ path('app_campagne_choix_get_etudiant', { campagneChoix: campagne_choix.id, parcours: bloc_ue.parcours.id, id: ue.id }) }}"
+																data-url="{{ path('app_campagne_choix_get_etudiant', { campagneChoix: campagne_choix.id, parcours: bloc_ue.parcours.id, id: ue.id, type: 'mandatory' }) }}"
 																type="button" role="tab"
 																aria-controls="tab-pane-ue{{ ue.id }}"
 																aria-selected="false">{{ ue.label }}</button>
@@ -254,7 +256,6 @@
 																				<th>Nom</th>
 																				<th>Prenom</th>
 																				<th>Parcours</th>
-																				<th>Ordre</th>
 																			</tr>
 																			</thead>
 																			<tbody>

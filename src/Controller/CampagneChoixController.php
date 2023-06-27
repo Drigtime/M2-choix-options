@@ -329,7 +329,7 @@ class CampagneChoixController extends AbstractController
     }
 
     #[Route('/list/{campagneChoix}/{parcours}/{id}/{type}', name: 'app_campagne_choix_get_etudiant', methods: ['POST'])]
-    public function list(CampagneChoix $campagneChoix, Parcours $parcours, UE $UE, string $type): JsonResponse
+    public function list(CampagneChoix $campagneChoix, Parcours $parcours, UE $UE, string $type = "optional"): JsonResponse
     {
         $results = array();
         $responses = $campagneChoix->getResponseCampagnes();
@@ -358,47 +358,61 @@ class CampagneChoixController extends AbstractController
                         $etudiantAvecGroupe[] = $selected;
                         $etudiantAvecGroupeId[] = $etudiant->getId();
                     }
-
                 }
             }
         }
 
         $etudiantRejetesId = array();
 
-        foreach ($responses as $r) {
-            $choixes = $r->getChoixes();
-            foreach ($choixes as $choix) {
-                if ($choix->getUE() == $UE) {
-                    $blocOption = $choix->getBlocOption();
-                    $ues = $blocOption->getUEs();
-                    foreach ($ues as $ue) {
-                        if ($ue != $UE) {
-                            $groupes = $ue->getGroupes();
-                            foreach ($groupes as $groupe) {
-                                $etudiants = $groupe->getEtudiants();
-                                foreach ($etudiants as $etudiant) {
-                                    $etudiantRejetesId[] = $etudiant->getId();
+        if ($type == "optional") {
+            foreach ($responses as $r) {
+                $choixes = $r->getChoixes();
+                foreach ($choixes as $choix) {
+                    if ($choix->getUE() == $UE) {
+                        $blocOption = $choix->getBlocOption();
+                        $ues = $blocOption->getUEs();
+                        foreach ($ues as $ue) {
+                            if ($ue != $UE) {
+                                $groupes = $ue->getGroupes();
+                                foreach ($groupes as $groupe) {
+                                    $etudiants = $groupe->getEtudiants();
+                                    foreach ($etudiants as $etudiant) {
+                                        $etudiantRejetesId[] = $etudiant->getId();
+                                    }
                                 }
                             }
                         }
-                    }
 
 
-                    $etudiant = $r->getEtudiant();
-                    if ($etudiant->getParcours() == $parcours) {
-                        $selected = array(
-                            'id' => $etudiant->getId(),
-                            "nom" => $etudiant->getNom(),
-                            "prenom" => $etudiant->getPrenom(),
-                            'ordre' => $choix->getOrdre(),
-                            'ue' => $UE->getId(),
-                            'parcours' => $etudiant->getParcours()->getLabel()
-                        );
+                        $etudiant = $r->getEtudiant();
+                        if ($etudiant->getParcours() == $parcours) {
+                            $selected = array(
+                                'id' => $etudiant->getId(),
+                                "nom" => $etudiant->getNom(),
+                                "prenom" => $etudiant->getPrenom(),
+                                'ordre' => $choix->getOrdre(),
+                                'ue' => $UE->getId(),
+                                'parcours' => $etudiant->getParcours()->getLabel()
+                            );
 
-                        if (!in_array($selected, $etudiantSansGroupe) && !in_array($etudiant->getId(), $etudiantAvecGroupeId) && !in_array($etudiant->getId(), $etudiantRejetesId)) {
-                            $etudiantSansGroupe[] = $selected;
+                            if (!in_array($selected, $etudiantSansGroupe) && !in_array($etudiant->getId(), $etudiantAvecGroupeId) && !in_array($etudiant->getId(), $etudiantRejetesId)) {
+                                $etudiantSansGroupe[] = $selected;
+                            }
                         }
                     }
+                }
+            }
+        } elseif ($type == "mandatory") {
+            $etudiants = $parcours->getEtudiants();
+            foreach ($etudiants as $etudiant) {
+                $selected = array(
+                    'id' => $etudiant->getId(),
+                    "nom" => $etudiant->getNom(),
+                    "prenom" => $etudiant->getPrenom(),
+                    "parcours" => $etudiant->getParcours()->getLabel()
+                );
+                if (!in_array($selected, $etudiantAvecGroupe) && !in_array($selected, $etudiantSansGroupe)) {
+                    $etudiantSansGroupe[] = $selected;
                 }
             }
         }

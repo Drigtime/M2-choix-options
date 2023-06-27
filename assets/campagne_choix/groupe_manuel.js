@@ -2,7 +2,13 @@ import $ from "jquery";
 import {Modal} from "bootstrap";
 
 $(function () {
-    const formModal = new Modal('#form-modal')
+    const formModal = new Modal('#form-modal');
+
+    $('.ue-type-tab').on('shown.bs.tab', function () {
+        const $tabContainer = $($(this).data("bs-target"));
+        const btnSelection = $('.btn-selection.active', $tabContainer);
+        btnSelection.trigger('show.bs.tab');
+    });
 
     $('.bloc-ue-selection-tab').on('shown.bs.tab', function () {
         const $tabContainer = $($(this).data("bs-target"));
@@ -181,7 +187,7 @@ $(function () {
     });
 
     // trigger show.bs.tab on active tab
-    $('.bloc-ue-selection-tab.active').trigger('shown.bs.tab');
+    $('.ue-type-tab.active').trigger('shown.bs.tab');
 
     $(document).on('click', '.delete-etudiant', function (event) {
         event.preventDefault();
