@@ -19,7 +19,7 @@
 						{% for blocUeUe in blocUE.mandatoryUEs %}
 							{% for groupe in UEsGroupes %}
 								{% if blocUeUe.UE.id == groupe.UE.id %}
-									<p class="mb-2">{{groupe.label}}</p>
+									<p class="mb-2">{{blocUeUe.UE.label}} - Groupe {{groupe.label}}</p>
 								{% endif %}
 							{% endfor %}
 						{% endfor %}
