@@ -1,12 +1,15 @@
 {% extends 'base.html.twig' %}
+
 {% block body %}
+	<input type="hidden" id="campagne_id" value="{{ campagne_choix.id }}">
 	<div class="col-12 d-flex">
 		<div class="flex-grow-1">
 			<h4>Créations des groupes d'étudiants</h4>
 		</div>
 		<div class="flex-shrink-0">
 			<div class="d-flex gap-2">
-				<a class="btn btn-sm btn-primary" href="{{ path('app_campagne_choix_show', { id: campagne_choix.id }) }}">
+				<a class="btn btn-sm btn-primary"
+				   href="{{ path('app_campagne_choix_show', { id: campagne_choix.id }) }}">
 					<i class="fas fa-arrow-left"></i>
 					Retour
 				</a>
@@ -14,232 +17,348 @@
 		</div>
 	</div>
 
-	<div class="row">
-		<form class="mt-3" method="post" action="{{ path('app_campagne_choix_groupe_manuel', { campagne_id: campagne_choix.id }) }}">
-			<input type="hidden" id="campagne_id" value="{{ campagne_choix.id }}"/>
-			<ul class="nav nav-tabs" id="choix" role="tablist" style="min-height:35px">
-				<li class="nav-item first_section" role="optionelle">
-					<button class="nav-link" id="tab-optionelle" data-bs-toggle="tab" data-bs-target="#tab-pane-optionelle" type="button" role="tab" aria-controls="tab-pane-optionelle" aria-selected="false">UEs optionelles</button>
-				</li>
-				<li class="nav-item first_section" role="obligatoire">
-					<button class="nav-link" id="tab-obligatoire" data-bs-toggle="tab" data-bs-target="#tab-pane-obligatoire" type="button" role="tab" aria-controls="tab-pane-obligatoire" aria-selected="false">UEs obligatoires</button>
-				</li>
-			</ul>
-			<div class="tab-content" id="choixContent">
-				<div class="tab-pane" id="tab-pane-optionelle" role="tabpanel" aria-labelledby="tab-optionelle" tabindex="0">
-					<div class="row">
-						<div class="col-12 col-md-8 mb-3">
-							<h5>Création des groupes pour les UES optionelles</h5>
-							{# first section #}
-							<ul class="nav nav-tabs" id="firstTab" role="tablist" style="min-height:35px">
-								{% for bloc_ue in campagne_choix.blocOptions %}
-									<li class="nav-item first_section" role="{{ bloc_ue.id }}">
-										<button class="nav-link" id="tab-{{ bloc_ue.id }}" data-bs-toggle="tab" data-bs-target="#tab-pane-{{ bloc_ue.id }}" type="button" role="tab" aria-controls="tab-pane-{{ bloc_ue.id }}" aria-selected="false">
-											{{ bloc_ue.blocUE.category.label }}
-											-
-											{{ bloc_ue.parcours.label }}
-										</button>
-									</li>
-								{% endfor %}
-							</ul>
-							{# first section elements #}
-							<div class="tab-content" id="firstTabContent">
-								{% for bloc_ue in campagne_choix.blocOptions %}
-									<div
-										class="tab-pane" id="tab-pane-{{ bloc_ue.id }}" role="tabpanel" aria-labelledby="tab-{{ bloc_ue.id }}" tabindex="0">
-										{# second section #}
-										<ul class="nav nav-tabs" id="firstTab{{ bloc_ue.id }}" role="tablist">
+	<ul class="nav nav-tabs" id="choix" role="tablist" style="min-height:35px">
+		<li class="nav-item first_section" role="tab">
+			<button class="nav-link active" id="tab-optionelle" data-bs-toggle="tab"
+					data-bs-target="#tab-pane-optionelle" type="button" role="tab"
+					aria-controls="tab-pane-optionelle" aria-selected="false">UEs optionelles
+			</button>
+		</li>
+		<li class="nav-item first_section" role="tab">
+			<button class="nav-link" id="tab-obligatoire" data-bs-toggle="tab"
+					data-bs-target="#tab-pane-obligatoire" type="button" role="tab"
+					aria-controls="tab-pane-obligatoire" aria-selected="false">UEs obligatoires
+			</button>
+		</li>
+	</ul>
+	<div class="tab-content" id="choixContent">
+		<div class="tab-pane show active" id="tab-pane-optionelle" role="tabpanel"
+			 aria-labelledby="tab-optionelle"
+			 tabindex="0">
+			<div class="card border-top-0">
+				<div class="card-body p-2">
+					<h5>Création des groupes pour les UES optionelles</h5>
+					{# first section #}
+					<ul class="nav nav-tabs" id="firstTab" role="tablist" style="min-height:35px">
+						{% for bloc_ue in campagne_choix.blocOptions %}
+							<li class="nav-item first_section" role="{{ bloc_ue.id }}">
+								<button class="nav-link bloc-ue-selection-tab {{ loop.first ? 'active' }}"
+										id="tab-{{ bloc_ue.id }}" data-bs-toggle="tab"
+										data-bs-target="#tab-pane-{{ bloc_ue.id }}" type="button"
+										role="tab" aria-controls="tab-pane-{{ bloc_ue.id }}"
+										aria-selected="false">
+									{{ bloc_ue.blocUE.category.label }}
+									-
+									{{ bloc_ue.parcours.label }}
+								</button>
+							</li>
+						{% endfor %}
+					</ul>
+					{# first section elements #}
+					<div class="tab-content" id="firstTabContent">
+						{% for bloc_ue in campagne_choix.blocOptions %}
+							<div class="tab-pane {{ loop.first ? 'show active' }}"
+								 id="tab-pane-{{ bloc_ue.id }}"
+								 role="tabpanel"
+								 aria-labelledby="tab-{{ bloc_ue.id }}" tabindex="0">
+								{# second section #}
+								<div class="card border-top-0">
+									<div class="card-body p-2">
+										<ul class="nav nav-tabs" id="firstTab{{ bloc_ue.id }}"
+											role="tablist">
 											{% for ue in bloc_ue.ues %}
 												<li class="nav-item" role="{{ ue.id }}">
-													<button class="nav-link btn-selection btn_ue" id="tab-pane-ue{{ ue.id }}" data-bs-toggle="tab" data-bs-target="#tab-pane-ue{{ ue.id }}" data-url="{{ path('app_campagne_choix_get_etudiant', { campagne_id: campagne_choix.id, ue_id: ue.id, parcours_id: bloc_ue.parcours.id }) }}" type="button" role="tab" aria-controls="tab-pane-ue{{ ue.id }}" aria-selected="false">{{ ue.label }}</button>
+													<button class="nav-link btn-selection btn_ue {{ loop.first ? 'active' }}"
+															id="tab-ue{{ ue.id }}"
+															data-bs-toggle="tab"
+															data-bs-target="#tab-pane-ue{{ ue.id }}"
+															data-url="{{ path('app_campagne_choix_get_etudiant', { campagneChoix: campagne_choix.id, parcours: bloc_ue.parcours.id, id: ue.id }) }}"
+															type="button" role="tab"
+															aria-controls="tab-pane-ue{{ ue.id }}"
+															aria-selected="false">{{ ue.label }}</button>
 												</li>
 											{% endfor %}
 										</ul>
-									</div>
-								{% endfor %}
-							</div>
-							{# second section elements #}
-							<table class="table" id="etudiant_container">
-								<thead>
-									<th>Selectionner</th>
-									<th>Nom</th>
-									<th>Prenom</th>
-									<th>Parcours</th>
-									<th>Ordre</th>
-								</thead>
-								<tbody></tbody>
-							</table>
-							<div class="col-12">
-								<button type="button" class="btn btn-primary float-right choixGroupeBtn" data-bs-toggle="modal" data-bs-target="" disabled>
-								Choix du groupe
-								<i class="fas fa-arrow-right"></i>
-							</button>
-							</div>
-						</div>
-						<div class="col-12 col-md-4">
-							<h5>Constitution des groupes</h5>
-							<table class="table" id="groupe_container">
-								<thead>
-									<th>Retirer</th>
-									<th>Nom</th>
-									<th>Prenom</th>
-									<th>Groupe</th>
-									<th>Parcours</th>
-								</thead>
-								<tbody></tbody>
-							</table>
-						</div>
-					</div>
-
-					{% for bloc_ue in campagne_choix.blocOptions %}
-						{% for ue in bloc_ue.ues %}
-							<!-- Modal -->
-							<div class="modal fade" id="choixGroupeModalOptionelle{{ ue.id }}" tabindex="-1" aria-labelledby="choixGroupeModalLabel" aria-hidden="true">
-								<div class="modal-dialog">
-									<div class="modal-content">
-										<div class="modal-header">
-											<h1 class="modal-title fs-5" id="choixGroupeModalLabel">Choix du groupe</h1>
-											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-										</div>
-
-										<div class="choixGroupeModal_body p-3">
-											{% for groupe in ue.groupes %}
-												{% set groupMaxEffectifs = ue.effectif // ue.nbrGroupe %}
-												{% set remainingEffectifs = ue.effectif % ue.nbrGroupe %}
-												{% if loop.index <= remainingEffectifs %}
-													{% set groupMaxEffectifs = groupMaxEffectifs + 1 %}
-												{% endif %}
-												<div class="form-check">
-													<input class="form-check-input" type="radio" name="choixGroupes" value="{{ groupe.id }}"/>
-													<label class="form-check-label" for="flexRadioDefault1">{{ groupe.label }}
-														({{ groupe.etudiants|length }}/{{ groupMaxEffectifs }})</label>
+										<div class="tab-content">
+											{% for ue in bloc_ue.ues %}
+												<div class="tab-pane {{ loop.first ? 'show active' }}"
+													 id="tab-pane-ue{{ ue.id }}"
+													 role="tabpanel"
+													 aria-labelledby="tab-pane-ue{{ ue.id }}"
+													 tabindex="0">
+													<div class="card border-top-0">
+														<div class="card-body p-2">
+															<div class="row g-3">
+																<div class="col-12 col-lg-6 border-end">
+																	<h5>Etudiants disponibles</h5>
+																	<table class="table"
+																		   id="etudiant_container">
+																		<thead>
+																		<tr>
+																			<th>Selectionner</th>
+																			<th>Nom</th>
+																			<th>Prenom</th>
+																			<th>Parcours</th>
+																			<th>Ordre</th>
+																		</tr>
+																		</thead>
+																		<tbody>
+																		</tbody>
+																	</table>
+																	<button type="button"
+																			class="btn btn-primary float-right choixGroupeBtn"
+																			data-bs-toggle="modal"
+																			data-bs-target="#form-modal"
+																			data-url="{{ path('app_campagne_choix_groupe_manuel', { ue: ue.id }) }}"
+																			disabled>
+																		Choix du groupe
+																		<i class="fas fa-arrow-right"></i>
+																	</button>
+																</div>
+																<div class="col-12 col-lg-6 border-start">
+																	<h5>Constitution des groupes</h5>
+																	<table class="table" id="groupe_container">
+																		<caption></caption>
+																		<thead>
+																		<tr>
+																			<th>Retirer</th>
+																			<th>Nom</th>
+																			<th>Prenom</th>
+																			<th>Groupe</th>
+																			<th>Parcours</th>
+																		</tr>
+																		</thead>
+																		<tbody></tbody>
+																	</table>
+																</div>
+															</div>
+														</div>
+													</div>
 												</div>
 											{% endfor %}
-										</div>
-										<div class="modal-footer">
-											<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-											<button type="submit" class="btn btn-primary">Valider</button>
 										</div>
 									</div>
 								</div>
 							</div>
 						{% endfor %}
-					{% endfor %}
-				</form>
-			</div>
-			<div class="tab-pane" id="tab-pane-obligatoire" role="tabpanel" aria-labelledby="tab-obligatoire" tabindex="0">
-				<div class="row">
-					<div class="col-12 col-md-8 mb-3">
-						<h5>Création des groupes pour les UES obligatoires</h5>
-						{# first section #}
-						<ul class="nav nav-tabs" id="firstTab" role="tablist" style="min-height:35px">
-							{% for parcours in campagne_choix.parcours %}
-								{% for bloc_ue in parcours.blocUEs %}
-									{# {% for ue in blocUes.blocUEs.UE %}  #}
-									<li class="nav-item first_section" role="{{ bloc_ue.id }}">
-										<button class="nav-link" id="tab-{{ bloc_ue.id }}" data-bs-toggle="tab" data-bs-target="#tab-pane-{{ bloc_ue.id }}" type="button" role="tab" aria-controls="tab-pane-{{ bloc_ue.id }}" aria-selected="false">
-											{{ bloc_ue.category.label }}
-											-
-											{{ parcours.label }}
-										</button>
-									</li>
-									{# {% endfor %} #}
-								{% endfor %}
-							{% endfor %}
-						</ul>
-						{# first section elements #}
-						<div class="tab-content" id="">
-							{% for parcours in campagne_choix.parcours %}
-								{% for bloc_ue in parcours.blocUEs %}
-
-
-									<div class="tab-pane" id="tab-pane-{{ bloc_ue.id }}" role="tabpanel" aria-labelledby="tab-{{ bloc_ue.id }}" tabindex="0">
-										<ul class="nav nav-tabs" id="firstTab{{ bloc_ue.id }}" role="tablist">
-											{% for blocueue in bloc_ue.mandatoryUEs %}
-												{% set ue = blocueue.UE %}
-												<li class="nav-item" role="{{ ue.id }}">
-													<button class="nav-link btn-selection btn_ue" id="tab-pane-ue{{ ue.id }}" data-bs-toggle="tab" data-bs-target="#tab-pane-ue{{ ue.id }}" data-url="{{ path('app_campagne_choix_get_etudiant_obligatoire', { campagne_id: campagne_choix.id, ue_id: ue.id, parcours_id: bloc_ue.parcours.id }) }}" type="button" role="tab" aria-controls="tab-pane-ue{{ ue.id }}" aria-selected="false">{{ ue.label }}</button>
-												</li>
-											{% endfor %}
-										</ul>
-									</div>
-
-								{% endfor %}
-							{% endfor %}
-						</div>
 						{# second section elements #}
-						<table class="table" id="etudiant_container">
-							<thead>
-								<th>Selectionner</th>
-								<th>Nom</th>
-								<th>Prenom</th>
-								<th>Parcours</th>
-								<th>Ordre</th>
-							</thead>
-							<tbody></tbody>
-						</table>
-						<div class="col-12">
-							<button type="button" class="btn btn-primary float-right choixGroupeBtn" data-bs-toggle="modal" data-bs-target="" disabled>
-								Choix du groupe
-								<i class="fas fa-arrow-right"></i>
-							</button>
-						</div>
-					</div>
-					<div class="col-12 col-md-4">
-						<h5>Constitution des groupes</h5>
-						<table class="table" id="groupe_container">
-							<thead>
-								<th>Retirer</th>
-								<th>Nom</th>
-								<th>Prenom</th>
-								<th>Groupe</th>
-								<th>Parcours</th>
-							</thead>
-							<tbody></tbody>
-						</table>
+						{#                                    <table class="table" id="etudiant_container"> #}
+						{#                                        <caption></caption> #}
+						{#                                        <thead> #}
+						{#                                        <tr> #}
+						{#                                            <th>Selectionner</th> #}
+						{#                                            <th>Nom</th> #}
+						{#                                            <th>Prenom</th> #}
+						{#                                            <th>Parcours</th> #}
+						{#                                            <th>Ordre</th> #}
+						{#                                        </tr> #}
+						{#                                        </thead> #}
+						{#                                        <tbody></tbody> #}
+						{#                                    </table> #}
+						{#                                    <div class="col-12"> #}
+						{#                                        <button type="button" class="btn btn-primary float-right choixGroupeBtn" #}
+						{#                                                data-bs-toggle="modal" data-bs-target="" disabled> #}
+						{#                                            Choix du groupe #}
+						{#                                            <i class="fas fa-arrow-right"></i> #}
+						{#                                        </button> #}
+						{#                                    </div> #}
+						{#                                <div class="col-12 col-md-4"> #}
+						{#                                    <h5 id="groupe_container_title">Constitution des groupes</h5> #}
+						{#                                    <table class="table" id="groupe_container"> #}
+						{#                                        <caption></caption> #}
+						{#                                        <thead> #}
+						{#                                        <tr> #}
+						{#                                            <th>Retirer</th> #}
+						{#                                            <th>Nom</th> #}
+						{#                                            <th>Prenom</th> #}
+						{#                                            <th>Groupe</th> #}
+						{#                                            <th>Parcours</th> #}
+						{#                                        </tr> #}
+						{#                                        </thead> #}
+						{#                                        <tbody></tbody> #}
+						{#                                    </table> #}
+						{#                                </div> #}
 					</div>
 				</div>
-
-				{% for parcours in campagne_choix.parcours %}
-					{% for bloc_ue in parcours.blocUEs %}
-						{% for blocueue in bloc_ue.mandatoryUEs %}
-							{% set ue = blocueue.UE %}
-							<!-- Modal -->
-							<div class="modal fade" id="choixGroupeModalObligatoire{{ ue.id }}" tabindex="-1" aria-labelledby="choixGroupeModalLabel" aria-hidden="true">
-								<div class="modal-dialog">
-									<div class="modal-content">
-										<div class="modal-header">
-											<h1 class="modal-title fs-5" id="choixGroupeModalLabel">Choix du groupe</h1>
-											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-										</div>
-
-										<div class="choixGroupeModal_body p-3">
-											{% for groupe in ue.groupes %}
-												{% set groupMaxEffectifs = ue.effectif // ue.nbrGroupe %}
-												{% set remainingEffectifs = ue.effectif % ue.nbrGroupe %}
-												{% if loop.index <= remainingEffectifs %}
-													{% set groupMaxEffectifs = groupMaxEffectifs + 1 %}
-												{% endif %}
-												<div class="form-check">
-													<input class="form-check-input" type="radio" name="choixGroupes" value="{{ groupe.id }}"/>
-													<label class="form-check-label" for="flexRadioDefault1">{{ groupe.label }}
-														({{ groupe.etudiants|length }}/{{ groupMaxEffectifs }})</label>
-												</div>
-											{% endfor %}
-										</div>
-										<div class="modal-footer">
-											<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-											<button type="submit" class="btn btn-primary">Valider</button>
+			</div>
+		</div>
+		<div class="tab-pane" id="tab-pane-obligatoire" role="tabpanel"
+			 aria-labelledby="tab-optionelle"
+			 tabindex="0">
+			<div class="card border-top-0">
+				<div class="card-body p-2">
+					<h5>Création des groupes pour les UES obligatoires</h5>
+					{# first section #}
+					<ul class="nav nav-tabs" id="firstTab" role="tablist" style="min-height:35px">
+						{% for parcours in campagne_choix.parcours %}
+							{% for bloc_ue in parcours.blocUEs %}
+								<li class="nav-item first_section" role="{{ bloc_ue.id }}">
+									<button class="nav-link bloc-ue-selection-tab {{ loop.first ? 'active' }}"
+											id="tab-{{ bloc_ue.id }}" data-bs-toggle="tab"
+											data-bs-target="#tab-pane-{{ bloc_ue.id }}" type="button"
+											role="tab" aria-controls="tab-pane-{{ bloc_ue.id }}"
+											aria-selected="false">
+										{{ bloc_ue.category.label }}
+										-
+										{{ bloc_ue.parcours.label }}
+									</button>
+								</li>
+							{% endfor %}
+						{% endfor %}
+					</ul>
+					{# first section elements #}
+					<div class="tab-content" id="firstTabContent">
+						{% for parcours in campagne_choix.parcours %}
+							{% for bloc_ue in parcours.blocUEs %}
+								<div class="tab-pane {{ loop.first ? 'show active' }}"
+									 id="tab-pane-{{ bloc_ue.id }}"
+									 role="tabpanel"
+									 aria-labelledby="tab-{{ bloc_ue.id }}" tabindex="0">
+									{# second section #}
+									<div class="card border-top-0">
+										<div class="card-body p-2">
+											<ul class="nav nav-tabs" id="firstTab{{ bloc_ue.id }}"
+												role="tablist">
+												{% for blocueue in bloc_ue.mandatoryUEs %}
+													{% set ue = blocueue.UE %}
+													<li class="nav-item" role="{{ ue.id }}">
+														<button class="nav-link btn-selection btn_ue {{ loop.first ? 'active' }}"
+																id="tab-ue{{ ue.id }}"
+																data-bs-toggle="tab"
+																data-bs-target="#tab-pane-ue{{ ue.id }}"
+																data-url="{{ path('app_campagne_choix_get_etudiant', { campagneChoix: campagne_choix.id, parcours: bloc_ue.parcours.id, id: ue.id }) }}"
+																type="button" role="tab"
+																aria-controls="tab-pane-ue{{ ue.id }}"
+																aria-selected="false">{{ ue.label }}</button>
+													</li>
+												{% endfor %}
+											</ul>
+											<div class="tab-content">
+												{% for blocueue in bloc_ue.mandatoryUEs %}
+													{% set ue = blocueue.UE %}
+													<div class="tab-pane {{ loop.first ? 'show active' }}"
+														 id="tab-pane-ue{{ ue.id }}"
+														 role="tabpanel"
+														 aria-labelledby="tab-pane-ue{{ ue.id }}"
+														 tabindex="0">
+														<div class="card border-top-0">
+															<div class="card-body p-2">
+																<div class="row g-3">
+																	<div class="col-12 col-lg-6 border-end">
+																		<h5>Etudiants disponibles</h5>
+																		<table class="table"
+																			   id="etudiant_container">
+																			<thead>
+																			<tr>
+																				<th>Selectionner</th>
+																				<th>Nom</th>
+																				<th>Prenom</th>
+																				<th>Parcours</th>
+																				<th>Ordre</th>
+																			</tr>
+																			</thead>
+																			<tbody>
+																			</tbody>
+																		</table>
+																		<button type="button"
+																				class="btn btn-primary float-right choixGroupeBtn"
+																				data-bs-toggle="modal"
+																				data-bs-target="#form-modal"
+																				data-url="{{ path('app_campagne_choix_groupe_manuel', { ue: ue.id }) }}"
+																				disabled>
+																			Choix du groupe
+																			<i class="fas fa-arrow-right"></i>
+																		</button>
+																	</div>
+																	<div class="col-12 col-lg-6 border-start">
+																		<h5>Constitution des groupes</h5>
+																		<table class="table" id="groupe_container">
+																			<caption></caption>
+																			<thead>
+																			<tr>
+																				<th>Retirer</th>
+																				<th>Nom</th>
+																				<th>Prenom</th>
+																				<th>Groupe</th>
+																				<th>Parcours</th>
+																			</tr>
+																			</thead>
+																			<tbody></tbody>
+																		</table>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												{% endfor %}
+											</div>
 										</div>
 									</div>
 								</div>
-							</div>
+							{% endfor %}
 						{% endfor %}
-					{% endfor %}
-				{% endfor %}
-			</form>
+						{# second section elements #}
+						{#                                    <table class="table" id="etudiant_container"> #}
+						{#                                        <caption></caption> #}
+						{#                                        <thead> #}
+						{#                                        <tr> #}
+						{#                                            <th>Selectionner</th> #}
+						{#                                            <th>Nom</th> #}
+						{#                                            <th>Prenom</th> #}
+						{#                                            <th>Parcours</th> #}
+						{#                                            <th>Ordre</th> #}
+						{#                                        </tr> #}
+						{#                                        </thead> #}
+						{#                                        <tbody></tbody> #}
+						{#                                    </table> #}
+						{#                                    <div class="col-12"> #}
+						{#                                        <button type="button" class="btn btn-primary float-right choixGroupeBtn" #}
+						{#                                                data-bs-toggle="modal" data-bs-target="" disabled> #}
+						{#                                            Choix du groupe #}
+						{#                                            <i class="fas fa-arrow-right"></i> #}
+						{#                                        </button> #}
+						{#                                    </div> #}
+						{#                                <div class="col-12 col-md-4"> #}
+						{#                                    <h5 id="groupe_container_title">Constitution des groupes</h5> #}
+						{#                                    <table class="table" id="groupe_container"> #}
+						{#                                        <caption></caption> #}
+						{#                                        <thead> #}
+						{#                                        <tr> #}
+						{#                                            <th>Retirer</th> #}
+						{#                                            <th>Nom</th> #}
+						{#                                            <th>Prenom</th> #}
+						{#                                            <th>Groupe</th> #}
+						{#                                            <th>Parcours</th> #}
+						{#                                        </tr> #}
+						{#                                        </thead> #}
+						{#                                        <tbody></tbody> #}
+						{#                                    </table> #}
+						{#                                </div> #}
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
-</div>{% endblock %}{% block javascripts %}
-{{ parent() }}
-{{ encore_entry_script_tags('etudiant_groupe_manuel') }}{% endblock %}
+
+	<div class="modal" id="form-modal" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Choix du groupe</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+					<button type="submit" class="btn btn-primary">Valider</button>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	{{ encore_entry_script_tags('etudiant_groupe_manuel') }}
+{% endblock %}

@@ -28,12 +28,12 @@ check-dependencies: ## Check the dependencies
 	docker-compose exec php sh -c "yarn check --integrity"
 
 install: start # Install the dependencies
-	@if [ ! -d "project/vendor" ] || [ ! -s "project/composer.lock" ] || [ "project/composer.json" -nt "project/vendor" ] || [ "project/composer.json" -nt "project/composer.lock" ]; then \
+	@if [ ! -d "vendor" ] || [ ! -s "composer.lock" ] || [ "composer.json" -nt "vendor" ] || [ "composer.json" -nt "composer.lock" ]; then \
 		docker-compose exec php composer install; \
 	else \
 		echo "Composer dependencies are already installed"; \
 	fi
-	@if [ ! -d "project/node_modules" ] || [ ! -s "project/yarn.lock" ] || [ "project/package.json" -nt "project/node_modules" ] || [ "project/package.json" -nt "project/yarn.lock" ]; then \
+	@if [ ! -d "node_modules" ] || [ ! -s "yarn.lock" ] || [ "package.json" -nt "node_modules" ] || [ "package.json" -nt "yarn.lock" ]; then \
 		docker-compose exec php yarn install; \
 	else \
 		echo "Yarn dependencies are already installed"; \
