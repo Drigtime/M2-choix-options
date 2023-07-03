@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Form\UserEmailType;
 use App\Form\UserPasswordType;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,7 +16,7 @@ class UserProfileController extends AbstractController
 {
     #[Route('/user/profile', name: 'app_user_profile')]
     #[IsGranted('ROLE_USER')]
-    public function index(Request $request, EntityManagerInterface $entityManager): Response
+    public function index(Request $request, UserRepository $userRepository): Response
     {
         $user = $this->getUser();
 
@@ -28,15 +29,13 @@ class UserProfileController extends AbstractController
         $formPassword->handleRequest($request);
 
         if ($formEmail->isSubmitted() && $formEmail->isValid()) {
-            $entityManager->persist($user);
-            $entityManager->flush();
+            $userRepository->save($user, true);
 
             $this->addFlash('success', 'Votre email a bien été modifié.');
         }
 
         if ($formPassword->isSubmitted() && $formPassword->isValid()) {
-            $entityManager->persist($user);
-            $entityManager->flush();
+            $userRepository->save($user, true);
 
             $this->addFlash('success', 'Votre mot de passe a bien été modifié.');
         }
