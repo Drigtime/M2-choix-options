@@ -208,6 +208,7 @@ class CampagneChoixController extends AbstractController
             for ($i = 0; $i < count($ues); $i++) {
                 $result = array();
                 $UE = $ues[$i];
+                dump($UE);
                 $nbgrp = 2;
                 if (count($etudiantsDecales) > 0) {
                     $result = array_merge($result, $etudiantsDecales);
@@ -223,6 +224,7 @@ class CampagneChoixController extends AbstractController
                     $effectif = $effectifDefaut;
                 }
                 $countgrp = count($UE->getGroupes());
+                dump($countgrp);
                 //On verifie qu'il y a pas de groupe
                 if ($countgrp == '0') {
                     //On loop 3 fois, pour chaque ordre
@@ -237,20 +239,28 @@ class CampagneChoixController extends AbstractController
                                 }
                             }
                         });
+                        dump($filterresponses);
                         //Si le nb d'etudiants trouves est superieur a l'effectif possible pour l'UE
                         //On garde le reste pour les autres UE
                         if ((count($filterresponses) + count($result)) > $effectifTotal) {
+                            //On verifie le nb d'étudiants à prendre en considérant ceux avec l'ordre précédent 
                             $indexMax = $effectifTotal - count($result);
                             if ($indexMax > 0) {
                                 $output = array_slice($filterresponses, 0, $indexMax);
+                                if($indexMax < count($filterresponses)){
+                                    $etudiantADecaler = array_slice($filterresponses, $indexMax, count($filterresponses)+1);
+                                    $etudiantsDecales = array_merge($etudiantsDecales, $etudiantADecaler);
+                                }
                                 $result = array_merge($result, $output);
                             } else {
                                 $etudiantsDecales = array_merge($etudiantsDecales, $filterresponses);
+
                             }
                         } elseif ((count($filterresponses) + count($result)) <= $effectifTotal) {
                             $result = array_merge($result, $filterresponses);
                         }
                     }
+                    //Si on possede un ensemble d'étudiants valides, on peut créer les groupes
                     if (!empty($result)) {
 
                         $indice = 1;
@@ -264,7 +274,7 @@ class CampagneChoixController extends AbstractController
                                     if ($j == count($result) - 1) {
                                         $groupe->addEtudiant($result[$j]->getEtudiant());
                                         $etudiantsUeOptionnels[$result[$j]->getEtudiant()->getId()] += 1;
-                                        $groupe->setLabel("Groupe " . strval($indice));
+                                        $groupe->setLabel(strval($indice));
                                         $UE->addGroupe($groupe);
                                         $groupeRep->save($groupe, true);
                                         $indice = $indice + 1;
@@ -275,7 +285,7 @@ class CampagneChoixController extends AbstractController
                                     }
 
                                     if (count($groupe->getEtudiants()) >= $effectif) {
-                                        $groupe->setLabel("Groupe " . strval($indice));
+                                        $groupe->setLabel(strval($indice));
                                         $UE->addGroupe($groupe);
                                         $groupeRep->save($groupe, true);
                                         $indice = $indice + 1;
@@ -290,7 +300,7 @@ class CampagneChoixController extends AbstractController
                                     if ($j == count($result) - 1) {
                                         $groupe->addEtudiant($result[$j]->getEtudiant());
                                         $etudiantsUeOptionnels[$result[$j]->getEtudiant()->getId()] += 1;
-                                        $groupe->setLabel("Groupe " . strval($indice));
+                                        $groupe->setLabel(strval($indice));
                                         $UE->addGroupe($groupe);
                                         $groupeRep->save($groupe, true);
                                         $indice = $indice + 1;
@@ -301,7 +311,7 @@ class CampagneChoixController extends AbstractController
                                     }
 
                                     if (count($groupe->getEtudiants()) >= $effectif) {
-                                        $groupe->setLabel("Groupe " . strval($indice));
+                                        $groupe->setLabel(strval($indice));
                                         $UE->addGroupe($groupe);
                                         $groupeRep->save($groupe, true);
                                         $indice = $indice + 1;
@@ -322,7 +332,7 @@ class CampagneChoixController extends AbstractController
                                         if (count($UE->getGroupes()) != $UE->getNbrGroupe()) {
                                             for ($u = 1; $u <= $UE->getNbrGroupe(); $u++) {
                                                 $groupe = new Groupe();
-                                                $groupe->setLabel("Groupe " . strval($u));
+                                                $groupe->setLabel(strval($u));
                                                 $UE->addGroupe($groupe);
                                                 $groupeRep->save($groupe, true);
                                             }
@@ -337,8 +347,9 @@ class CampagneChoixController extends AbstractController
                     }
                 }   else{
                     if($choix == 1 || $choix ==2){
-                        $this->addFlash('warning', 'Il y a déjà des groupes crée pour ces UEs');
+                        $this->addFlash('warning', 'Il y a déjà des groupes crées pour ces UEs');
                         return $this->redirectToRoute('app_campagne_choix_index', [], Response::HTTP_SEE_OTHER);
+
                     }
                 }
 
