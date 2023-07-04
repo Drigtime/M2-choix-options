@@ -536,7 +536,7 @@ class CampagneChoixController extends AbstractController
             $ue = $UERepository->find($ue);
             $groupes = $ue->getGroupes();
             return new JsonResponse(['groupes' => $groupes->map(fn(Groupe $groupe) => [
-                'maxEffectif' => $groupe->getUe()->getEffectif() / $groupe->getUe()->getNbrGroupe(),
+                'maxEffectif' => $groupe->getUe()->getEffectif(),
                 'currentEffectif' => $groupe->getEtudiants()->count(),
                 'id' => $groupe->getId(),
                 'label' => $groupe->getLabel()])->toArray()
