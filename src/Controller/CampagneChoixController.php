@@ -335,9 +335,11 @@ class CampagneChoixController extends AbstractController
                                 break;
                         }
                     }
-                } else {
-                    $this->addFlash('warning', 'Il y a déjà des groupes crée pour ces UEs');
-                    return $this->redirectToRoute('app_campagne_choix_index', [], Response::HTTP_SEE_OTHER);
+                }   else{
+                    if($choix == 1 || $choix ==2){
+                        $this->addFlash('warning', 'Il y a déjà des groupes crée pour ces UEs');
+                        return $this->redirectToRoute('app_campagne_choix_index', [], Response::HTTP_SEE_OTHER);
+                    }
                 }
 
             }
