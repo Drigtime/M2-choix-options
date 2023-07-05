@@ -55,7 +55,7 @@ class MoveStudentService
         $group = null;
 
         foreach ($groups as $g) {
-            if ($g->getEtudiants()->count() < ($ue->getEffectif() / $ue->getNbrGroupe())) {
+            if ($g->getEtudiants()->count() < $ue->getEffectif()) {
                 $group = $g;
                 break;
             }

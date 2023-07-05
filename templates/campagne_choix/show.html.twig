@@ -171,7 +171,7 @@
                                  role="tabpanel"
                                  aria-labelledby="nav-parcours-tab-{{ loop.index }}" tabindex="0">
                                 <div class="row g-3">
-                                    {% for etudiant in parcours.etudiants %}
+                                    {% for etudiant in parcours.etudiants|sort((a, b) => a.prenom > b.prenom) %}
                                         {% set campagne = etudiant.responseCampagnes|filter(response => response.campagne.id == campagne_choix.id)|first %}
                                         <div class="col-md-6 col-lg-4 col-xl-3">
                                             <div class="accordion">

@@ -19,6 +19,7 @@ $(function () {
     $(".btn-selection").on('show.bs.tab', function (e) {
         const $tabContainer = $($(this).data("bs-target"));
         const $etudiantContainer = $('#etudiant_container', $tabContainer);
+        const mandatory = $etudiantContainer.data("mandatory");
         const $groupeContainer = $('#groupe_container', $tabContainer);
         $('#etudiant_container tbody').empty();
         const url = $(this).data("url");
@@ -55,7 +56,7 @@ $(function () {
                             '<td>' + etudiant.nom + '</td>' +
                             '<td>' + etudiant.prenom + '</td>' +
                             '<td>' + etudiant.parcours + '</td>' +
-                            '<td>' + etudiant.ordre + '</td>' +
+                            (!mandatory ? '<td>' + etudiant.ordre + '</td>' : '') +
                             '</tr>'
                         );
                         ue = etudiant.ue;
@@ -80,15 +81,13 @@ $(function () {
                         );
                     });
                 }
-            },
-            error: function (xhr, textStatus, errorThrown) {
-                console.log("error request");
-            },
-            complete: function () {
                 // remove spinner
                 $('.loading-spinner').remove();
                 $etudiantContainer.toggleClass('d-none', false);
                 $groupeContainer.toggleClass('d-none', false);
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.log("error request");
             }
         });
     });
